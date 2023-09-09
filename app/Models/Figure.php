@@ -18,5 +18,12 @@ class Figure extends Model
         "user_id",
     ];
 
+    public function from_position() {
+        return $this->belongsTo(Position::class, 'from_position_id', 'id');
+    }
+
+    public function to_position() {
+        return $this->belongsTo(Position::class, 'to_position_id', 'id');
+    }
 
 }

@@ -15,4 +15,12 @@ class Position extends Model
         "user_id",
     ];
 
+    public function incoming_figures() {
+        return $this->hasMany(Figure::class, 'to_position_id', 'id');
+    }
+
+    public function outgoing_figures() {
+        return $this->hasMany(Figure::class, 'from_position_id', 'id');
+    }
+
 }

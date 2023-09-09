@@ -15,4 +15,8 @@ class CompoundFigureFigure extends Model
         "idx",
         "user_id",
     ];
+
+    public function compound_figure() {
+        return $this->belongsTo(CompoundFigure::class, 'compound_figure_id', 'id');
+    }
 }
