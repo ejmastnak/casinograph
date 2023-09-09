@@ -10,13 +10,11 @@ return new class extends Migration {
      */
     public function up(): void
     {
-        Schema::create('figures', function (Blueprint $table) {
+        Schema::create('compound_figure_figures', function (Blueprint $table) {
             $table->id();
-            $table->string('name');
-            $table->string('description')->nullable();
-            $table->integer('weight')->default(1);
-            $table->foreignId('from_position_id')->references('id')->on('positions');
-            $table->foreignId('to_position_id')->references('id')->on('positions');
+            $table->foreignId('figure_id')->references('id')->on('figures');
+            $table->foreignId('compound_figure_id')->references('id')->on('compound_figures');
+            $table->integer('idx');
             $table->foreignId('user_id')->references('id')->on('users');
             $table->timestamps();
         });
@@ -27,6 +25,6 @@ return new class extends Migration {
      */
     public function down(): void
     {
-        Schema::dropIfExists('figures');
+        Schema::dropIfExists('compound_figure_figures');
     }
 };
