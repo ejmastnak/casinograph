@@ -1,0 +1,22 @@
+{
+  "tasks": [
+    {
+      "name": "Start PHP server",
+      "cmd": "php artisan serve",
+      "tags": ["serve"],
+      "count": 1
+    },
+    {
+      "name": "Run",
+      "cmd": "npm run dev",
+      "tags": ["serve"],
+      "count": 2
+    },
+    {
+      "name": "Open browser",
+      "cmd": "xdg-open http://127.0.0.1:8000 && sleep 1",
+      "tags": ["view"],
+      "count": 3
+    }
+  ]
+}
