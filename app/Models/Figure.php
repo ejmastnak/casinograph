@@ -8,4 +8,15 @@ use Illuminate\Database\Eloquent\Model;
 class Figure extends Model
 {
     use HasFactory;
+
+    protected $fillable = [
+        "name",
+        "description",
+        "weight",
+        "from_position_id",
+        "to_position_id",
+        "user_id",
+    ];
+
+
 }
