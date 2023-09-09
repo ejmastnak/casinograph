@@ -17,7 +17,7 @@ return new class extends Migration {
             $table->integer('weight')->default(1);
             $table->foreignId('from_position_id')->references('id')->on('positions');
             $table->foreignId('to_position_id')->references('id')->on('positions');
-            $table->foreignId('user_id')->references('id')->on('users');
+            $table->foreignId('user_id')->nullable()->references('id')->on('users');
             $table->timestamps();
         });
     }

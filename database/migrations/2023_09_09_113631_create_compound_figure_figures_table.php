@@ -15,7 +15,7 @@ return new class extends Migration {
             $table->foreignId('figure_id')->references('id')->on('figures');
             $table->foreignId('compound_figure_id')->references('id')->on('compound_figures');
             $table->integer('idx');
-            $table->foreignId('user_id')->references('id')->on('users');
+            $table->foreignId('user_id')->nullable()->references('id')->on('users');
             $table->timestamps();
         });
     }
