@@ -7,6 +7,7 @@ use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\Storage;
 use App\Models\Figure;
 use App\Models\Position;
+use App\Models\FigureFamily;
 
 class FigureSeeder extends Seeder
 {
@@ -34,12 +35,23 @@ class FigureSeeder extends Seeder
                 continue;
             }
 
+            $figure_family_id = null;
+            if (isset($figure['figure_family'])) {
+                $figure_family = FigureFamily::where('name', $figure['figure_family'])->first();
+                if ($figure_family) {
+                    $figure_family_id = $figure_family->id;
+                } else {
+                    $this->command->info('Warning: FigureFamily ' . $figure['figure_family'] . ' not found when seeding Figure ' . $figure['name'] . '.');
+                }
+            }
+
             Figure::updateOrCreate([
                 'name' => $figure['name'],
                 'description' => $description,
                 'weight' => $weight,
                 'from_position_id' => $from_position->id,
                 'to_position_id' => $to_position->id,
+                'figure_family_id' => $figure_family_id,
             ]);
         }
     }

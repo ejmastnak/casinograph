@@ -12,8 +12,13 @@ class Position extends Model
     protected $fillable = [
         "name",
         "description",
+        "position_family_id",
         "user_id",
     ];
+
+    public function position_family() {
+        return $this->belongsTo(PositionFamily::class, 'position_family_id', 'id');
+    }
 
     public function incoming_figures() {
         return $this->hasMany(Figure::class, 'to_position_id', 'id');
