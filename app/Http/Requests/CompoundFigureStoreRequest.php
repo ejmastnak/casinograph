@@ -4,6 +4,7 @@ namespace App\Http\Requests;
 
 use Illuminate\Foundation\Http\FormRequest;
 use App\Models\CompoundFigure;
+use App\Rules\SuccessiveFiguresConsistent;
 
 class CompoundFigureStoreRequest extends FormRequest
 {
@@ -28,7 +29,7 @@ class CompoundFigureStoreRequest extends FormRequest
             'weight' => ['nullable', 'integer', 'min:1', config('validation.max_weight')],
             'figure_ids' => ['required', 'array', 'min:2', config('validation.max_compound_figure_figures')],
             'figure_ids.*' => ['integer', 'exists:App\Models\Figure,id'],
-            // TODO: ensure the `to_position_id` field of each Figure must equal the `from_position_id` field of the subsequent Figure
+            'figure_ids' => [new SuccessiveFiguresConsistent],
         ];
     }
 }
