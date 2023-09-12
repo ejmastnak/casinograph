@@ -4,6 +4,8 @@ namespace App\Http\Controllers;
 
 use App\Models\Figure;
 use Illuminate\Http\Request;
+use App\Http\Requests\FigureStoreRequest;
+use App\Http\Requests\FigureUpdateRequest;
 
 class FigureController extends Controller
 {
@@ -26,9 +28,17 @@ class FigureController extends Controller
     /**
      * Store a newly created resource in storage.
      */
-    public function store(Request $request)
+    public function store(FigureStoreRequest $request)
     {
-        //
+        $validated = $request->validated();
+        $figure = Figure::create([
+            'name' => $validated['name'],
+            'from_position_id' => $validated['from_position_id'],
+            'to_position_id' => $validated['to_position_id'],
+            'description' => isset($validated['description']) ? $validated['description'] : null,
+            'weight' => isset($validated['weight']) ? $validated['weight'] : null,
+        ]);
+        return Redirect::route('figures.show', $figure->id)->with('message', 'Success! Figure created successfully.');
     }
 
     /**
@@ -50,9 +60,17 @@ class FigureController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, Figure $figure)
+    public function update(FigureUpdateRequest $request, Figure $figure)
     {
-        //
+        $validated = $request->validated();
+        $figure->update([
+            'name' => $validated['name'],
+            'from_position_id' => $validated['from_position_id'],
+            'to_position_id' => $validated['to_position_id'],
+            'description' => isset($validated['description']) ? $validated['description'] : null,
+            'weight' => isset($validated['weight']) ? $validated['weight'] : null,
+        ]);
+        return Redirect::route('figures.show', $figure->id)->with('message', 'Success! Figure updated successfully.');
     }
 
     /**
