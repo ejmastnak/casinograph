@@ -15,11 +15,16 @@ class CompoundFigure extends Model
         "weight",
         "from_position_id",
         "to_position_id",
+        "figure_family_id",
         "user_id",
     ];
 
     public function compound_figure_figures() {
         return $this->hasMany(CompoundFigureFigure::class, 'compound_figure_id', 'id');
+    }
+
+    public function figure_family() {
+        return $this->belongsTo(FigureFamily::class, 'figure_family_id', 'id');
     }
 
     public function from_position() {

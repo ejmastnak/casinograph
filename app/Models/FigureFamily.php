@@ -16,4 +16,8 @@ class FigureFamily extends Model
         return $this->hasMany(Figure::class, 'figure_family_id', 'id');
     }
 
+    public function compound_figures() {
+        return $this->hasMany(CompoundFigure::class, 'figure_family_id', 'id');
+    }
+
 }
