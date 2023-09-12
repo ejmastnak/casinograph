@@ -10,6 +10,7 @@ use App\Http\Requests\CompoundFigureStoreRequest;
 use App\Http\Requests\CompoundFigureUpdateRequest;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Redirect;
+use Illuminate\Support\Facades\DB;
 
 class CompoundFigureController extends Controller
 {
