@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Position;
+use App\Models\PositionFamily;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Redirect;
 use App\Http\Requests\PositionStoreRequest;
@@ -15,7 +16,9 @@ class PositionController extends Controller
      */
     public function index()
     {
-        //
+        return Inertia::render('Positions/Index', [
+          'positions' => Position::with('position_family:id,name')->get(['id', 'name', 'position_family_id']),
+        ]);
     }
 
     /**
@@ -23,7 +26,9 @@ class PositionController extends Controller
      */
     public function create()
     {
-        //
+        return Inertia::render('Position/Create', [
+            'posiiton_families' => PositionFamily::all(['id', 'name']),
+        ]);
     }
 
     /**
@@ -44,7 +49,10 @@ class PositionController extends Controller
      */
     public function show(Position $position)
     {
-        //
+        $position->load(['position_family']);
+        return Inertia::render('Position/Show', [
+          'position' => $position->only(['id', 'name', 'description', 'position_family_id', 'position_family']),
+        ]);
     }
 
     /**
@@ -52,7 +60,11 @@ class PositionController extends Controller
      */
     public function edit(Position $position)
     {
-        //
+        $position->load(['position_family']);
+        return Inertia::render('Position/Edit', [
+            'position' => $position->only(['id', 'name', 'description', 'position_family_id', 'position_family']),
+            'posiiton_families' => PositionFamily::all(['id', 'name']),
+        ]);
     }
 
     /**
@@ -73,6 +85,7 @@ class PositionController extends Controller
      */
     public function destroy(Position $position)
     {
-        //
+        $position->delete();
+        Redirect::route('positions.index')->with('message', 'Success! Position deleted successfully.');
     }
 }

@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\CompoundFigure;
 use App\Models\CompoundFigureFigure;
 use App\Models\Figure;
+use App\Models\FigureFamily;
 use Illuminate\Http\Request;
 use App\Http\Requests\CompoundFigureStoreRequest;
 use App\Http\Requests\CompoundFigureUpdateRequest;
@@ -19,7 +20,9 @@ class CompoundFigureController extends Controller
      */
     public function index()
     {
-        //
+        return Inertia::render('CompoundFigures/Index', [
+            'compound_figures' => CompoundFigure::with(['figure_family:id,name'])->get(['id', 'name', 'weight', 'figure_family_id']),
+        ]);
     }
 
     /**
@@ -27,7 +30,10 @@ class CompoundFigureController extends Controller
      */
     public function create()
     {
-        //
+        return Inertia::render('CompoundFigures/Create', [
+            'figure_families' => FigureFamily::all(['id', 'name']),
+            'figures' => Figure::all(['id', 'name', 'from_position_id', 'to_position_id']),
+        ]);
     }
 
     /**
@@ -68,7 +74,10 @@ class CompoundFigureController extends Controller
      */
     public function show(CompoundFigure $compound_figure)
     {
-        //
+        $compound_figure->load(['figure_family:id,name', 'figures:id,name,description,from_position_id,to_position_id', 'figures.from_position:id,name', 'figures.to_position:id,name'])
+        return Inertia::render('CompoundFigures/Show', [
+            'compound_figure' => $compound_figure->only(['id', 'name', 'description', 'weight', 'figure_family_id', 'figure_family', 'figures']),
+        ]);
     }
 
     /**
@@ -76,7 +85,12 @@ class CompoundFigureController extends Controller
      */
     public function edit(CompoundFigure $compound_figure)
     {
-        //
+        $compound_figure->load(['figure_family:id,name', 'figures:id,name,description,from_position_id,to_position_id', 'figures.from_position:id,name', 'figures.to_position:id,name'])
+        return Inertia::render('CompoundFigures/Edit', [
+            'compound_figure' => $compound_figure->only(['id', 'name', 'description', 'weight', 'figure_family_id', 'figure_family', 'figures']),
+            'figure_families' => FigureFamily::all(['id', 'name']),
+            'figures' => Figure::all(['id', 'name', 'from_position_id', 'to_position_id']),
+        ]);
     }
 
     /**

@@ -3,6 +3,8 @@
 namespace App\Http\Controllers;
 
 use App\Models\Figure;
+use App\Models\FigureFamily;
+use App\Models\Position;
 use Illuminate\Http\Request;
 use App\Http\Requests\FigureStoreRequest;
 use App\Http\Requests\FigureUpdateRequest;
@@ -14,7 +16,9 @@ class FigureController extends Controller
      */
     public function index()
     {
-        //
+        return Inertia::render('Figures/Index', [
+          'figures' => Figure::with(['figure_family:id,name'])->get(['id', 'name', 'weight', 'figure_family_id']),
+        ]);
     }
 
     /**
@@ -22,7 +26,10 @@ class FigureController extends Controller
      */
     public function create()
     {
-        //
+        return Inertia::render('Figures/Create', [
+          'figure_families' => FigureFamily::all(['id', 'name']),
+          'positions' => Posiiton::all(['id', 'name']),
+        ]);
     }
 
     /**
@@ -46,7 +53,10 @@ class FigureController extends Controller
      */
     public function show(Figure $figure)
     {
-        //
+        $figure->load(['figure_family:id,name', 'from_position:id,name', 'to_position:id,name']);
+        return Inertia::render('Figures/Show', [
+          'figure' => $figure->only['id', 'name', 'description', 'weight', 'figure_family_id', 'figure_family', 'from_position_id', 'from_position', 'to_position_id', 'to_position'],
+        ]);
     }
 
     /**
@@ -54,7 +64,12 @@ class FigureController extends Controller
      */
     public function edit(Figure $figure)
     {
-        //
+        $figure->load(['figure_family:id,name', 'from_position:id,name', 'to_position:id,name']);
+        return Inertia::render('Figures/Show', [
+          'figure' => $figure->only['id', 'name', 'description', 'weight', 'figure_family_id', 'figure_family', 'from_position_id', 'from_position', 'to_position_id', 'to_position'],
+          'figure_families' => FigureFamily::all(['id', 'name']),
+          'positions' => Posiiton::all(['id', 'name']),
+        ]);
     }
 
     /**
@@ -78,6 +93,7 @@ class FigureController extends Controller
      */
     public function destroy(Figure $figure)
     {
-        //
+        $figure->delete();
+        Redirect::route('figures.index')->with('message', 'Success! Figure deleted successfully.');
     }
 }
