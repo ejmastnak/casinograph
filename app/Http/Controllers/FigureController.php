@@ -6,6 +6,8 @@ use App\Models\Figure;
 use App\Models\FigureFamily;
 use App\Models\Position;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Redirect;
+use Illuminate\Support\Facades\Auth;
 use App\Http\Requests\FigureStoreRequest;
 use App\Http\Requests\FigureUpdateRequest;
 
@@ -17,7 +19,7 @@ class FigureController extends Controller
     public function index()
     {
         return Inertia::render('Figures/Index', [
-          'figures' => Figure::with(['figure_family:id,name'])->get(['id', 'name', 'weight', 'figure_family_id']),
+            'figures' => Figure::with(['figure_family:id,name'])->get(['id', 'name', 'weight', 'figure_family_id']),
         ]);
     }
 
@@ -27,8 +29,8 @@ class FigureController extends Controller
     public function create()
     {
         return Inertia::render('Figures/Create', [
-          'figure_families' => FigureFamily::all(['id', 'name']),
-          'positions' => Posiiton::all(['id', 'name']),
+            'figure_families' => FigureFamily::all(['id', 'name']),
+            'positions' => Posiiton::all(['id', 'name']),
         ]);
     }
 
@@ -38,13 +40,17 @@ class FigureController extends Controller
     public function store(FigureStoreRequest $request)
     {
         $validated = $request->validated();
+        $user = Auth::user();
+
         $figure = Figure::create([
             'name' => $validated['name'],
             'from_position_id' => $validated['from_position_id'],
             'to_position_id' => $validated['to_position_id'],
             'description' => isset($validated['description']) ? $validated['description'] : null,
             'weight' => isset($validated['weight']) ? $validated['weight'] : null,
+            'user_id' => $user ? $user->id : null,
         ]);
+
         return Redirect::route('figures.show', $figure->id)->with('message', 'Success! Figure created successfully.');
     }
 
@@ -55,7 +61,7 @@ class FigureController extends Controller
     {
         $figure->load(['figure_family:id,name', 'from_position:id,name', 'to_position:id,name']);
         return Inertia::render('Figures/Show', [
-          'figure' => $figure->only['id', 'name', 'description', 'weight', 'figure_family_id', 'figure_family', 'from_position_id', 'from_position', 'to_position_id', 'to_position'],
+            'figure' => $figure->only['id', 'name', 'description', 'weight', 'figure_family_id', 'figure_family', 'from_position_id', 'from_position', 'to_position_id', 'to_position'],
         ]);
     }
 
@@ -66,9 +72,9 @@ class FigureController extends Controller
     {
         $figure->load(['figure_family:id,name', 'from_position:id,name', 'to_position:id,name']);
         return Inertia::render('Figures/Show', [
-          'figure' => $figure->only['id', 'name', 'description', 'weight', 'figure_family_id', 'figure_family', 'from_position_id', 'from_position', 'to_position_id', 'to_position'],
-          'figure_families' => FigureFamily::all(['id', 'name']),
-          'positions' => Posiiton::all(['id', 'name']),
+            'figure' => $figure->only['id', 'name', 'description', 'weight', 'figure_family_id', 'figure_family', 'from_position_id', 'from_position', 'to_position_id', 'to_position'],
+            'figure_families' => FigureFamily::all(['id', 'name']),
+            'positions' => Posiiton::all(['id', 'name']),
         ]);
     }
 

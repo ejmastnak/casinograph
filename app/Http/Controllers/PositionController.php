@@ -6,6 +6,7 @@ use App\Models\Position;
 use App\Models\PositionFamily;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Redirect;
+use Illuminate\Support\Facades\Auth;
 use App\Http\Requests\PositionStoreRequest;
 use App\Http\Requests\PositionUpdateRequest;
 
@@ -17,7 +18,7 @@ class PositionController extends Controller
     public function index()
     {
         return Inertia::render('Positions/Index', [
-          'positions' => Position::with('position_family:id,name')->get(['id', 'name', 'position_family_id']),
+            'positions' => Position::with('position_family:id,name')->get(['id', 'name', 'position_family_id']),
         ]);
     }
 
@@ -37,10 +38,14 @@ class PositionController extends Controller
     public function store(PositionStoreRequest $request)
     {
         $validated = $request->validated();
+        $user = Auth::user();
+
         $position = Position::create([
             'name' => $validated['name'],
             'description' => isset($validated['description']) ? $validated['description'] : null,
+            'user_id' => $user ? $user->id : null,
         ]);
+
         return Redirect::route('positions.show', $position->id)->with('message', 'Success! Position created successfully.');
     }
 
@@ -51,7 +56,7 @@ class PositionController extends Controller
     {
         $position->load(['position_family']);
         return Inertia::render('Position/Show', [
-          'position' => $position->only(['id', 'name', 'description', 'position_family_id', 'position_family']),
+            'position' => $position->only(['id', 'name', 'description', 'position_family_id', 'position_family']),
         ]);
     }
 
