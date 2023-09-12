@@ -11,4 +11,9 @@ class FigureFamily extends Model
     protected $fillable = [
         'name',
     ];
+
+    public function figures() {
+        return $this->hasMany(Figure::class, 'figure_family_id', 'id');
+    }
+
 }

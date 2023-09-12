@@ -11,4 +11,9 @@ class PositionFamily extends Model
     protected $fillable = [
         'name',
     ];
+
+    public function positions() {
+        return $this->hasMany(Position::class, 'position_family_id', 'id');
+    }
+
 }
