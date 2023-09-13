@@ -31,7 +31,7 @@ class FigureController extends Controller
     {
         return Inertia::render('Figures/Create', [
             'figure_families' => FigureFamily::all(['id', 'name']),
-            'positions' => Posiiton::all(['id', 'name']),
+            'positions' => Position::all(['id', 'name']),
         ]);
     }
 
@@ -75,7 +75,7 @@ class FigureController extends Controller
         return Inertia::render('Figures/Show', [
             'figure' => $figure->only(['id', 'name', 'description', 'weight', 'figure_family_id', 'figure_family', 'from_position_id', 'from_position', 'to_position_id', 'to_position']),
             'figure_families' => FigureFamily::all(['id', 'name']),
-            'positions' => Posiiton::all(['id', 'name']),
+            'positions' => Position::all(['id', 'name']),
         ]);
     }
 

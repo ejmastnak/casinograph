@@ -28,8 +28,8 @@ class PositionController extends Controller
      */
     public function create()
     {
-        return Inertia::render('Position/Create', [
-            'posiiton_families' => PositionFamily::all(['id', 'name']),
+        return Inertia::render('Positions/Create', [
+            'position_families' => PositionFamily::all(['id', 'name']),
         ]);
     }
 
@@ -56,7 +56,7 @@ class PositionController extends Controller
     public function show(Position $position)
     {
         $position->load(['position_family']);
-        return Inertia::render('Position/Show', [
+        return Inertia::render('Positions/Show', [
             'position' => $position->only(['id', 'name', 'description', 'position_family_id', 'position_family']),
         ]);
     }
@@ -67,9 +67,9 @@ class PositionController extends Controller
     public function edit(Position $position)
     {
         $position->load(['position_family']);
-        return Inertia::render('Position/Edit', [
+        return Inertia::render('Positions/Edit', [
             'position' => $position->only(['id', 'name', 'description', 'position_family_id', 'position_family']),
-            'posiiton_families' => PositionFamily::all(['id', 'name']),
+            'position_families' => PositionFamily::all(['id', 'name']),
         ]);
     }
 
