@@ -1,5 +1,8 @@
 <?php
 
+use App\Models\Position;
+use App\Models\Figure;
+use App\Models\CompoundFigure;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\PositionController;
 use App\Http\Controllers\FigureController;
