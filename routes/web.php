@@ -26,7 +26,7 @@ Route::get('/', function () {
 
 Route::get('positions', [PositionController::class, 'index'])->name('positions.index');
 Route::get('figures', [FigureController::class, 'index'])->name('figures.index');
-Route::get('compound-figures', [CompoundFigureController::class, 'index'])->name('compound-figures.index');
+Route::get('compound-figures', [CompoundFigureController::class, 'index'])->name('compound_figures.index');
 
 Route::middleware('auth')->group(function () {
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
@@ -45,15 +45,15 @@ Route::middleware('auth')->group(function () {
     Route::put('figures/{figure}', [FigureController::class, 'update'])->name('figures.update')->can('update', 'figure');
     Route::delete('figures/{figure}', [FigureController::class, 'destroy'])->name('figures.destroy')->can('delete', 'figure');
 
-    Route::get('compound-figures/create', [CompoundFigureController::class, 'create'])->name('compound-figures.create')->can('create', CompoundFigure::class);
-    Route::post('compound-figures', [CompoundFigureController::class, 'store'])->name('compound-figures.store')->can('create', CompoundFigure::class);
-    Route::get('compound-figures/{compound-figure}/edit', [CompoundFigureController::class, 'edit'])->name('compound-figures.edit')->can('update', 'compound-figure');
-    Route::put('compound-figures/{compound-figure}', [CompoundFigureController::class, 'update'])->name('compound-figures.update')->can('update', 'compound-figure');
-    Route::delete('compound-figures/{compound-figure}', [CompoundFigureController::class, 'destroy'])->name('compound-figures.destroy')->can('delete', 'compound-figure');
+    Route::get('compound-figures/create', [CompoundFigureController::class, 'create'])->name('compound_figures.create')->can('create', CompoundFigure::class);
+    Route::post('compound-figures', [CompoundFigureController::class, 'store'])->name('compound_figures.store')->can('create', CompoundFigure::class);
+    Route::get('compound-figures/{compound_figure}/edit', [CompoundFigureController::class, 'edit'])->name('compound_figures.edit')->can('update', 'compound_figure');
+    Route::put('compound-figures/{compound_figure}', [CompoundFigureController::class, 'update'])->name('compound_figures.update')->can('update', 'compound_figure');
+    Route::delete('compound-figures/{compound_figure}', [CompoundFigureController::class, 'destroy'])->name('compound_figures.destroy')->can('delete', 'compound_figure');
 });
 
 Route::get('positions/{position}', [PositionController::class, 'show'])->name('positions.show');
 Route::get('figures/{figure}', [FigureController::class, 'show'])->name('figures.show');
-Route::get('compound-figures/{compound-figure}', [CompoundFigureController::class, 'show'])->name('compound-figures.show');
+Route::get('compound-figures/{compound_figure}', [CompoundFigureController::class, 'show'])->name('compound_figures.show');
 
 require __DIR__.'/auth.php';
