@@ -13,7 +13,7 @@ class CompoundFigureStoreRequest extends FormRequest
      */
     public function authorize(): bool
     {
-        return $this->user()->can('create', CompoundFigure::class)
+        return $this->user()->can('create', CompoundFigure::class);
     }
 
     /**

@@ -9,6 +9,7 @@ use Illuminate\Support\Facades\Redirect;
 use Illuminate\Support\Facades\Auth;
 use App\Http\Requests\PositionStoreRequest;
 use App\Http\Requests\PositionUpdateRequest;
+use Inertia\Inertia;
 
 class PositionController extends Controller
 {

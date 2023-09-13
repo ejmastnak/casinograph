@@ -12,7 +12,7 @@ class FigureStoreRequest extends FormRequest
      */
     public function authorize(): bool
     {
-        return $this->user()->can('create', Figure::class)
+        return $this->user()->can('create', Figure::class);
     }
 
     /**

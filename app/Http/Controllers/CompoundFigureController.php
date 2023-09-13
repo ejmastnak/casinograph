@@ -12,6 +12,7 @@ use App\Http\Requests\CompoundFigureUpdateRequest;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Redirect;
 use Illuminate\Support\Facades\DB;
+use Inertia\Inertia;
 
 class CompoundFigureController extends Controller
 {
@@ -74,7 +75,7 @@ class CompoundFigureController extends Controller
      */
     public function show(CompoundFigure $compound_figure)
     {
-        $compound_figure->load(['figure_family:id,name', 'figures:id,name,description,from_position_id,to_position_id', 'figures.from_position:id,name', 'figures.to_position:id,name'])
+        $compound_figure->load(['figure_family:id,name', 'figures:id,name,description,from_position_id,to_position_id', 'figures.from_position:id,name', 'figures.to_position:id,name']);
         return Inertia::render('CompoundFigures/Show', [
             'compound_figure' => $compound_figure->only(['id', 'name', 'description', 'weight', 'figure_family_id', 'figure_family', 'figures']),
         ]);
@@ -85,7 +86,7 @@ class CompoundFigureController extends Controller
      */
     public function edit(CompoundFigure $compound_figure)
     {
-        $compound_figure->load(['figure_family:id,name', 'figures:id,name,description,from_position_id,to_position_id', 'figures.from_position:id,name', 'figures.to_position:id,name'])
+        $compound_figure->load(['figure_family:id,name', 'figures:id,name,description,from_position_id,to_position_id', 'figures.from_position:id,name', 'figures.to_position:id,name']);
         return Inertia::render('CompoundFigures/Edit', [
             'compound_figure' => $compound_figure->only(['id', 'name', 'description', 'weight', 'figure_family_id', 'figure_family', 'figures']),
             'figure_families' => FigureFamily::all(['id', 'name']),

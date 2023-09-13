@@ -10,6 +10,7 @@ use Illuminate\Support\Facades\Redirect;
 use Illuminate\Support\Facades\Auth;
 use App\Http\Requests\FigureStoreRequest;
 use App\Http\Requests\FigureUpdateRequest;
+use Inertia\Inertia;
 
 class FigureController extends Controller
 {
@@ -61,7 +62,7 @@ class FigureController extends Controller
     {
         $figure->load(['figure_family:id,name', 'from_position:id,name', 'to_position:id,name']);
         return Inertia::render('Figures/Show', [
-            'figure' => $figure->only['id', 'name', 'description', 'weight', 'figure_family_id', 'figure_family', 'from_position_id', 'from_position', 'to_position_id', 'to_position'],
+            'figure' => $figure->only(['id', 'name', 'description', 'weight', 'figure_family_id', 'figure_family', 'from_position_id', 'from_position', 'to_position_id', 'to_position']),
         ]);
     }
 
@@ -72,7 +73,7 @@ class FigureController extends Controller
     {
         $figure->load(['figure_family:id,name', 'from_position:id,name', 'to_position:id,name']);
         return Inertia::render('Figures/Show', [
-            'figure' => $figure->only['id', 'name', 'description', 'weight', 'figure_family_id', 'figure_family', 'from_position_id', 'from_position', 'to_position_id', 'to_position'],
+            'figure' => $figure->only(['id', 'name', 'description', 'weight', 'figure_family_id', 'figure_family', 'from_position_id', 'from_position', 'to_position_id', 'to_position']),
             'figure_families' => FigureFamily::all(['id', 'name']),
             'positions' => Posiiton::all(['id', 'name']),
         ]);
