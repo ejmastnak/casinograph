@@ -44,6 +44,7 @@ class PositionController extends Controller
         $position = Position::create([
             'name' => $validated['name'],
             'description' => isset($validated['description']) ? $validated['description'] : null,
+            'position_family_id' => isset($validated['position_family_id']) ? $validated['position_family_id'] : null,
             'user_id' => $user ? $user->id : null,
         ]);
 
@@ -82,6 +83,7 @@ class PositionController extends Controller
         $position->update([
             'name' => $validated['name'],
             'description' => isset($validated['description']) ? $validated['description'] : null,
+            'position_family_id' => isset($validated['position_family_id']) ? $validated['position_family_id'] : null,
         ]);
         return Redirect::route('positions.show', $position->id)->with('message', 'Success! Position updated successfully.');
     }

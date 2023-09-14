@@ -55,6 +55,7 @@ class CompoundFigureController extends Controller
                 'to_position_id' => $to_position_id,
                 'description' => isset($validated['description']) ? $validated['description'] : null,
                 'weight' => isset($validated['weight']) ? $validated['weight'] : null,
+                'figure_family_id' => isset($validated['figure_family_id']) ? $validated['figure_family_id'] : null,
             ]);
 
             foreach ($validated['figure_ids'] as $idx=>$figure_id) {
@@ -112,6 +113,7 @@ class CompoundFigureController extends Controller
                 'to_position_id' => $to_position_id,
                 'description' => isset($validated['description']) ? $validated['description'] : null,
                 'weight' => isset($validated['weight']) ? $validated['weight'] : null,
+                'figure_family_id' => isset($validated['figure_family_id']) ? $validated['figure_family_id'] : null,
             ]);
 
             // I'm just deleting old CompoundFigureFigures and creating new ones on

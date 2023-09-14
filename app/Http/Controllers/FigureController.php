@@ -49,6 +49,7 @@ class FigureController extends Controller
             'to_position_id' => $validated['to_position_id'],
             'description' => isset($validated['description']) ? $validated['description'] : null,
             'weight' => isset($validated['weight']) ? $validated['weight'] : null,
+            'figure_family_id' => isset($validated['figure_family_id']) ? $validated['figure_family_id'] : null,
             'user_id' => $user ? $user->id : null,
         ]);
 
@@ -90,6 +91,7 @@ class FigureController extends Controller
             'from_position_id' => $validated['from_position_id'],
             'to_position_id' => $validated['to_position_id'],
             'description' => isset($validated['description']) ? $validated['description'] : null,
+            'figure_family_id' => isset($validated['figure_family_id']) ? $validated['figure_family_id'] : null,
             'weight' => isset($validated['weight']) ? $validated['weight'] : null,
         ]);
         return Redirect::route('figures.show', $figure->id)->with('message', 'Success! Figure updated successfully.');
