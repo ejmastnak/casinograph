@@ -12,7 +12,7 @@ class PositionUpdateRequest extends FormRequest
      */
     public function authorize(): bool
     {
-        $position = Position::find($this->route('position'));
+        $position = $this->route('position');
         return $position && $this->user()->can('update', $position);
     }
 
@@ -28,7 +28,21 @@ class PositionUpdateRequest extends FormRequest
             'description' => ['nullable', 'string', 'min:0', config('validation.max_description_length')],
             'position_family_id' => ['nullable', 'integer', 'exists:App\Models\PositionFamily,id'],
             'position_family' => ['nullable', 'array', 'required_array_keys:id,name'],
-            'position_family.name' => ['required', 'string', 'min:1', config('validation.max_name_length')],
+            'position_family.name' => ['required_with:position_family', 'string', 'min:1', config('validation.max_name_length')],
         ];
     }
+
+    /**
+     * Get custom attributes for validator errors.
+     *
+     * @return array<string, string>
+     */
+    public function attributes(): array
+    {
+        return [
+            'position_family_id' => 'position family',
+            'position_family.name' => 'position family name',
+        ];
+    }
+
 }

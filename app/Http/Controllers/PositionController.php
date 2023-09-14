@@ -7,6 +7,7 @@ use App\Models\PositionFamily;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Redirect;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
 use App\Http\Requests\PositionStoreRequest;
 use App\Http\Requests\PositionUpdateRequest;
 use Inertia\Inertia;
@@ -71,9 +72,9 @@ class PositionController extends Controller
      */
     public function show(Position $position)
     {
-        $position->load(['position_family:id,name']);
+        $position->load(['position_family:id,name', 'incoming_figures:id,name,to_position_id', 'outgoing_figures:id,name,from_position_id']);
         return Inertia::render('Positions/Show', [
-            'position' => $position->only(['id', 'name', 'description', 'position_family_id', 'position_family']),
+            'position' => $position->only(['id', 'name', 'description', 'position_family_id', 'position_family', 'incoming_figures', 'outgoing_figures']),
         ]);
     }
 
@@ -97,7 +98,7 @@ class PositionController extends Controller
         $validated = $request->validated();
         $user = Auth::user();
 
-        DB::transaction(function () use ($validated, $user) {
+        DB::transaction(function () use ($position, $validated, $user) {
 
             $previous_position_family = $position->position_family;
 
@@ -119,9 +120,8 @@ class PositionController extends Controller
             ]);
 
             // If this update will orphan a position family, delete it.
-            // Note === 1, not === 0, because the transaction is not commited yet.
             if ($previous_position_family) {
-                if (count(Position::where('position_family_id', $previous_position_family->id)) === 1 && $validated['position_family_id'] !== $previous_position_family->id) {
+                if (count(Position::where('position_family_id', $previous_position_family->id)->get()) === 0 && $validated['position_family_id'] !== $previous_position_family->id) {
                     $previous_position_family->delete();
                 }
             }
@@ -137,14 +137,15 @@ class PositionController extends Controller
     public function destroy(Position $position)
     {
         DB::transaction(function () use ($position) {
-            // If this update will orphan a position family, delete it.
             $position_family = $position->position_family;
-            if ($position_family && count(Position::where('position_family_id', $position_family->id)) === 1) {
+            $position->delete();
+
+            // If this update will orphan a position family, delete it.
+            if ($position_family && count(Position::where('position_family_id', $position_family->id)->get()) === 0) {
                 $position_family->delete();
             }
-            $position->delete();
         });
 
-        Redirect::route('positions.index')->with('message', 'Success! Position deleted successfully.');
+        return Redirect::route('positions.index')->with('message', 'Success! Position deleted successfully.');
     }
 }

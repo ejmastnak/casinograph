@@ -10,6 +10,7 @@ class FigureFamily extends Model
     use HasFactory;
     protected $fillable = [
         'name',
+        'figure_family',
     ];
 
     public function figures() {
