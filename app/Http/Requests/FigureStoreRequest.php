@@ -28,6 +28,7 @@ class FigureStoreRequest extends FormRequest
             'weight' => ['nullable', 'integer', 'min:1', config('validation.max_weight')],
             'from_position_id' => ['required', 'integer', 'exists:App\Models\Position,id'],
             'to_position_id' => ['required', 'integer', 'exists:App\Models\Position,id'],
+            'figure_family_id' => ['nullable', 'integer', 'exists:App\Models\FigureFamily,id'],
         ];
     }
 }

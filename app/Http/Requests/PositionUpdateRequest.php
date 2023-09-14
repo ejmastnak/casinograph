@@ -26,6 +26,7 @@ class PositionUpdateRequest extends FormRequest
         return [
             'name' => ['required', 'string', 'min:1', config('validation.max_name_length')],
             'description' => ['nullable', 'string', 'min:0', config('validation.max_description_length')],
+            'position_family_id' => ['nullable', 'integer', 'exists:App\Models\PositionFamily,id'],
         ];
     }
 }
