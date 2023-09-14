@@ -24,7 +24,7 @@ class PositionStoreRequest extends FormRequest
     {
         return [
             'name' => ['required', 'string', 'min:1', config('validation.max_name_length')],
-            'name' => ['nullable', 'string', 'min:0', config('validation.max_description_length')],
+            'description' => ['nullable', 'string', 'min:0', config('validation.max_description_length')],
         ];
     }
 }

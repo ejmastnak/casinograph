@@ -24,7 +24,7 @@ class FigureStoreRequest extends FormRequest
     {
         return [
             'name' => ['required', 'string', 'min:1', config('validation.max_name_length')],
-            'name' => ['nullable', 'string', 'min:0', config('validation.max_description_length')],
+            'description' => ['nullable', 'string', 'min:0', config('validation.max_description_length')],
             'weight' => ['nullable', 'integer', 'min:1', config('validation.max_weight')],
             'from_position_id' => ['required', 'integer', 'exists:App\Models\Position,id'],
             'to_position_id' => ['required', 'integer', 'exists:App\Models\Position,id'],
