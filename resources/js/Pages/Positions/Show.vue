@@ -15,11 +15,16 @@ const props = defineProps({
   position: Object,
 })
 
+let idToDelete = ref(null)
 const deleteDialog = ref(null)
-function deletePosition(id) {
-  router.delete(route('positions.destroy', id));
-}
 
+
+function deletePosition() {
+  if (idToDelete.value) {
+    router.delete(route('positions.destroy', idToDelete.value));
+  }
+  idToDelete.value = null
+}
 </script>
 
 <script>
@@ -81,12 +86,17 @@ export default {
         <p class="ml-1">Edit</p>
       </SecondaryLink>
 
-      <DangerButton @click="deleteDialog.open(position.id, 'position')" class="ml-2 flex items-center">
+      <DangerButton @click="idToDelete = position.id; deleteDialog.open()" class="ml-2 flex items-center">
         <TrashIcon class="text-white h-5 w-5 -ml-1" />
         <p class="ml-1">Delete</p>
       </DangerButton>
     </div>
 
-    <DeleteDialog @delete="deletePosition" ref="deleteDialog" />
+    <DeleteDialog
+      ref="deleteDialog"
+      description="position"
+      @delete="deletePosition"
+      @cancel="idToDelete = null"
+    />
   </div>
 </template>

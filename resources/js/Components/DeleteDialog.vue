@@ -10,32 +10,21 @@ import {
   DialogDescription,
 } from '@headlessui/vue'
 
+const props = defineProps({ description: String })
 defineExpose({ open })
-
-const emit = defineEmits(['delete'])
+const emit = defineEmits(['delete', 'cancel'])
 
 const isOpen = ref(false)
-
-let idToDelete = null
-let description = ""
-
-function open(id, thing) {
-  idToDelete = id
-  description = thing
-  isOpen.value = true
-}
+function open() { isOpen.value = true }
 
 function cancel() {
   isOpen.value = false
-  description = ""
-  idToDelete = null
+  emit('cancel')
 }
 
 function closeAndDelete() {
   isOpen.value = false
-  emit('delete', idToDelete)
-  description = ""
-  idToDelete = null
+  emit('delete')
 }
 
 </script>

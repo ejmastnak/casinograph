@@ -72,15 +72,18 @@ const numDisplayedPositions = computed(() => {
   return filteredPositions.value.filter(position => shouldDisplay(position.obj)).length
 })
 
+let idToDelete = ref(null)
 const deleteDialog = ref(null)
-function deletePosition(id) {
-  router.delete(route('positions.destroy', id), {
-    onSuccess: () => {
-      search(positionSearchQuery.value)
-    }
-  });
+function deletePosition() {
+  if (idToDelete.value) {
+    router.delete(route('positions.destroy', idToDelete.value), {
+      onSuccess: () => {
+        search(positionSearchQuery.value)  // remove deleted item from display
+      }
+    });
+  }
+  idToDelete.value = null
 }
-
 </script>
 
 <script>
@@ -202,7 +205,10 @@ export default {
                 <MyLink :href="route('positions.edit', position.obj.id)">
                   <PencilSquareIcon class="text-gray-500 h-5 w-5"/>
                 </MyLink>
-                <button type="button" @click="deleteDialog.open(position.obj.id, 'position')">
+                <button
+                  type="button"
+                  @click="idToDelete = position.obj.id; deleteDialog.open()"
+                >
                   <TrashIcon class="text-gray-500 h-5 w-5"/>
                 </button>
               </div>
@@ -217,7 +223,12 @@ export default {
 
     </div>
 
-    <DeleteDialog @delete="deletePosition" ref="deleteDialog" />
+    <DeleteDialog
+      ref="deleteDialog"
+      description="position"
+      @delete="deletePosition"
+      @cancel="idToDelete = null"
+    />
 
   </div>
 </template>
