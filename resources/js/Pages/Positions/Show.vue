@@ -18,7 +18,6 @@ const props = defineProps({
 let idToDelete = ref(null)
 const deleteDialog = ref(null)
 
-
 function deletePosition() {
   if (idToDelete.value) {
     router.delete(route('positions.destroy', idToDelete.value));

@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Figure;
+use App\Models\CompoundFigure;
 use App\Models\FigureFamily;
 use App\Models\Position;
 use Illuminate\Http\Request;
@@ -19,8 +20,33 @@ class FigureController extends Controller
      */
     public function index()
     {
+
+        $figures = Figure::with(['figure_family:id,name'])->get()->mapWithKeys(function ($figure, $key) {
+            return [ $key => [
+                'id' => $figure['id'],
+                'name' => $figure['name'],
+                'weight' => $figure['weight'],
+                'figure_family_id' => $figure['figure_family_id'],
+                'figure_family' => $figure['figure_family'],
+                'compound' => false,
+            ]];
+        });
+
+        $compound_figures = CompoundFigure::with(['figure_family:id,name'])->get()->mapWithKeys(function ($figure, $key) {
+            return [ $key => [
+                'id' => $figure['id'],
+                'name' => $figure['name'],
+                'weight' => $figure['weight'],
+                'figure_family_id' => $figure['figure_family_id'],
+                'figure_family' => $figure['figure_family'],
+                'compound' => true,
+            ]];
+        });
+
         return Inertia::render('Figures/Index', [
-            'figures' => Figure::with(['figure_family:id,name'])->get(['id', 'name', 'weight', 'figure_family_id']),
+            'figures' => $figures->concat($compound_figures),
+            'figure_families' => FigureFamily::all(['id', 'name']),
+            'show_edit_delete_icons' => Auth::user() ? Auth::user()->is_admin === 1 : false,
         ]);
     }
 
