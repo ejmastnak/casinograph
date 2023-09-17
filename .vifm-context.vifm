@@ -1,3 +1,5 @@
 let $VIFM_CONTEXT = expand('%d')
 
 source $VIFM/personal/navigation-contexts/laravel.vifm
+
+nnoremap ;tt :goto $VIFM_CONTEXT/../TODO.md<CR>
