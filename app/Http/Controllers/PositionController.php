@@ -22,6 +22,7 @@ class PositionController extends Controller
         return Inertia::render('Positions/Index', [
             'positions' => Position::with('position_family:id,name')->get(['id', 'name', 'position_family_id']),
             'position_families' => PositionFamily::all(['id', 'name']),
+            'show_edit_delete_icons' => Auth::user() ? Auth::user()->is_admin : false,
         ]);
     }
 

@@ -13,6 +13,7 @@ import { PencilSquareIcon, TrashIcon, PlusCircleIcon, MagnifyingGlassIcon, XMark
 const props = defineProps({
   positions: Array,
   position_families: Array,
+  show_edit_delete_icons: Boolean,
 })
 
 // For filtering Positions by PositionFamily
@@ -137,14 +138,21 @@ export default {
       <table class="mt-6 sm:table-fixed w-full text-sm sm:text-base text-left">
         <thead class="text-xs text-gray-700 uppercase bg-gray-50">
           <tr>
-            <th scope="col" class="px-6 py-2 w-8/12 bg-blue-100">
+            <th
+              scope="col"
+              class="px-6 py-2 bg-blue-100"
+              :class="show_edit_delete_icons ? 'w-8/12' : 'w-9/12'"
+            >
               Name
             </th>
-            <th scope="col" class="px-6 py-2 w-3/12 bg-blue-200">
+            <th
+              scope="col"
+              class="px-6 py-2 bg-blue-200 w-3/12"
+            >
               Family
             </th>
             <!-- For trash and edit icons -->
-            <th scope="col" class="bg-blue-100" />
+            <th v-if="show_edit_delete_icons" scope="col" class="bg-blue-100 w-1/12" />
           </tr>
         </thead>
         <tbody>
@@ -161,11 +169,11 @@ export default {
               </MyLink>
             </td>
             <!-- PositionFamily -->
-            <td class="px-6 py-2 text-gray-700">
+            <td class="px-6 py-2 text-gray-600">
               {{position.obj.position_family?.name}}
             </td>
             <!-- Delete/Edit -->
-            <td>
+            <td v-if="show_edit_delete_icons">
               <div class="flex items-center">
                 <MyLink :href="route('positions.edit', position.obj.id)">
                   <PencilSquareIcon class="text-gray-500 h-5 w-5"/>
