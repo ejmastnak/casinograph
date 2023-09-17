@@ -18,9 +18,8 @@ watch(() => props.flash, () => {
   if (props.flash.message) {
     show.value = true;
     setTimeout(() => {
-      router.reload({ only: ['flash'], onFinish: visit => {
-        show.value = false;
-      }})
+      props.flash.message = null
+      show.value = false
     }, 3000);
   }
 });
