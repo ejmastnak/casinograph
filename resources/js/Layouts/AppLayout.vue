@@ -14,7 +14,7 @@ const showingNavigationDropdown = ref(false);
 
 <template>
   <div class="bg-[#fefefe]">
-    <div class="min-h-screen max-w-2xl mx-auto px-6">
+    <div class="min-h-screen max-w-3xl mx-auto px-6">
       <nav class="mx-auto border-b border-gray-100">
         <div class="relative px-2 sm:px-4 sm:pr-6 lg:pr-8">
 
