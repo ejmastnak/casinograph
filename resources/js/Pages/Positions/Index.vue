@@ -1,8 +1,10 @@
 <script setup>
 import { ref, watch, computed } from 'vue'
+import { router } from '@inertiajs/vue3'
 import fuzzysort from 'fuzzysort'
 import throttle from "lodash/throttle";
 import { Head } from '@inertiajs/vue3'
+import DeleteDialog from "@/Components/DeleteDialog.vue";
 import MyLink from '@/Components/MyLink.vue'
 import SecondaryLink from '@/Components/SecondaryLink.vue'
 import PlainButton from '@/Components/PlainButton.vue'
@@ -56,6 +58,15 @@ function clearFilters() {
 const numDisplayedPositions = computed(() => {
   return filteredPositions.value.filter(position => shouldDisplay(position.obj)).length
 })
+
+const deleteDialog = ref(null)
+function deletePosition(id) {
+  router.delete(route('positions.destroy', id), {
+    onSuccess: () => {
+      search(positionSearchQuery.value)
+    }
+  });
+}
 
 </script>
 
@@ -178,9 +189,9 @@ export default {
                 <MyLink :href="route('positions.edit', position.obj.id)">
                   <PencilSquareIcon class="text-gray-500 h-5 w-5"/>
                 </MyLink>
-                <MyLink as="button" method="delete" :href="route('positions.destroy', position.obj.id)">
+                <button type="button" @click="deleteDialog.open(position.obj.id, 'position')">
                   <TrashIcon class="text-gray-500 h-5 w-5"/>
-                </MyLink>
+                </button>
               </div>
             </td>
           </tr>
@@ -191,8 +202,9 @@ export default {
         No results found. Try a less restrictive filter or search?
       </p>
 
-
     </div>
+
+    <DeleteDialog @delete="deletePosition" ref="deleteDialog" />
 
   </div>
 </template>

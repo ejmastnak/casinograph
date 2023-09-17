@@ -1,8 +1,12 @@
 <script setup>
 import { Head } from '@inertiajs/vue3'
+import { router } from '@inertiajs/vue3'
+import { ref } from 'vue'
 import MyLink from '@/Components/MyLink.vue'
 import PlaceholderParagraph from '@/Components/PlaceholderParagraph.vue'
 import PrimaryButton from '@/Components/PrimaryButton.vue'
+import DeleteDialog from "@/Components/DeleteDialog.vue";
+import DangerButton from '@/Components/DangerButton.vue'
 import DangerLink from '@/Components/DangerLink.vue'
 import SecondaryLink from '@/Components/SecondaryLink.vue'
 import { PencilSquareIcon, TrashIcon } from '@heroicons/vue/24/outline'
@@ -10,6 +14,12 @@ import { PencilSquareIcon, TrashIcon } from '@heroicons/vue/24/outline'
 const props = defineProps({
   position: Object,
 })
+
+const deleteDialog = ref(null)
+function deletePosition(id) {
+  router.delete(route('positions.destroy', id));
+}
+
 </script>
 
 <script>
@@ -70,11 +80,13 @@ export default {
         <PencilSquareIcon class="text-gray-600 h-5 w-5 -ml-1" />
         <p class="ml-1">Edit</p>
       </SecondaryLink>
-      <DangerLink :href="route('positions.destroy', position.id)" method="delete" as="button" class="ml-2 flex items-center">
+
+      <DangerButton @click="deleteDialog.open(position.id, 'position')" class="ml-2 flex items-center">
         <TrashIcon class="text-white h-5 w-5 -ml-1" />
         <p class="ml-1">Delete</p>
-      </DangerLink>
+      </DangerButton>
     </div>
 
+    <DeleteDialog @delete="deletePosition" ref="deleteDialog" />
   </div>
 </template>
