@@ -27,21 +27,34 @@ function shouldDisplay(position) {
   return (selectedPositionFamilies.value.length === 0) || selectedPositionFamilyIDs.value.includes(position.position_family_id)
 }
 
-// Convert to fuzzysort format
-const filteredPositions = ref(props.positions.map((position) => ({
-  obj: position
-})))
+function removeAccents(str) {
+  return str.normalize('NFD').replace(/[\u0300-\u036f]/g, '')
+}
 
 const positionSearchInput = ref(null)
 const positionSearchQuery = ref("")
 const fuzzysortOptions = {
-  keys: ['name'],
+  keys: ['normalized_name'],
   all: true,       // return all items for empty search query
   limit: 100,      // maximum number of search results
   threshold: -1000  // omit results with scores below threshold
 }
+const normalized_positions = computed(() => {
+  return props.positions.map(position => ({
+    id: position.id,
+    name: position.name,
+    normalized_name: removeAccents(position.name),
+    position_family_id: position.position_family_id,
+    position_family: position.position_family,
+  }))
+})
+// Convert to fuzzysort format with nested obj key
+const filteredPositions = ref(normalized_positions.value.map((position) => ({
+  obj: position
+})))
+
 function search(query) {
-  filteredPositions.value = fuzzysort.go(query.trim(), props.positions, fuzzysortOptions)
+  filteredPositions.value = fuzzysort.go(removeAccents(query.trim()), normalized_positions.value, fuzzysortOptions)
 }
 watch(positionSearchQuery, throttle(function (value) {
   search(value)
