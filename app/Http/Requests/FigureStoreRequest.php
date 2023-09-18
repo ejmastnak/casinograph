@@ -29,6 +29,24 @@ class FigureStoreRequest extends FormRequest
             'from_position_id' => ['required', 'integer', 'exists:App\Models\Position,id'],
             'to_position_id' => ['required', 'integer', 'exists:App\Models\Position,id'],
             'figure_family_id' => ['nullable', 'integer', 'exists:App\Models\FigureFamily,id'],
+            'figure_family' => ['nullable', 'array', 'required_array_keys:id,name'],
+            'figure_family.name' => ['required_with:figure_family', 'string', 'min:1', config('validation.max_name_length')],
         ];
     }
+
+    /**
+     * Get custom attributes for validator errors.
+     *
+     * @return array<string, string>
+     */
+    public function attributes(): array
+    {
+        return [
+            'from_position_id' => 'from position',
+            'to_position_id' => 'to position',
+            'figure_family_id' => 'figure family',
+            'figure_family.name' => 'figure family name',
+        ];
+    }
+
 }
