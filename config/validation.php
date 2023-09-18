@@ -1,7 +1,5 @@
 <?php
 
-/*
-
 /**
  *  Rules, some admittedly arbitrary, to use for validation
  */

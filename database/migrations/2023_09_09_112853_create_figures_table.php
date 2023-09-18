@@ -14,7 +14,7 @@ return new class extends Migration {
             $table->id();
             $table->string('name');
             $table->string('description')->nullable();
-            $table->integer('weight')->default(1);
+            $table->integer('weight')->default(config('defaults.figure_weight'));
             $table->foreignId('figure_family_id')->nullable()->references('id')->on('figure_families');
             $table->foreignId('from_position_id')->references('id')->on('positions');
             $table->foreignId('to_position_id')->references('id')->on('positions');
