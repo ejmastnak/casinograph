@@ -7,10 +7,12 @@ import { Head } from '@inertiajs/vue3'
 import DeleteDialog from "@/Components/DeleteDialog.vue";
 import MyLink from '@/Components/MyLink.vue'
 import SecondaryLink from '@/Components/SecondaryLink.vue'
+import SecondaryButton from '@/Components/SecondaryButton.vue'
 import PlainButton from '@/Components/PlainButton.vue'
 import TextInput from '@/Components/TextInput.vue'
 import MultiSelect from '@/Components/MultiSelect.vue'
 import { CheckIcon, PencilSquareIcon, TrashIcon, PlusCircleIcon, MagnifyingGlassIcon, XMarkIcon } from '@heroicons/vue/24/outline'
+import NewFigureDialog from './Partials/NewFigureDialog.vue'
 
 const props = defineProps({
   figures: Array,
@@ -88,6 +90,15 @@ function deleteFigure() {
   idToDelete.value = null
   deleteCompound.value = null
 }
+
+const newFigureDialog = ref(null)
+function newSimpleFigure() {
+  router.get(route('figures.create'));
+}
+function newCompoundFigure() {
+  router.get(route('compound_figures.create'));
+}
+
 </script>
 
 <script>
@@ -107,10 +118,10 @@ export default {
         <p class="mt-1 text-sm text-gray-500 max-w-xs">This is a list of all figures. You can use this page to view, edit, delete, or add new figures.</p>
       </div>
 
-      <SecondaryLink class="ml-auto h-fit" :href="route('figures.create')" >
-        <PlusCircleIcon class="-ml-1 text-gray-600 h-6 w-6" />
+      <SecondaryButton class="ml-auto h-fit" @click="newFigureDialog.open()" >
+        <PlusCircleIcon class="-ml-1 text-gray-600 h-6 w-6 shrink-0" />
         <p class="ml-1 whitespace-nowrap">New figure</p>
-      </SecondaryLink>
+      </SecondaryButton>
     </div>
 
     <!-- Main panel for table and search -->
@@ -228,12 +239,19 @@ export default {
 
     </div>
 
-  <DeleteDialog
-    ref="deleteDialog"
-    description="figure"
-    @delete="deleteFigure"
-    @cancel="idToDelete = null; deleteCompound = null"
-  />
+    <DeleteDialog
+      ref="deleteDialog"
+      description="figure"
+      @delete="deleteFigure"
+      @cancel="idToDelete = null; deleteCompound = null"
+    />
+
+    <NewFigureDialog
+      ref="newFigureDialog"
+      @simple="newSimpleFigure"
+      @compound="newCompoundFigure"
+      @cancel=""
+    />
 
   </div>
 </template>
