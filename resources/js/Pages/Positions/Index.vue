@@ -207,6 +207,7 @@ export default {
                 </MyLink>
                 <button
                   type="button"
+                  class="ml-0.5"
                   @click="idToDelete = position.obj.id; deleteDialog.open()"
                 >
                   <TrashIcon class="text-gray-500 h-5 w-5"/>

@@ -247,7 +247,7 @@ export default {
                 <MyLink :href="route(figure.obj.compound ? 'compound_figures.edit' : 'figures.edit', figure.obj.id)">
                   <PencilSquareIcon class="text-gray-500 h-5 w-5"/>
                 </MyLink>
-                <button type="button" @click="idToDelete = figure.obj.id; deleteCompound = figure.obj.compound; deleteDialog.open()">
+                <button class="ml-0.5" type="button" @click="idToDelete = figure.obj.id; deleteCompound = figure.obj.compound; deleteDialog.open()">
                   <TrashIcon class="text-gray-500 h-5 w-5"/>
                 </button>
               </div>

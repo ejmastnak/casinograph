@@ -9,6 +9,7 @@ use App\Models\Position;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Redirect;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
 use App\Http\Requests\FigureStoreRequest;
 use App\Http\Requests\FigureUpdateRequest;
 use Inertia\Inertia;
@@ -68,18 +69,40 @@ class FigureController extends Controller
     {
         $validated = $request->validated();
         $user = Auth::user();
+        $redirect_figure_id = null;
 
-        $figure = Figure::create([
-            'name' => $validated['name'],
-            'from_position_id' => $validated['from_position_id'],
-            'to_position_id' => $validated['to_position_id'],
-            'description' => isset($validated['description']) ? $validated['description'] : null,
-            'weight' => isset($validated['weight']) ? $validated['weight'] : null,
-            'figure_family_id' => isset($validated['figure_family_id']) ? $validated['figure_family_id'] : null,
-            'user_id' => $user ? $user->id : null,
-        ]);
+        try {
+            DB::transaction(function () use ($validated, $user, &$redirect_figure_id) {
 
-        return Redirect::route('figures.show', $figure->id)->with('message', 'Success! Figure created successfully.');
+                $figure_family_id = null;
+                if (isset($validated['figure_family_id'])) {
+                    $figure_family_id = $validated['figure_family_id'];
+                } // Create a new FigureFamily
+                else if (!isset($validated['figure_family_id']) && isset($validated['figure_family'])) {
+                    $figure_family_id = FigureFamily::create([
+                        'name' => $validated['figure_family']['name'],
+                        'user_id' => $user->id,
+                    ])->id;
+                }
+
+                $figure = Figure::create([
+                    'name' => $validated['name'],
+                    'from_position_id' => $validated['from_position_id'],
+                    'to_position_id' => $validated['to_position_id'],
+                    'description' => isset($validated['description']) ? $validated['description'] : null,
+                    'weight' => isset($validated['weight']) ? $validated['weight'] : config('defaults.figure_weight'),
+                    'figure_family_id' => $figure_family_id,
+                    'user_id' => $user ? $user->id : null,
+                ]);
+                $redirect_figure_id = $figure->id;
+
+            });
+        } catch (\Exception $e) {
+            throw $e;
+            return Redirect::route('figures.index')->with('message', 'Error. Failed to create figure.');
+        }
+
+        return Redirect::route('figures.show', $redirect_figure_id)->with('message', 'Success! Figure created successfully.');
     }
 
     /**
@@ -99,7 +122,7 @@ class FigureController extends Controller
     public function edit(Figure $figure)
     {
         $figure->load(['figure_family:id,name', 'from_position:id,name', 'to_position:id,name']);
-        return Inertia::render('Figures/Show', [
+        return Inertia::render('Figures/Edit', [
             'figure' => $figure->only(['id', 'name', 'description', 'weight', 'figure_family_id', 'figure_family', 'from_position_id', 'from_position', 'to_position_id', 'to_position']),
             'figure_families' => FigureFamily::all(['id', 'name']),
             'positions' => Position::all(['id', 'name']),
@@ -112,14 +135,45 @@ class FigureController extends Controller
     public function update(FigureUpdateRequest $request, Figure $figure)
     {
         $validated = $request->validated();
-        $figure->update([
-            'name' => $validated['name'],
-            'from_position_id' => $validated['from_position_id'],
-            'to_position_id' => $validated['to_position_id'],
-            'description' => isset($validated['description']) ? $validated['description'] : null,
-            'figure_family_id' => isset($validated['figure_family_id']) ? $validated['figure_family_id'] : null,
-            'weight' => isset($validated['weight']) ? $validated['weight'] : null,
-        ]);
+        $user = Auth::user();
+
+        try {
+            DB::transaction(function () use ($figure, $validated, $user) {
+
+                $previous_figure_family = $figure->figure_family;
+
+                $figure_family_id = null;
+                if (isset($validated['figure_family_id'])) {
+                    $figure_family_id = $validated['figure_family_id'];
+                } // Create a new FigureFamily
+                else if (!isset($validated['figure_family_id']) && isset($validated['figure_family'])) {
+                    $figure_family_id = FigureFamily::create([
+                        'name' => $validated['figure_family']['name'],
+                        'user_id' => $user->id,
+                    ])->id;
+                }
+
+                $figure->update([
+                    'name' => $validated['name'],
+                    'from_position_id' => $validated['from_position_id'],
+                    'to_position_id' => $validated['to_position_id'],
+                    'description' => isset($validated['description']) ? $validated['description'] : null,
+                    'figure_family_id' => $figure_family_id,
+                    'weight' => isset($validated['weight']) ? $validated['weight'] : null,
+                ]);
+
+                // If this update will orphan a figure family, delete it.
+                if ($previous_figure_family) {
+                    if (Figure::where('figure_family_id', $previous_figure_family->id)->count() === 0 && $validated['figure_family_id'] !== $previous_figure_family->id) {
+                        $previous_figure_family->delete();
+                    }
+                }
+            });
+        } catch (\Exception $e) {
+            throw $e;
+            return Redirect::route('figures.index')->with('message', 'Error. Failed to update figure.');
+        }
+
         return Redirect::route('figures.show', $figure->id)->with('message', 'Success! Figure updated successfully.');
     }
 

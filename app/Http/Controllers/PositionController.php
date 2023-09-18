@@ -43,9 +43,10 @@ class PositionController extends Controller
     {
         $validated = $request->validated();
         $user = Auth::user();
+        $redirect_position_id = null;
 
         try {
-            DB::transaction(function () use ($validated, $user) {
+            DB::transaction(function () use ($validated, $user, &$redirect_position_id) {
 
                 $position_family_id = null;
                 if (isset($validated['position_family_id'])) {
@@ -64,13 +65,15 @@ class PositionController extends Controller
                     'position_family_id' => $position_family_id,
                     'user_id' => $user ? $user->id : null,
                 ]);
+                $redirect_position_id = $position->id;
 
-                return Redirect::route('positions.show', $position->id)->with('message', 'Success! Position created successfully.');
             });
         } catch (\Exception $e) {
             throw $e;
             return Redirect::route('positions.index')->with('message', 'Error. Failed to create position.');
         }
+
+        return Redirect::route('positions.show', $redirect_position_id)->with('message', 'Success! Position created successfully.');
     }
 
     /**
@@ -128,17 +131,18 @@ class PositionController extends Controller
 
                 // If this update will orphan a position family, delete it.
                 if ($previous_position_family) {
-                    if (count(Position::where('position_family_id', $previous_position_family->id)->get()) === 0 && $validated['position_family_id'] !== $previous_position_family->id) {
+                    if (Position::where('position_family_id', $previous_position_family->id)->count() === 0 && $validated['position_family_id'] !== $previous_position_family->id) {
                         $previous_position_family->delete();
                     }
                 }
 
-                return Redirect::route('positions.show', $position->id)->with('message', 'Success! Position updated successfully.');
             });
         } catch (\Exception $e) {
             throw $e;
             return Redirect::route('positions.index')->with('message', 'Error. Failed to update position.');
         }
+
+        return Redirect::route('positions.show', $position->id)->with('message', 'Success! Position updated successfully.');
     }
 
     /**
@@ -156,7 +160,7 @@ class PositionController extends Controller
             $position->delete();
 
             // If this update will orphan a position family, delete it.
-            if ($position_family && count(Position::where('position_family_id', $position_family->id)->get()) === 0) {
+            if ($position_family && Position::where('position_family_id', $position_family->id)->count() === 0) {
                 $position_family->delete();
             }
         });

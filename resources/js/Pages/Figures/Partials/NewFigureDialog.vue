@@ -51,7 +51,7 @@ function closeAndChooseCompound() {
           <div class="mt-6 mx-auto w-full grid place-items-center">
             <div class="flex">
               <SecondaryButton
-                class="w-28 grid place-items-center !bg-blue-100 !py-3 !border-gray-400"
+                class="w-28 grid place-items-center !bg-blue-200 !py-3 !border-gray-400"
                 @click="closeAndChooseSimple">
                 Simple
               </SecondaryButton>
