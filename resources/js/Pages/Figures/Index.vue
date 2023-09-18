@@ -11,8 +11,9 @@ import SecondaryButton from '@/Components/SecondaryButton.vue'
 import PlainButton from '@/Components/PlainButton.vue'
 import TextInput from '@/Components/TextInput.vue'
 import MultiSelect from '@/Components/MultiSelect.vue'
-import { CheckIcon, PencilSquareIcon, TrashIcon, PlusCircleIcon, MagnifyingGlassIcon, XMarkIcon } from '@heroicons/vue/24/outline'
+import { PencilSquareIcon, TrashIcon, PlusCircleIcon, MagnifyingGlassIcon, XMarkIcon, AdjustmentsHorizontalIcon, FunnelIcon } from '@heroicons/vue/24/outline'
 import NewFigureDialog from './Partials/NewFigureDialog.vue'
+import FilterDialog from './Partials/FilterDialog.vue'
 
 const props = defineProps({
   figures: Array,
@@ -20,13 +21,27 @@ const props = defineProps({
   show_edit_delete_icons: Boolean,
 })
 
+// Reference to FilterDialog element
+const filterDialog = ref(null)
+
 // For filtering Figures by FigureFamily
 const selectedFigureFamilies = ref([])
 const selectedFigureFamilyIDs = computed(() => {
   return selectedFigureFamilies.value.map(figureFamily => figureFamily.id)
 })
+
+// For filtering Figures by simple/compound flag
+const showCompoundFigures = ref(true)
+const showSimpleFigures = ref(true)
+
+// For filtering Figures by weight
+const minWeight = ref(NaN)
+const maxWeight = ref(NaN)
+
 function shouldDisplay(figure) {
-  return (selectedFigureFamilies.value.length === 0) || selectedFigureFamilyIDs.value.includes(figure.figure_family_id)
+  return ((selectedFigureFamilies.value.length === 0) || selectedFigureFamilyIDs.value.includes(figure.figure_family_id))
+    && ((showCompoundFigures.value && figure.compound) || (showSimpleFigures.value && !figure.compound))
+    && ((isNaN(minWeight.value) || figure.weight >= minWeight.value) && (isNaN(maxWeight.value) || figure.weight <= maxWeight.value))
 }
 
 function removeAccents(str) {
@@ -126,7 +141,7 @@ export default {
 
     <!-- Main panel for table and search -->
     <div class="mt-6 border border-gray-100 shadow-md rounded-lg">
-      <div class="m-3 flex">
+      <div class="m-3 flex items-end">
         <!-- Fuzzy search by name -->
         <div>
           <label for="figure-search-query" class="ml-1 text-sm text-gray-500">
@@ -137,7 +152,7 @@ export default {
               <MagnifyingGlassIcon class="w-5 h-5 text-gray-500" />
             </div>
             <TextInput
-              class="py-1.5 pl-10 text-gray-700 w-72 bg-gray-50"
+              class="py-1.5 pl-10 text-gray-700 w-80 bg-gray-50"
               type="text"
               id="figure-search-query"
               v-model="figureSearchQuery"
@@ -146,8 +161,16 @@ export default {
           </div>
         </div>
 
+        <PlainButton
+          class="ml-2 !bg-gray-50 h-fit flex"
+          @click="filterDialog.open()"
+        >
+          <FunnelIcon class="-ml-1 h-5 w-5 text-gray-500 shrink-0" />
+          <p class="ml-1">Additional filters</p>
+        </PlainButton>
 
-        <div class="flex items-end ml-auto">
+        <!-- TODO: Hidden -->
+        <div v-if="false" class="flex items-end ml-auto">
 
           <!-- FigureFamily Filter -->
           <MultiSelect
@@ -200,7 +223,7 @@ export default {
         <tbody>
           <tr
             v-for="figure in filteredFigures"
-            :key="figure.obj.id"
+            :key="figure.obj.id.toString() + figure.obj.compound.toString()"
             v-show="shouldDisplay(figure.obj)"
             class="bg-white border-b"
           >
@@ -250,7 +273,16 @@ export default {
       ref="newFigureDialog"
       @simple="newSimpleFigure"
       @compound="newCompoundFigure"
-      @cancel=""
+    />
+
+    <FilterDialog
+      ref="filterDialog"
+      :figure_families="figure_families"
+      @update:selectedFigureFamilies="value => selectedFigureFamilies = value"
+      @update:showSimpleFigures="value => showSimpleFigures = value"
+      @update:showCompoundFigures="value => showCompoundFigures = value"
+      @update:minWeight="value => minWeight = value"
+      @update:maxWeight="value => maxWeight = value"
     />
 
   </div>
