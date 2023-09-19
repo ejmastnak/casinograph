@@ -229,7 +229,7 @@ export default {
           >
             <!-- Name -->
             <td scope="row" class="px-5 py-2">
-              <MyLink :href="route('figures.show', figure.obj.id)">
+              <MyLink :href="route(figure.obj.compound ? 'compound_figures.show' : 'figures.show', figure.obj.id)">
                 {{figure.obj.name}}
               </MyLink>
             </td>
