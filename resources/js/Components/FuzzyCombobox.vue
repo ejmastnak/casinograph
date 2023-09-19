@@ -31,7 +31,11 @@ const props = defineProps({
   throttlems: {  // ms amount used to throttle fuzzy search
     type: Number,
     default: 300
-  }
+  },
+  inputClasses: {
+    type: String,
+    default: "",
+  },
 })
 
 const emit = defineEmits([
@@ -69,14 +73,20 @@ const normalizedOptions = computed(() => {
   }))
 })
 
+function search(query) {
+  filteredOptions.value = fuzzysort.go(query.trim(), normalizedOptions.value, fuzzyOptions)
+}
+
+onMounted(() => { search(query.value) })
+
 watch(query, throttle(function (value) {
-  filteredOptions.value = fuzzysort.go(value.trim(), normalizedOptions.value, fuzzyOptions)
+  search(value)
 }, props.throttlems))
 
-onMounted(() => {
-  filteredOptions.value = fuzzysort.go(query.value.trim(), normalizedOptions.value, fuzzyOptions)
+// Refreshes filteredOptions when props.options change
+watch(normalizedOptions, () => {
+  search(query.value)
 })
-
 </script>
 
 <template>
@@ -91,6 +101,7 @@ onMounted(() => {
         <div class="relative">
           <ComboboxInput
             class="w-full border border-gray-300 rounded-md shadow-sm focus:border focus:border-blue-500"
+            :class="inputClasses"
             @change="query = $event.target.value"
             :displayValue="(option) => option ? option[searchKey] : ''"
           />
@@ -122,6 +133,7 @@ onMounted(() => {
           </li>
         </ComboboxOption>
       </ComboboxOptions>
+
     </div>
 
   </Combobox>
