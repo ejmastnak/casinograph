@@ -23,7 +23,7 @@ class CompoundFigureController extends Controller
     {
         return Inertia::render('CompoundFigures/Create', [
             'figure_families' => FigureFamily::all(['id', 'name']),
-            'figures' => Figure::all(['id', 'name', 'from_position_id', 'to_position_id']),
+            'figures' => Figure::with(['from_position:id,name', 'to_position:id,name'])->get(['id', 'name', 'from_position_id', 'to_position_id']),
         ]);
     }
 
@@ -34,31 +34,39 @@ class CompoundFigureController extends Controller
     {
         $validated = $request->validated();
         $user = Auth::user();
+        $redirect_compound_figure_id = null;
 
-        DB::transaction(function () use ($validated, $user) {
-            $from_position_id = Figure::find($validated['figure_ids'][0])->from_position_id;
-            $to_position_id = Figure::find($validated['figure_ids'][count($validated['figure_ids']) - 1])->to_position_id;
+        try {
+            DB::transaction(function () use ($validated, $user, &$redirect_compound_figure_id) {
+                $from_position_id = Figure::find($validated['figure_ids'][0])->from_position_id;
+                $to_position_id = Figure::find($validated['figure_ids'][count($validated['figure_ids']) - 1])->to_position_id;
 
-            $compound_figure = CompoundFigure::create([
-                'name' => $validated['name'],
-                'from_position_id' => $from_position_id,
-                'to_position_id' => $to_position_id,
-                'description' => isset($validated['description']) ? $validated['description'] : null,
-                'weight' => isset($validated['weight']) ? $validated['weight'] : null,
-                'figure_family_id' => isset($validated['figure_family_id']) ? $validated['figure_family_id'] : null,
-            ]);
-
-            foreach ($validated['figure_ids'] as $idx=>$figure_id) {
-                CompoundFigureFigure::create([
-                    'figure_id' => $figure_id,
-                    'compound_figure_id' => $compound_figure->id,
-                    'idx' => $idx + 1,
+                $compound_figure = CompoundFigure::create([
+                    'name' => $validated['name'],
+                    'from_position_id' => $from_position_id,
+                    'to_position_id' => $to_position_id,
+                    'description' => isset($validated['description']) ? $validated['description'] : null,
+                    'weight' => isset($validated['weight']) ? $validated['weight'] : config('defaults.figure_weight'),
+                    'figure_family_id' => isset($validated['figure_family_id']) ? $validated['figure_family_id'] : null,
                     'user_id' => $user ? $user->id : null,
                 ]);
-            }
-        });
+                $redirect_compound_figure_id = $compound_figure->id;
 
-        return Redirect::route('compound-figures.show', $figure->id)->with('message', 'Success! Compound Figure created successfully.');
+                foreach ($validated['figure_ids'] as $idx=>$figure_id) {
+                    CompoundFigureFigure::create([
+                        'figure_id' => $figure_id,
+                        'compound_figure_id' => $compound_figure->id,
+                        'idx' => $idx + 1,
+                        'user_id' => $user ? $user->id : null,
+                    ]);
+                }
+            });
+        } catch (\Exception $e) {
+            throw $e;
+            return Redirect::route('figures.index')->with('message', 'Error. Failed to create figure.');
+        }
+
+        return Redirect::route('compound_figures.show', $redirect_compound_figure_id)->with('message', 'Success! Compound Figure created successfully.');
     }
 
     /**
@@ -66,9 +74,15 @@ class CompoundFigureController extends Controller
      */
     public function show(CompoundFigure $compound_figure)
     {
-        $compound_figure->load(['figure_family:id,name', 'figures:id,name,description,from_position_id,to_position_id', 'figures.from_position:id,name', 'figures.to_position:id,name']);
+        $compound_figure->load([
+            'figure_family:id,name',
+            'compound_figure_figures:id,idx,compound_figure_id,figure_id',
+            'compound_figure_figures.figure:id,name,from_position_id,to_position_id',
+            'compound_figure_figures.figure.from_position:id,name',
+            'compound_figure_figures.figure.to_position:id,name'
+        ]);
         return Inertia::render('CompoundFigures/Show', [
-            'compound_figure' => $compound_figure->only(['id', 'name', 'description', 'weight', 'figure_family_id', 'figure_family', 'figures']),
+            'compound_figure' => $compound_figure->only(['id', 'name', 'description', 'weight', 'figure_family_id', 'figure_family', 'compound_figure_figures']),
         ]);
     }
 
@@ -77,11 +91,17 @@ class CompoundFigureController extends Controller
      */
     public function edit(CompoundFigure $compound_figure)
     {
-        $compound_figure->load(['figure_family:id,name', 'figures:id,name,description,from_position_id,to_position_id', 'figures.from_position:id,name', 'figures.to_position:id,name']);
+        $compound_figure->load([
+            'figure_family:id,name',
+            'compound_figure_figures:id,idx,compound_figure_id,figure_id',
+            'compound_figure_figures.figure:id,name,from_position_id,to_position_id',
+            'compound_figure_figures.figure.from_position:id,name',
+            'compound_figure_figures.figure.to_position:id,name'
+        ]);
         return Inertia::render('CompoundFigures/Edit', [
-            'compound_figure' => $compound_figure->only(['id', 'name', 'description', 'weight', 'figure_family_id', 'figure_family', 'figures']),
+            'compound_figure' => $compound_figure->only(['id', 'name', 'description', 'weight', 'figure_family_id', 'figure_family', 'compound_figure_figures']),
             'figure_families' => FigureFamily::all(['id', 'name']),
-            'figures' => Figure::all(['id', 'name', 'from_position_id', 'to_position_id']),
+            'figures' => Figure::with(['from_position:id,name', 'to_position:id,name'])->get(['id', 'name', 'from_position_id', 'to_position_id']),
         ]);
     }
 
@@ -93,35 +113,40 @@ class CompoundFigureController extends Controller
         $validated = $request->validated();
         $user = Auth::user();
 
-        DB::transaction(function () use ($validated, $user) {
-            $from_position_id = Figure::find($validated['figure_ids'][0])->from_position_id;
-            $to_position_id = Figure::find($validated['figure_ids'][count($validated['figure_ids']) - 1])->to_position_id;
+        try {
+                    DB::transaction(function () use ($validated, $user, $compound_figure) {
+                    $from_position_id = Figure::find($validated['figure_ids'][0])->from_position_id;
+                    $to_position_id = Figure::find($validated['figure_ids'][count($validated['figure_ids']) - 1])->to_position_id;
 
-            $compound_figure->update([
-                'name' => $validated['name'],
-                'from_position_id' => $from_position_id,
-                'to_position_id' => $to_position_id,
-                'description' => isset($validated['description']) ? $validated['description'] : null,
-                'weight' => isset($validated['weight']) ? $validated['weight'] : null,
-                'figure_family_id' => isset($validated['figure_family_id']) ? $validated['figure_family_id'] : null,
-            ]);
+                    $compound_figure->update([
+                        'name' => $validated['name'],
+                        'from_position_id' => $from_position_id,
+                        'to_position_id' => $to_position_id,
+                        'description' => isset($validated['description']) ? $validated['description'] : null,
+                        'weight' => isset($validated['weight']) ? $validated['weight'] : config('defaults.figure_weight'),
+                        'figure_family_id' => isset($validated['figure_family_id']) ? $validated['figure_family_id'] : null,
+                        'user_id' => $user ? $user->id : null,
+                    ]);
 
-            // I'm just deleting old CompoundFigureFigures and creating new ones on
-            // each update, doesn't seem worth trying updating existing ones.
-            foreach ($compound_figure->compound_figure_figures as $compound_figure_figure) {
-                $compound_figure_figure->delete();
-            }
-            foreach ($validated['figure_ids'] as $idx=>$figure_id) {
-                CompoundFigureFigure::create([
-                    'figure_id' => $figure_id,
-                    'compound_figure_id' => $compound_figure->id,
-                    'idx' => $idx + 1,
-                    'user_id' => $user ? $user->id : null,
-                ]);
-            }
-        });
+                    // I'm just deleting old CompoundFigureFigures and creating new
+                    // ones on each update, doesn't seem worth the extra complexity of
+                    // trying to update existing ones.
+                    foreach ($compound_figure->compound_figure_figures as $compound_figure_figure) $compound_figure_figure->delete();
+                    foreach ($validated['figure_ids'] as $idx=>$figure_id) {
+                        CompoundFigureFigure::create([
+                            'figure_id' => $figure_id,
+                            'compound_figure_id' => $compound_figure->id,
+                            'idx' => $idx + 1,
+                            'user_id' => $user ? $user->id : null,
+                        ]);
+                    }
+                });
+        } catch (\Exception $e) {
+            throw $e;
+            return Redirect::route('figures.index')->with('message', 'Error. Failed to update figure.');
+        }
 
-        return Redirect::route('compound-figures.show', $compound_figure->id)->with('message', 'Success! Compound Figure updated successfully.');
+        return Redirect::route('compound_figures.show', $compound_figure->id)->with('message', 'Success! Compound Figure updated successfully.');
     }
 
     /**

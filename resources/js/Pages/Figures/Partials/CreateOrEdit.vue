@@ -125,8 +125,6 @@ const submit = () => {
 
     </div>
 
-    <!-- TODO: from_position and to_position using a similar principle -->
-
     <!-- Description input -->
     <div class="mt-4 w-full">
       <InputLabel for="description" value="Description (optional)" />
@@ -137,8 +135,6 @@ const submit = () => {
       />
       <InputError class="mt-2" :message="form.errors.description" />
     </div>
-
-    <!-- TODO weight -->
 
     <!-- Submit and Cancel buttons -->
     <div class="mt-6">

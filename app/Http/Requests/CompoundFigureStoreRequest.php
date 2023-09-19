@@ -31,7 +31,7 @@ class CompoundFigureStoreRequest extends FormRequest
             'figure_family' => ['nullable', 'array', 'required_array_keys:id,name'],
             'figure_family.name' => ['required_with:figure_family', 'string', 'min:1', config('validation.max_name_length')],
             'figure_ids' => ['required', 'array', 'min:2', config('validation.max_compound_figure_figures')],
-            'figure_ids.*' => ['integer', 'exists:App\Models\Figure,id'],
+            'figure_ids.*' => ['required', 'integer', 'exists:App\Models\Figure,id'],
             'figure_ids' => [new SuccessiveFiguresConsistent],
         ];
     }
@@ -47,6 +47,7 @@ class CompoundFigureStoreRequest extends FormRequest
         return [
             'figure_family_id' => 'figure family',
             'figure_family.name' => 'figure family name',
+            'figure_ids.*' => 'figure',
         ];
     }
 
