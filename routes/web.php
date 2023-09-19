@@ -29,7 +29,6 @@ Route::get('/', function () {
 
 Route::get('positions', [PositionController::class, 'index'])->name('positions.index');
 Route::get('figures', [FigureController::class, 'index'])->name('figures.index');
-Route::get('compound-figures', [CompoundFigureController::class, 'index'])->name('compound_figures.index');
 
 Route::middleware('auth')->group(function () {
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');

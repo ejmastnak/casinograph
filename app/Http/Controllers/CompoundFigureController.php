@@ -17,16 +17,6 @@ use Inertia\Inertia;
 class CompoundFigureController extends Controller
 {
     /**
-     * Display a listing of the resource.
-     */
-    public function index()
-    {
-        return Inertia::render('CompoundFigures/Index', [
-            'compound_figures' => CompoundFigure::with(['figure_family:id,name'])->get(['id', 'name', 'weight', 'figure_family_id']),
-        ]);
-    }
-
-    /**
      * Show the form for creating a new resource.
      */
     public function create()
