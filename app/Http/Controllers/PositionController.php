@@ -152,7 +152,7 @@ class PositionController extends Controller
     {
 
         if ($position->incoming_figures()->count() > 0 || $position->outgoing_figures()->count() > 0) {
-            return back()->with('error', 'Deleting this position is intentionally restricted because one or more figures rely on this position. You could first delete all dependent figures, then delete this position.');
+            return back()->with('error', 'Deleting this position is intentionally forbidden because one or more figures rely on this position. You should first delete all dependent figures, then delete this position.');
         }
 
         DB::transaction(function () use ($position) {

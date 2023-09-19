@@ -182,7 +182,20 @@ class FigureController extends Controller
      */
     public function destroy(Figure $figure)
     {
-        $figure->delete();
-        Redirect::route('figures.index')->with('message', 'Success! Figure deleted successfully.');
+        if ($figure->compound_figure_figures()->count() > 0) {
+            return back()->with('error', 'Deleting this figure is intentionally forbidden because one or more compound figures rely on it. You should first delete all dependent compound figures, then delete this figure.');
+        }
+
+        DB::transaction(function () use ($figure) {
+            $figure_family = $figure->figure_family;
+            $figure->delete();
+
+            // If this update will orphan a figure family, delete it.
+            if ($figure_family && Figure::where('figure_family_id', $figure_family->id)->count() === 0 && CompoundFigure::where('figure_family_id', $figure_family->id)->count() === 0) {
+                $figure_family->delete();
+            }
+        });
+
+        return Redirect::route('figures.index')->with('message', 'Success! Figure deleted successfully.');
     }
 }

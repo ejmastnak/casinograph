@@ -114,33 +114,33 @@ class CompoundFigureController extends Controller
         $user = Auth::user();
 
         try {
-                    DB::transaction(function () use ($validated, $user, $compound_figure) {
-                    $from_position_id = Figure::find($validated['figure_ids'][0])->from_position_id;
-                    $to_position_id = Figure::find($validated['figure_ids'][count($validated['figure_ids']) - 1])->to_position_id;
+            DB::transaction(function () use ($validated, $user, $compound_figure) {
+                $from_position_id = Figure::find($validated['figure_ids'][0])->from_position_id;
+                $to_position_id = Figure::find($validated['figure_ids'][count($validated['figure_ids']) - 1])->to_position_id;
 
-                    $compound_figure->update([
-                        'name' => $validated['name'],
-                        'from_position_id' => $from_position_id,
-                        'to_position_id' => $to_position_id,
-                        'description' => isset($validated['description']) ? $validated['description'] : null,
-                        'weight' => isset($validated['weight']) ? $validated['weight'] : config('defaults.figure_weight'),
-                        'figure_family_id' => isset($validated['figure_family_id']) ? $validated['figure_family_id'] : null,
+                $compound_figure->update([
+                    'name' => $validated['name'],
+                    'from_position_id' => $from_position_id,
+                    'to_position_id' => $to_position_id,
+                    'description' => isset($validated['description']) ? $validated['description'] : null,
+                    'weight' => isset($validated['weight']) ? $validated['weight'] : config('defaults.figure_weight'),
+                    'figure_family_id' => isset($validated['figure_family_id']) ? $validated['figure_family_id'] : null,
+                    'user_id' => $user ? $user->id : null,
+                ]);
+
+                // I'm just deleting old CompoundFigureFigures and creating new
+                // ones on each update, doesn't seem worth the extra complexity of
+                // trying to update existing ones.
+                foreach ($compound_figure->compound_figure_figures as $compound_figure_figure) $compound_figure_figure->delete();
+                foreach ($validated['figure_ids'] as $idx=>$figure_id) {
+                    CompoundFigureFigure::create([
+                        'figure_id' => $figure_id,
+                        'compound_figure_id' => $compound_figure->id,
+                        'idx' => $idx + 1,
                         'user_id' => $user ? $user->id : null,
                     ]);
-
-                    // I'm just deleting old CompoundFigureFigures and creating new
-                    // ones on each update, doesn't seem worth the extra complexity of
-                    // trying to update existing ones.
-                    foreach ($compound_figure->compound_figure_figures as $compound_figure_figure) $compound_figure_figure->delete();
-                    foreach ($validated['figure_ids'] as $idx=>$figure_id) {
-                        CompoundFigureFigure::create([
-                            'figure_id' => $figure_id,
-                            'compound_figure_id' => $compound_figure->id,
-                            'idx' => $idx + 1,
-                            'user_id' => $user ? $user->id : null,
-                        ]);
-                    }
-                });
+                }
+            });
         } catch (\Exception $e) {
             throw $e;
             return Redirect::route('figures.index')->with('message', 'Error. Failed to update figure.');
@@ -154,6 +154,21 @@ class CompoundFigureController extends Controller
      */
     public function destroy(CompoundFigure $compound_figure)
     {
-        //
+        DB::transaction(function () use ($compound_figure) {
+            $figure_family = $compound_figure->figure_family;
+
+            // Delete CompoundFigureFigures
+            $compound_figure_figures = $compound_figure->compound_figure_figures;
+            foreach ($compound_figure_figures as $compound_figure_figure) $compound_figure_figure->delete();
+
+            $compound_figure->delete();
+
+            // If this update will orphan a figure family, delete it.
+            if ($figure_family && Figure::where('figure_family_id', $figure_family->id)->count() === 0 && CompoundFigure::where('figure_family_id', $figure_family->id)->count() === 0) {
+                $figure_family->delete();
+            }
+        });
+
+        return Redirect::route('figures.index')->with('message', 'Success! Figure deleted successfully.');
     }
 }

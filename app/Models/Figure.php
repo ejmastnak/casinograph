@@ -31,4 +31,8 @@ class Figure extends Model
         return $this->belongsTo(Position::class, 'to_position_id', 'id');
     }
 
+    public function compound_figure_figures() {
+        return $this->hasMany(CompoundFigureFigure::class, 'figure_id', 'id');
+    }
+
 }
