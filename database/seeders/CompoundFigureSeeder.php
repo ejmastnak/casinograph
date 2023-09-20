@@ -36,17 +36,35 @@ class CompoundFigureSeeder extends Seeder
             }
 
             $figures = [];
-            $null_figure = false;
-            foreach ($compound_figure['figures'] as $figure_name) {
-                $figure = Figure::where('name', $figure_name)->first();
-                if (is_null($figure)) {
-                    $this->command->info('Warning: ' . $figure_name . ' not found when seeding Figures.');
-                    $null_figure = true;
-                    break;
+            $found_null_model = false;
+            foreach ($compound_figure['figures'] as $figure) {
+
+                $from_position = Position::where('name', $figure['from_position'])->first();
+                $to_position = Position::where('name', $figure['to_position'])->first();
+                $figure = Figure::where([
+                    ['name', '=', $figure['name']],
+                    ['from_position_id', '=', $from_position->id],
+                    ['to_position_id', '=', $to_position->id],
+                ])->first();
+
+                if (is_null($from_position)) {
+                    $this->command->info('Warning: from_position ' . $figure['from_position'] . ' not found when seeding CompoundFigure ' . $compound_figure['name'] . '.');
+                    $found_null_model = true;
                 }
+                if (is_null($to_position)) {
+                    $this->command->info('Warning: to_position ' . $figure['to_position'] . ' not found when seeding CompoundFigure ' . $compound_figure['name'] . '.');
+                    $found_null_model = true;
+                }
+                if (is_null($figure)) {
+                    $this->command->info('Warning: figure ' . $figure['name'] . ' not found when seeding CompoundFigure ' . $compound_figure['name'] . '.');
+                    $found_null_model = true;
+                }
+
+                if ($found_null_model) break;
+
                 $figures[] = $figure;
             }
-            if ($null_figure) continue;
+            if ($found_null_model) continue;
             if (count($figures) < 2) {
                 $this->command->info('Warning: fewer than two figures found for ' . $compound_figure['name'] . ' not found when seeding CompoundFigures.');
                 continue;
