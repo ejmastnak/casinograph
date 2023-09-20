@@ -20,7 +20,7 @@ class CompoundFigure extends Model
     ];
 
     public function compound_figure_figures() {
-        return $this->hasMany(CompoundFigureFigure::class, 'compound_figure_id', 'id');
+        return $this->hasMany(CompoundFigureFigure::class, 'compound_figure_id', 'id')->orderBy('idx');
     }
 
     public function figure_family() {
