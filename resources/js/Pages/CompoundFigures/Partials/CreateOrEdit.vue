@@ -48,6 +48,7 @@ useSortable(list, compoundFigureFigures.value, {
 const incompatibleCompoundFigureFigures = computed(() => {
   let incompatible = false
   for (let i = 1; i < compoundFigureFigures.value.length; i++) {
+    if (compoundFigureFigures.value[i].compound_figure_figure.figure === null || compoundFigureFigures.value[i - 1].compound_figure_figure.figure === null) continue;
     if (compoundFigureFigures.value[i].compound_figure_figure.figure.from_position_id !== compoundFigureFigures.value[i - 1].compound_figure_figure.figure.to_position_id) {
       incompatible = true;
       break;
@@ -84,6 +85,7 @@ function removeCompoundFigureFigure(idx) {
 }
 
 const submit = () => {
+  if (incompatibleCompoundFigureFigures.value) { return }
   form.figure_ids = compoundFigureFigures.value.map(cff => cff.compound_figure_figure.figure_id);
   if (props.action === "create") {
     form.post(route('compound_figures.store'));
@@ -113,6 +115,7 @@ const submit = () => {
     <!-- CompoundFigureFigures -->
     <div class="mt-6 border-y border-gray-200 w-fit pt-4 pb-5">
       <h2 class="text-md text-gray-700">Figure sequence</h2>
+      <p class="text-sm text-gray-500">Add at least two figures</p>
       <ol
         ref="list"
         class="mt-2 list-decimal ml-5 space-y-3"
@@ -233,9 +236,8 @@ const submit = () => {
     <!-- Submit and Cancel buttons -->
     <div class="mt-6">
       <PrimaryButton
-        class=""
-        :class="{ 'opacity-25': form.processing }"
-        :disabled="form.processing"
+        :class="{ 'opacity-25': form.processing || incompatibleCompoundFigureFigures }"
+        :disabled="form.processing || incompatibleCompoundFigureFigures"
       >
         <span v-if="action === 'edit'">Update</span>
         <span v-else>Create</span>
@@ -248,10 +250,6 @@ const submit = () => {
 
     <pre class="mt-8 border-b border-gray-400 pb-4">
       {{form.errors}}
-    </pre>
-
-    <pre>
-      {{compoundFigureFigures}}
     </pre>
 
   </form>
