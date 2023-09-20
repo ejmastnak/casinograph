@@ -151,8 +151,26 @@ class PositionController extends Controller
     public function destroy(Position $position)
     {
 
+        // Warn user about restrictOnDelete foreign key constraints
         if ($position->incoming_figures()->count() > 0 || $position->outgoing_figures()->count() > 0) {
-            return back()->with('error', 'Deleting this position is intentionally forbidden because one or more figures rely on this position. You should first delete all dependent figures, then delete this position.');
+
+            $limit = config('restrict_on_delete_message_limit');
+            $i = 0;
+            $names = [];
+            foreach ($position->incoming_figures as $figure) {
+                if ($i === $limit) break;
+                $names[] = $figure->name;
+                $i++;
+            } foreach ($position->outgoing_figures as $figure) {
+                if ($i === $limit) break;
+                $name = $figure->name;
+                if (!in_array($name, $names)) {
+                    $names[] = $name;
+                    $i++;
+                }
+            }
+
+            return back()->with('error', "Deleting this position is intentionally forbidden because one or more figures rely on it. You should first delete all dependent figures, then delete this position.\nThe dependent figures " . ($i === $limit ? "include " : "are ") . implode(", ", $names) . ".");
         }
 
         DB::transaction(function () use ($position) {

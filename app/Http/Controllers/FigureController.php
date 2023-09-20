@@ -90,7 +90,7 @@ class FigureController extends Controller
                     'from_position_id' => $validated['from_position_id'],
                     'to_position_id' => $validated['to_position_id'],
                     'description' => isset($validated['description']) ? $validated['description'] : null,
-                    'weight' => isset($validated['weight']) ? $validated['weight'] : config('defaults.figure_weight'),
+                    'weight' => isset($validated['weight']) ? $validated['weight'] : config('misc.default_figure_weight'),
                     'figure_family_id' => $figure_family_id,
                     'user_id' => $user ? $user->id : null,
                 ]);
@@ -182,8 +182,22 @@ class FigureController extends Controller
      */
     public function destroy(Figure $figure)
     {
+        // Warn user about restrictOnDelete foreign key constraints
         if ($figure->compound_figure_figures()->count() > 0) {
-            return back()->with('error', 'Deleting this figure is intentionally forbidden because one or more compound figures rely on it. You should first delete all dependent compound figures, then delete this figure.');
+
+            $limit = config('restrict_on_delete_message_limit');
+            $i = 0;
+            $names = [];
+            foreach ($figure->compound_figure_figures as $cff) {
+                if ($i === $limit) break;
+                $name = $cff->compound_figure->name;
+                if (!in_array($name, $names)) {
+                    $names[] = $name;
+                    $i++;
+                }
+            }
+
+            return back()->with('error', "Deleting this position is intentionally forbidden because one or more compound figures rely on it. You should first delete all dependent compound figures, then delete this figure.\nThe dependent compound figures " . ($i === $limit ? "include " : "are ") . implode(", ", $names) . ".");
         }
 
         DB::transaction(function () use ($figure) {

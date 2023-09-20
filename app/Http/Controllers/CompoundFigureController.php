@@ -46,7 +46,7 @@ class CompoundFigureController extends Controller
                     'from_position_id' => $from_position_id,
                     'to_position_id' => $to_position_id,
                     'description' => isset($validated['description']) ? $validated['description'] : null,
-                    'weight' => isset($validated['weight']) ? $validated['weight'] : config('defaults.figure_weight'),
+                    'weight' => isset($validated['weight']) ? $validated['weight'] : config('misc.default_figure_weight'),
                     'figure_family_id' => isset($validated['figure_family_id']) ? $validated['figure_family_id'] : null,
                     'user_id' => $user ? $user->id : null,
                 ]);
@@ -123,7 +123,7 @@ class CompoundFigureController extends Controller
                     'from_position_id' => $from_position_id,
                     'to_position_id' => $to_position_id,
                     'description' => isset($validated['description']) ? $validated['description'] : null,
-                    'weight' => isset($validated['weight']) ? $validated['weight'] : config('defaults.figure_weight'),
+                    'weight' => isset($validated['weight']) ? $validated['weight'] : config('misc.default_figure_weight'),
                     'figure_family_id' => isset($validated['figure_family_id']) ? $validated['figure_family_id'] : null,
                     'user_id' => $user ? $user->id : null,
                 ]);
