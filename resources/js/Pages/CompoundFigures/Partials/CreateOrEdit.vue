@@ -1,6 +1,5 @@
 <script setup>
 import PrimaryButton from '@/Components/PrimaryButton.vue';
-import PlainButton from '@/Components/PlainButton.vue'
 import SecondaryLink from '@/Components/SecondaryLink.vue'
 import TextInput from '@/Components/TextInput.vue'
 import TextArea from '@/Components/TextArea.vue'
@@ -10,7 +9,7 @@ import InputLabel from '@/Components/InputLabel.vue'
 import InputError from '@/Components/InputError.vue'
 import { PlusCircleIcon, TrashIcon, Bars3Icon } from '@heroicons/vue/24/outline'
 import { useForm } from '@inertiajs/vue3';
-import { ref, onMounted, computed } from 'vue';
+import { ref, computed } from 'vue';
 import { useSortable } from '@vueuse/integrations/useSortable'
 
 const props = defineProps({

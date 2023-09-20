@@ -1,9 +1,7 @@
 <!-- A dialog to prompt user for a choice between creating either a Simple or a CompoundFigure. -->
 <script setup>
 import {ref} from 'vue'
-import PrimaryButton from '@/Components/PrimaryButton.vue'
 import SecondaryButton from "@/Components/SecondaryButton.vue";
-import PlainButton from '@/Components/PlainButton.vue'
 import { QuestionMarkCircleIcon, InformationCircleIcon } from '@heroicons/vue/24/outline'
 import {
   Dialog, DialogPanel, DialogTitle, DialogDescription,

@@ -6,7 +6,6 @@ import throttle from "lodash/throttle";
 import { Head } from '@inertiajs/vue3'
 import DeleteDialog from "@/Components/DeleteDialog.vue";
 import MyLink from '@/Components/MyLink.vue'
-import SecondaryLink from '@/Components/SecondaryLink.vue'
 import SecondaryButton from '@/Components/SecondaryButton.vue'
 import PlainButton from '@/Components/PlainButton.vue'
 import TextInput from '@/Components/TextInput.vue'

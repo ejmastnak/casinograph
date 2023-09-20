@@ -1,6 +1,5 @@
 <script setup>
 import PrimaryButton from '@/Components/PrimaryButton.vue';
-import PlainButton from '@/Components/PlainButton.vue'
 import SecondaryLink from '@/Components/SecondaryLink.vue'
 import TextInput from '@/Components/TextInput.vue'
 import TextArea from '@/Components/TextArea.vue'

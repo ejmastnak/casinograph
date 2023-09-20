@@ -4,10 +4,8 @@ import { ref, computed, watch } from 'vue'
 import PrimaryButton from '@/Components/PrimaryButton.vue'
 import SecondaryButton from "@/Components/SecondaryButton.vue";
 import MultiSelect from '@/Components/MultiSelect.vue'
-import PlainButton from '@/Components/PlainButton.vue'
 import TextInput from '@/Components/TextInput.vue'
 import InputLabel from '@/Components/InputLabel.vue'
-import { XMarkIcon } from '@heroicons/vue/24/outline'
 import {
   Dialog, DialogPanel, DialogTitle, DialogDescription,
   Popover, PopoverButton, PopoverPanel, PopoverOverlay,

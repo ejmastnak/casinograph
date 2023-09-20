@@ -4,10 +4,8 @@ import { router } from '@inertiajs/vue3'
 import { ref } from 'vue'
 import MyLink from '@/Components/MyLink.vue'
 import PlaceholderParagraph from '@/Components/PlaceholderParagraph.vue'
-import PrimaryButton from '@/Components/PrimaryButton.vue'
 import DeleteDialog from "@/Components/DeleteDialog.vue";
 import DangerButton from '@/Components/DangerButton.vue'
-import DangerLink from '@/Components/DangerLink.vue'
 import SecondaryLink from '@/Components/SecondaryLink.vue'
 import { PencilSquareIcon, TrashIcon } from '@heroicons/vue/24/outline'
 
