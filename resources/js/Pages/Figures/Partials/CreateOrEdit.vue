@@ -151,9 +151,5 @@ const submit = () => {
       </SecondaryLink>
     </div>
 
-    <pre class="mt-8">
-      {{form}}
-    </pre>
-
   </form>
 </template>

@@ -26,9 +26,5 @@ export default {
       :position_families="position_families"
     />
 
-    <pre>
-      {{position}}
-    </pre>
-
   </div>
 </template>

@@ -248,9 +248,5 @@ const submit = () => {
       </SecondaryLink>
     </div>
 
-    <pre class="mt-8 border-b border-gray-400 pb-4">
-      {{form.errors}}
-    </pre>
-
   </form>
 </template>

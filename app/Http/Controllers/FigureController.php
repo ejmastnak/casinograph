@@ -98,7 +98,7 @@ class FigureController extends Controller
 
             });
         } catch (\Exception $e) {
-            throw $e;
+            // throw $e;
             return Redirect::route('figures.index')->with('error', 'Error. Failed to create figure.');
         }
 
@@ -170,7 +170,7 @@ class FigureController extends Controller
                 }
             });
         } catch (\Exception $e) {
-            throw $e;
+            // throw $e;
             return Redirect::route('figures.index')->with('error', 'Error. Failed to update figure.');
         }
 
