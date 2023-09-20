@@ -70,7 +70,7 @@ class PositionController extends Controller
             });
         } catch (\Exception $e) {
             throw $e;
-            return Redirect::route('positions.index')->with('message', 'Error. Failed to create position.');
+            return Redirect::route('positions.index')->with('error', 'Error. Failed to create position.');
         }
 
         return Redirect::route('positions.show', $redirect_position_id)->with('message', 'Success! Position created successfully.');
@@ -139,7 +139,7 @@ class PositionController extends Controller
             });
         } catch (\Exception $e) {
             throw $e;
-            return Redirect::route('positions.index')->with('message', 'Error. Failed to update position.');
+            return Redirect::route('positions.index')->with('error', 'Error. Failed to update position.');
         }
 
         return Redirect::route('positions.show', $position->id)->with('message', 'Success! Position updated successfully.');

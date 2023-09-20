@@ -99,7 +99,7 @@ class FigureController extends Controller
             });
         } catch (\Exception $e) {
             throw $e;
-            return Redirect::route('figures.index')->with('message', 'Error. Failed to create figure.');
+            return Redirect::route('figures.index')->with('error', 'Error. Failed to create figure.');
         }
 
         return Redirect::route('figures.show', $redirect_figure_id)->with('message', 'Success! Figure created successfully.');
@@ -171,7 +171,7 @@ class FigureController extends Controller
             });
         } catch (\Exception $e) {
             throw $e;
-            return Redirect::route('figures.index')->with('message', 'Error. Failed to update figure.');
+            return Redirect::route('figures.index')->with('error', 'Error. Failed to update figure.');
         }
 
         return Redirect::route('figures.show', $figure->id)->with('message', 'Success! Figure updated successfully.');
