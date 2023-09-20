@@ -22,7 +22,7 @@ class SuccessiveFiguresConsistent implements ValidationRule
         // Should never happen because of `min:2` validation rule earlier in
         // FormRequest, but checking just in case.
         if (count($value) < 2) {
-            $fail("A comound figure's figure sequence must have at least two figures. Add more figures.");
+            $fail("A compound figure's figure sequence must have at least two figures. Add more figures first.");
             return;
         }
 
