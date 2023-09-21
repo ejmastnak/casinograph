@@ -21,7 +21,5 @@ export default {
       <li><MyLink :colored="true" :href="route('figures.index')">Figures</MyLink></li>
     </ul>
 
-    Hello, world!
-
   </div>
 </template>
