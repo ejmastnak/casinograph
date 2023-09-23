@@ -12,6 +12,7 @@ import { PencilSquareIcon, TrashIcon } from '@heroicons/vue/24/outline'
 
 const props = defineProps({
   figure: Object,
+  show_edit_delete_icons: Boolean,
 })
 
 let idToDelete = ref(null)
@@ -64,7 +65,7 @@ export default {
     </div>
 
     <!-- Edit and Delete buttons -->
-    <div class="flex items-center mt-6">
+    <div v-if="show_edit_delete_icons" class="flex items-center mt-6">
       <SecondaryLink :href="route('figures.edit', figure.id)" class="flex items-center">
         <PencilSquareIcon class="text-gray-600 h-5 w-5 -ml-1" />
         <p class="ml-1">Edit</p>

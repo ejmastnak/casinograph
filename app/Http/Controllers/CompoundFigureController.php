@@ -95,6 +95,7 @@ class CompoundFigureController extends Controller
         ]);
         return Inertia::render('CompoundFigures/Show', [
             'compound_figure' => $compound_figure->only(['id', 'name', 'description', 'weight', 'figure_family_id', 'figure_family', 'compound_figure_figures']),
+            'show_edit_delete_icons' => Auth::user() ? Auth::user()->is_admin === 1 : false,
         ]);
     }
 
