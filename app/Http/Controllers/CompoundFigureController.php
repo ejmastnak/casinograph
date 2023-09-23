@@ -38,6 +38,18 @@ class CompoundFigureController extends Controller
 
         try {
             DB::transaction(function () use ($validated, $user, &$redirect_compound_figure_id) {
+
+                $figure_family_id = null;
+                if (isset($validated['figure_family_id'])) {
+                    $figure_family_id = $validated['figure_family_id'];
+                } // Create a new FigureFamily
+                else if (!isset($validated['figure_family_id']) && isset($validated['figure_family'])) {
+                    $figure_family_id = FigureFamily::create([
+                        'name' => $validated['figure_family']['name'],
+                        'user_id' => $user->id,
+                    ])->id;
+                }
+
                 $from_position_id = Figure::find($validated['figure_ids'][0])->from_position_id;
                 $to_position_id = Figure::find($validated['figure_ids'][count($validated['figure_ids']) - 1])->to_position_id;
 
@@ -47,7 +59,7 @@ class CompoundFigureController extends Controller
                     'to_position_id' => $to_position_id,
                     'description' => isset($validated['description']) ? $validated['description'] : null,
                     'weight' => isset($validated['weight']) ? $validated['weight'] : config('misc.default_figure_weight'),
-                    'figure_family_id' => isset($validated['figure_family_id']) ? $validated['figure_family_id'] : null,
+                    'figure_family_id' => $figure_family_id,
                     'user_id' => $user ? $user->id : null,
                 ]);
                 $redirect_compound_figure_id = $compound_figure->id;
@@ -115,6 +127,19 @@ class CompoundFigureController extends Controller
 
         try {
             DB::transaction(function () use ($validated, $user, $compound_figure) {
+
+                $previous_figure_family = $compound_figure->figure_family;
+                $figure_family_id = null;
+                if (isset($validated['figure_family_id'])) {
+                    $figure_family_id = $validated['figure_family_id'];
+                } // Create a new FigureFamily
+                else if (!isset($validated['figure_family_id']) && isset($validated['figure_family'])) {
+                    $figure_family_id = FigureFamily::create([
+                        'name' => $validated['figure_family']['name'],
+                        'user_id' => $user->id,
+                    ])->id;
+                }
+
                 $from_position_id = Figure::find($validated['figure_ids'][0])->from_position_id;
                 $to_position_id = Figure::find($validated['figure_ids'][count($validated['figure_ids']) - 1])->to_position_id;
 
@@ -124,7 +149,7 @@ class CompoundFigureController extends Controller
                     'to_position_id' => $to_position_id,
                     'description' => isset($validated['description']) ? $validated['description'] : null,
                     'weight' => isset($validated['weight']) ? $validated['weight'] : config('misc.default_figure_weight'),
-                    'figure_family_id' => isset($validated['figure_family_id']) ? $validated['figure_family_id'] : null,
+                    'figure_family_id' => $figure_family_id,
                     'user_id' => $user ? $user->id : null,
                 ]);
 
@@ -139,6 +164,13 @@ class CompoundFigureController extends Controller
                         'idx' => $idx + 1,
                         'user_id' => $user ? $user->id : null,
                     ]);
+                }
+
+                // If this update will orphan a figure family, delete it.
+                if ($previous_figure_family) {
+                    if (Figure::where('figure_family_id', $previous_figure_family->id)->count() === 0 && CompoundFigure::where('figure_family_id', $previous_figure_family->id)->count() === 0 && $validated['figure_family_id'] !== $previous_figure_family->id) {
+                        $previous_figure_family->delete();
+                    }
                 }
             });
         } catch (\Exception $e) {

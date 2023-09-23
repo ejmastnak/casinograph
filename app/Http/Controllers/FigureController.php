@@ -149,7 +149,6 @@ class FigureController extends Controller
             DB::transaction(function () use ($figure, $validated, $user) {
 
                 $previous_figure_family = $figure->figure_family;
-
                 $figure_family_id = null;
                 if (isset($validated['figure_family_id'])) {
                     $figure_family_id = $validated['figure_family_id'];
@@ -172,7 +171,7 @@ class FigureController extends Controller
 
                 // If this update will orphan a figure family, delete it.
                 if ($previous_figure_family) {
-                    if (Figure::where('figure_family_id', $previous_figure_family->id)->count() === 0 && $validated['figure_family_id'] !== $previous_figure_family->id) {
+                    if (Figure::where('figure_family_id', $previous_figure_family->id)->count() === 0 && CompoundFigure::where('figure_family_id', $previous_figure_family->id)->count() === 0 && $validated['figure_family_id'] !== $previous_figure_family->id) {
                         $previous_figure_family->delete();
                     }
                 }
