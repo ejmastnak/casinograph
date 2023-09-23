@@ -54,6 +54,10 @@ const normalized_figures = computed(() => {
     normalized_name: removeAccents(figure.name),
     figure_family_id: figure.figure_family_id,
     figure_family: figure.figure_family,
+    from_position_id: figure.from_position_id,
+    from_position: figure.from_position,
+    to_position_id: figure.to_position_id,
+    to_position: figure.to_position,
     compound: figure.compound,
   }))
 })
@@ -247,9 +251,14 @@ export default {
           >
             <!-- Name -->
             <td scope="row" class="px-5 py-2">
-              <MyLink :href="route(figure.obj.compound ? 'compound_figures.show' : 'figures.show', figure.obj.id)">
+              <MyLink class="inline-block" :href="route(figure.obj.compound ? 'compound_figures.show' : 'figures.show', figure.obj.id)">
                 {{figure.obj.name}}
               </MyLink>
+              <p class="text-sm text-gray-500">
+                <MyLink class="font-medium" :href="route('positions.show', figure.obj.from_position_id)" >{{figure.obj.from_position.name}}</MyLink>
+                to
+                <MyLink class="font-medium" :href="route('positions.show', figure.obj.from_position_id)" >{{figure.obj.from_position.name}}</MyLink>
+              </p>
             </td>
             <!-- Compound figure? -->
             <td class="px-4 py-2 text-gray-600">
