@@ -21,8 +21,8 @@ class PositionController extends Controller
     public function index()
     {
         return Inertia::render('Positions/Index', [
-            'positions' => Position::with('position_family:id,name')->get(['id', 'name', 'position_family_id']),
-            'position_families' => PositionFamily::all(['id', 'name']),
+            'positions' => Position::with('position_family:id,name')->orderBy('name')->get(['id', 'name', 'position_family_id']),
+            'position_families' => PositionFamily::orderBy('name')->get(['id', 'name']),
             'show_edit_delete_icons' => Auth::user() ? Auth::user()->is_admin === 1 : false,
         ]);
     }
@@ -33,7 +33,7 @@ class PositionController extends Controller
     public function create()
     {
         return Inertia::render('Positions/Create', [
-            'position_families' => PositionFamily::all(['id', 'name']),
+            'position_families' => PositionFamily::orderBy('name')->get(['id', 'name']),
         ]);
     }
 
@@ -97,7 +97,7 @@ class PositionController extends Controller
         $position->load(['position_family:id,name']);
         return Inertia::render('Positions/Edit', [
             'position' => $position->only(['id', 'name', 'description', 'position_family_id', 'position_family']),
-            'position_families' => PositionFamily::all(['id', 'name']),
+            'position_families' => PositionFamily::orderBy('name')->get(['id', 'name']),
         ]);
     }
 

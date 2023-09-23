@@ -22,8 +22,8 @@ class CompoundFigureController extends Controller
     public function create()
     {
         return Inertia::render('CompoundFigures/Create', [
-            'figure_families' => FigureFamily::all(['id', 'name']),
-            'figures' => Figure::with(['from_position:id,name', 'to_position:id,name'])->get(['id', 'name', 'from_position_id', 'to_position_id']),
+            'figure_families' => FigureFamily::orderBy('name')->get(['id', 'name']),
+            'figures' => Figure::orderBy('name')->with(['from_position:id,name', 'to_position:id,name'])->get(['id', 'name', 'from_position_id', 'to_position_id']),
         ]);
     }
 
@@ -112,8 +112,8 @@ class CompoundFigureController extends Controller
         ]);
         return Inertia::render('CompoundFigures/Edit', [
             'compound_figure' => $compound_figure->only(['id', 'name', 'description', 'weight', 'figure_family_id', 'figure_family', 'compound_figure_figures']),
-            'figure_families' => FigureFamily::all(['id', 'name']),
-            'figures' => Figure::with(['from_position:id,name', 'to_position:id,name'])->get(['id', 'name', 'from_position_id', 'to_position_id']),
+            'figure_families' => FigureFamily::orderBy('name')->get(['id', 'name']),
+            'figures' => Figure::orderBy('name')->with(['from_position:id,name', 'to_position:id,name'])->get(['id', 'name', 'from_position_id', 'to_position_id']),
         ]);
     }
 
