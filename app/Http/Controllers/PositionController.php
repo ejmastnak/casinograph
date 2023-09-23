@@ -83,7 +83,7 @@ class PositionController extends Controller
      */
     public function show(Position $position)
     {
-        $position->load(['position_family:id,name', 'incoming_figures:id,name,to_position_id', 'outgoing_figures:id,name,from_position_id']);
+        $position->load(['position_family:id,name', 'incoming_figures:id,name,to_position_id,from_position_id', 'incoming_figures.from_position:id,name', 'outgoing_figures:id,name,from_position_id,to_position_id', 'outgoing_figures.to_position:id,name']);
         return Inertia::render('Positions/Show', [
             'position' => $position->only(['id', 'name', 'description', 'position_family_id', 'position_family', 'incoming_figures', 'outgoing_figures']),
         ]);

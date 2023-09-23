@@ -52,16 +52,19 @@ export default {
     <!-- Incoming and outgoing figures -->
     <div
       v-if="position.incoming_figures.length || position.outgoing_figures.length"
-      class="mt-6 grid grid-cols-2 space-x-2 w-fit"
+      class="mt-6 grid grid-cols-2 space-x-4 w-fit"
     >
       <!-- Incoming figures -->
       <div class="">
         <h2 class="text-lg text-gray-600">Incoming figures</h2>
-        <ul v-if="position.incoming_figures.length">
+        <ul v-if="position.incoming_figures.length" class="space-y-1.5">
           <li v-for="figure in position.incoming_figures" :key="figure.id">
-            <MyLink :href="route('figures.show', figure.id)" >
+            <MyLink class="inline-block" :href="route('figures.show', figure.id)" >
               {{figure.name}}
             </MyLink>
+            <p class="-mt-1 text-sm text-gray-600">
+              From <MyLink class="font-medium" :href="route('positions.show', figure.from_position_id)" >{{figure.from_position.name}}</MyLink>
+            </p>
           </li>
         </ul>
         <PlaceholderParagraph v-else class="">This position doesn't have any incoming figures.</PlaceholderParagraph>
@@ -69,11 +72,14 @@ export default {
       <!-- Outgoing figures -->
       <div class="">
         <h2 class="text-lg text-gray-600">Outgoing figures</h2>
-        <ul v-if="position.outgoing_figures.length">
+        <ul v-if="position.outgoing_figures.length" class="space-y-1.5">
           <li v-for="figure in position.outgoing_figures" :key="figure.id">
-            <MyLink :href="route('figures.show', figure.id)" >
+            <MyLink class="inline-block" :href="route('figures.show', figure.id)" >
               {{figure.name}}
             </MyLink>
+            <p class="-mt-1 text-sm text-gray-600">
+              To <MyLink class="font-medium" :href="route('positions.show', figure.to_position_id)" >{{figure.to_position.name}}</MyLink>
+            </p>
           </li>
         </ul>
         <PlaceholderParagraph v-else class="">This position doesn't have any outgoing figures.</PlaceholderParagraph>
@@ -84,7 +90,7 @@ export default {
     </PlaceholderParagraph>
 
     <!-- Edit and Delete buttons -->
-    <div class="flex items-center mt-6">
+    <div class="flex items-center mt-8">
       <SecondaryLink :href="route('positions.edit', position.id)" class="flex items-center">
         <PencilSquareIcon class="text-gray-600 h-5 w-5 -ml-1" />
         <p class="ml-1">Edit</p>
@@ -102,5 +108,6 @@ export default {
       @delete="deletePosition"
       @cancel="idToDelete = null"
     />
+
   </div>
 </template>
