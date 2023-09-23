@@ -7,6 +7,7 @@ import PlaceholderParagraph from '@/Components/PlaceholderParagraph.vue'
 import DeleteDialog from "@/Components/DeleteDialog.vue";
 import DangerButton from '@/Components/DangerButton.vue'
 import SecondaryLink from '@/Components/SecondaryLink.vue'
+import FamilyPillbox from '@/Components/FamilyPillbox.vue'
 import { PencilSquareIcon, TrashIcon } from '@heroicons/vue/24/outline'
 
 const props = defineProps({
@@ -34,18 +35,24 @@ export default {
 <template>
   <div class="">
     <Head :title="position.name" />
-    <h1 class="text-2xl">{{position.name}}</h1>
 
-    <div v-if="position.description" class="mt-4">
-      <p class="text-gray-600">Description</p>
-      <p class="">{{position.description}}</p>
+    <div class="flex items-baseline">
+      <h1 class="text-2xl">{{position.name}}</h1>
+      <FamilyPillbox class="ml-2" v-if="position.position_family" :text="position.position_family.name" />
     </div>
-    <PlaceholderParagraph v-else class="">This position does not have a description yet.</PlaceholderParagraph>
+
+    <div class="mt-4">
+      <div v-if="position.description">
+        <p class="text-gray-600">Description</p>
+        <p class="">{{position.description}}</p>
+      </div>
+      <PlaceholderParagraph v-else class="">This position does not have a description yet.</PlaceholderParagraph>
+    </div>
 
     <!-- Incoming and outgoing figures -->
     <div
       v-if="position.incoming_figures.length || position.outgoing_figures.length"
-      class="mt-6 grid grid-cols-2 space-x-2"
+      class="mt-6 grid grid-cols-2 space-x-2 w-fit"
     >
       <!-- Incoming figures -->
       <div class="">
@@ -77,7 +84,7 @@ export default {
     </PlaceholderParagraph>
 
     <!-- Edit and Delete buttons -->
-    <div class="flex items-center mt-12">
+    <div class="flex items-center mt-6">
       <SecondaryLink :href="route('positions.edit', position.id)" class="flex items-center">
         <PencilSquareIcon class="text-gray-600 h-5 w-5 -ml-1" />
         <p class="ml-1">Edit</p>

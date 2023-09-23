@@ -7,6 +7,7 @@ import PlaceholderParagraph from '@/Components/PlaceholderParagraph.vue'
 import DeleteDialog from "@/Components/DeleteDialog.vue";
 import DangerButton from '@/Components/DangerButton.vue'
 import SecondaryLink from '@/Components/SecondaryLink.vue'
+import FamilyPillbox from '@/Components/FamilyPillbox.vue'
 import { PencilSquareIcon, TrashIcon } from '@heroicons/vue/24/outline'
 
 const props = defineProps({
@@ -34,7 +35,12 @@ export default {
 <template>
   <div class="">
     <Head :title="figure.name" />
-    <h1 class="text-2xl">{{figure.name}}</h1>
+
+    <!-- Figure and figure family name -->
+    <div class="flex items-baseline">
+      <h1 class="text-2xl">{{figure.name}}</h1>
+      <FamilyPillbox class="ml-2" v-if="figure.figure_family" :text="figure.figure_family.name" />
+    </div>
 
     <!-- From position / to position -->
     <div class="mt-0.5 text-gray-600">
