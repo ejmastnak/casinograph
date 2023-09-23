@@ -36,6 +36,10 @@ const props = defineProps({
     type: String,
     default: "",
   },
+  bespokeDisplayForCompoundFigureFigures: {
+    type: Boolean,
+    default: false,
+  }
 })
 
 const emit = defineEmits([
@@ -87,6 +91,7 @@ watch(query, throttle(function (value) {
 watch(normalizedOptions, () => {
   search(query.value)
 })
+
 </script>
 
 <template>
@@ -98,12 +103,13 @@ watch(normalizedOptions, () => {
           {{labelText}}
         </ComboboxLabel>
 
+            <!-- :displayValue="(option) => option ? option[searchKey] : ''" -->
         <div class="relative">
           <ComboboxInput
             class="w-full border border-gray-300 rounded-md shadow-sm focus:border focus:border-blue-500"
             :class="inputClasses"
             @change="query = $event.target.value"
-            :displayValue="(option) => option ? option[searchKey] : ''"
+            :displayValue="(option) => option ? option[props.searchKey] : ''"
           />
           <ComboboxButton tabindex="0" class="absolute right-0 px-4 rounded-md h-full focus:outline-none focus:border-2 focus:border-blue-500 active:border-0" >
             <ChevronDownIcon class="w-5 h-5 text-gray-600 shrink-0"/>
@@ -129,7 +135,17 @@ watch(normalizedOptions, () => {
             'font-bold': selected,
           }"
           >
-            {{ option.obj.original[searchKey] }}
+            <p :class="{
+              'bg-blue-500 text-white': active,
+              'text-gray-700': !selected,
+            }">
+              {{option.obj.original[props.searchKey]}}
+            </p>
+            <div v-if="bespokeDisplayForCompoundFigureFigures" class="text-sm">
+              {{option.obj.original.from_position.name}}
+              to
+              {{option.obj.original.to_position.name}}
+            </div>
           </li>
         </ComboboxOption>
       </ComboboxOptions>

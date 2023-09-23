@@ -115,6 +115,7 @@ const submit = () => {
     <div class="mt-6 border-y border-gray-200 w-fit pt-4 pb-5">
       <h2 class="text-md text-gray-700">Figure sequence</h2>
       <p class="text-sm text-gray-500">Add at least two figures</p>
+
       <ol
         ref="list"
         class="mt-2 list-decimal ml-5 space-y-3"
@@ -127,6 +128,7 @@ const submit = () => {
               class="w-96 ml-2"
               searchKey="name"
               inputClasses="text-sm"
+              :bespokeDisplayForCompoundFigureFigures="true"
               :options="(idx > 0 && compoundFigureFigures[idx - 1].compound_figure_figure.figure) ? figures.filter(figure => figure.from_position_id === compoundFigureFigures[idx - 1].compound_figure_figure.figure.to_position_id) : figures"
               :modelValue="cff.compound_figure_figure.figure"
               @update:modelValue="(newValue) => {
