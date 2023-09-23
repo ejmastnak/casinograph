@@ -8,6 +8,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Redirect;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Process;
 use App\Http\Requests\PositionStoreRequest;
 use App\Http\Requests\PositionUpdateRequest;
 use Inertia\Inertia;
@@ -73,6 +74,7 @@ class PositionController extends Controller
             return Redirect::route('positions.index')->with('error', 'Error. Failed to create position.');
         }
 
+        $this->casinograph();
         return Redirect::route('positions.show', $redirect_position_id)->with('message', 'Success! Position created successfully.');
     }
 
@@ -142,6 +144,7 @@ class PositionController extends Controller
             return Redirect::route('positions.index')->with('error', 'Error. Failed to update position.');
         }
 
+        $this->casinograph();
         return Redirect::route('positions.show', $position->id)->with('message', 'Success! Position updated successfully.');
     }
 
@@ -183,6 +186,12 @@ class PositionController extends Controller
             }
         });
 
+        $this->casinograph();
         return Redirect::route('positions.index')->with('message', 'Success! Position deleted successfully.');
     }
+
+    private function casinograph() {
+        $result = Process::path(resource_path('scripts'))->run('./casinograph.bash' . ' ' . database_path('sqlite/database.sqlite'));
+    }
+
 }
