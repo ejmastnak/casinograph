@@ -42,8 +42,8 @@ FIGURES_QUERY="select id,from_position_id, to_position_id, name from figures;"
 echo 'digraph CasinoGraph {' > ${GV}
 
 # Global options
-echo '  node [fontname="Figtree", fontcolor="#172554", color="#172554", style=filled, fillcolor="#eff6ff"];' >> ${GV}
-echo '  edge [fontname="Figtree", fontcolor="#172554", color="#172554"];' >> ${GV}
+echo '  node [fontname="Figtree", fontcolor="#172554", color="#172554", style=filled, fillcolor="#eff6ff", target="_top"];' >> ${GV}
+echo '  edge [fontname="Figtree", fontcolor="#172554", color="#172554", target="_top"];' >> ${GV}
 
 # Positions
 sqlite3 ${DB} "${POSITIONS_QUERY}" \
