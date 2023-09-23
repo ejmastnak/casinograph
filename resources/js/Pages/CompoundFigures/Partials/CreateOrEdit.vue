@@ -23,7 +23,6 @@ const form = useForm({
   id: props.compound_figure.id,
   name: props.compound_figure.name ?? "",
   description: props.compound_figure.description ?? "",
-  weight: props.compound_figure.weight,
   figure_family_id: props.compound_figure.figure_family_id,
   figure_family: props.compound_figure.figure_family,
   figure_ids: [],
@@ -206,18 +205,6 @@ const submit = () => {
         <InputError class="mt-2" :message="form.errors.figure_family_id" />
         <InputError class="mt-2" :message="form.errors.figure_family" />
         <InputError class="mt-2" :message="form.errors['figure_family.name']" />
-      </div>
-
-      <!-- Figure weight -->
-      <div class="ml-6 max-w-[8rem]">
-        <InputLabel for="weight" value="Weight (optional)" />
-        <TextInput
-          id="weight"
-          type="number"
-          class="block w-full"
-          v-model="form.weight"
-        />
-        <InputError class="mt-2" :message="form.errors.weight" />
       </div>
 
     </div>
