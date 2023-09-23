@@ -88,7 +88,7 @@ let deleteCompound = ref(true)
 const deleteDialog = ref(null)
 function deleteFigure() {
   if (idToDelete.value !== null && deleteCompound.value !== null) {
-    router.delete(route(deleteCompound ? 'compound_figures.destroy' : 'figures.destroy', idToDelete.value), {
+    router.delete(route((deleteCompound.value ? 'compound_figures.destroy' : 'figures.destroy'), idToDelete.value), {
       onSuccess: () => {
         search(figureSearchQuery.value)
       }
