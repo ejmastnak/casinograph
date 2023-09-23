@@ -12,16 +12,12 @@ import TextInput from '@/Components/TextInput.vue'
 import MultiSelect from '@/Components/MultiSelect.vue'
 import { PencilSquareIcon, TrashIcon, PlusCircleIcon, MagnifyingGlassIcon, XMarkIcon, AdjustmentsHorizontalIcon, FunnelIcon } from '@heroicons/vue/24/outline'
 import NewFigureDialog from './Partials/NewFigureDialog.vue'
-import FilterDialog from './Partials/FilterDialog.vue'
 
 const props = defineProps({
   figures: Array,
   figure_families: Array,
   show_edit_delete_icons: Boolean,
 })
-
-// Reference to FilterDialog element
-const filterDialog = ref(null)
 
 // For filtering Figures by FigureFamily
 const selectedFigureFamilies = ref([])
@@ -33,14 +29,9 @@ const selectedFigureFamilyIDs = computed(() => {
 const showCompoundFigures = ref(true)
 const showSimpleFigures = ref(true)
 
-// For filtering Figures by weight
-const minWeight = ref(NaN)
-const maxWeight = ref(NaN)
-
 function shouldDisplay(figure) {
   return ((selectedFigureFamilies.value.length === 0) || selectedFigureFamilyIDs.value.includes(figure.figure_family_id))
     && ((showCompoundFigures.value && figure.compound) || (showSimpleFigures.value && !figure.compound))
-    && ((isNaN(minWeight.value) || figure.weight >= minWeight.value) && (isNaN(maxWeight.value) || figure.weight <= maxWeight.value))
 }
 
 function removeAccents(str) {
@@ -81,6 +72,8 @@ watch(figureSearchQuery, throttle(function (value) {
 function clearFilters() {
   figureSearchQuery.value = ""
   selectedFigureFamilies.value = []
+  showSimpleFigures.value = true
+  showCompoundFigures.value = true
   search(figureSearchQuery.value)
   figureSearchInput.value.focus()
 }
@@ -151,7 +144,7 @@ export default {
               <MagnifyingGlassIcon class="w-5 h-5 text-gray-500" />
             </div>
             <TextInput
-              class="py-1.5 pl-10 text-gray-700 w-80 bg-gray-50"
+              class="py-2 pl-10 text-gray-700 w-80 bg-gray-50"
               type="text"
               id="figure-search-query"
               v-model="figureSearchQuery"
@@ -160,42 +153,68 @@ export default {
           </div>
         </div>
 
-        <PlainButton
-          class="ml-2 !bg-gray-50 h-fit flex"
-          @click="filterDialog.open()"
-        >
-          <FunnelIcon class="-ml-1 h-5 w-5 text-gray-500 shrink-0" />
-          <p class="ml-1">Additional filters</p>
-        </PlainButton>
+        <!-- FigureFamily Filter -->
+        <MultiSelect
+          class="ml-3"
+          :options="figure_families"
+          width="w-48"
+          labelText="Filter by family"
+          inputClasses="!py-2.5"
+          :modelValue="selectedFigureFamilies"
+          @update:modelValue="newValue => selectedFigureFamilies = newValue"
+        />
 
-        <!-- TODO: Hidden -->
-        <div v-if="false" class="flex items-end ml-auto">
+        <!-- Simple and compound figure checkboxes -->
+        <div class="ml-4 text-gray-700 text-sm">
 
-          <!-- FigureFamily Filter -->
-          <MultiSelect
-            :options="figure_families"
-            width="w-36"
-            labelText="Filter by family"
-            :modelValue="selectedFigureFamilies"
-            @update:modelValue="newValue => selectedFigureFamilies = newValue"
-            class="ml-4"
-          />
+          <p class="text-gray-500">Figures to show</p>
 
-          <!-- Clear filters buttom -->
-          <div class="ml-4 flex items-center">
-            <label for="clear-filters" class="sr-only">
-              Clear filters
-            </label>
-            <PlainButton
-              id="clear-filters"
-              class="!bg-gray-50"
-              @click="clearFilters"
-            >
-              <XMarkIcon class="-ml-1 w-5 h-5 text-gray-600 shrink-0" />
-              <span class="ml-1 text-gray-600">Clear filters</span>
-            </PlainButton>
+          <div class="mt-1">
+            <!-- Show/hide simple figures -->
+            <div class="flex items-center">
+              <input
+                type="checkbox"
+                id="simple"
+                name="simple"
+                v-model="showSimpleFigures"
+                class="rounded"
+              />
+              <label class="ml-1.5" for="simple">Simple</label>
+            </div>
+
+            <!-- Show/hide compound figures -->
+            <div class="flex items-center">
+              <input
+                type="checkbox"
+                id="compound"
+                name="compound"
+                v-model="showCompoundFigures"
+                class="rounded"
+              />
+              <label class="ml-1.5" for="compound">Compound</label>
+            </div>
           </div>
+
         </div>
+
+        <!-- Clear filters buttom -->
+        <div class="ml-auto flex items-center h-fit">
+          <label for="clear-filters" class="sr-only">
+            Clear filters
+          </label>
+          <PlainButton
+            id="clear-filters"
+            class="!bg-gray-50"
+            @click="clearFilters"
+          >
+            <XMarkIcon class="-ml-2 w-6 h-6 text-gray-500 shrink-0" />
+            <div class="ml-2 text-gray-600">
+              <p>Clear</p>
+              <p>filters</p>
+            </div>
+          </PlainButton>
+        </div>
+
 
       </div>
 
@@ -272,16 +291,6 @@ export default {
       ref="newFigureDialog"
       @simple="newSimpleFigure"
       @compound="newCompoundFigure"
-    />
-
-    <FilterDialog
-      ref="filterDialog"
-      :figure_families="figure_families"
-      @update:selectedFigureFamilies="value => selectedFigureFamilies = value"
-      @update:showSimpleFigures="value => showSimpleFigures = value"
-      @update:showCompoundFigures="value => showCompoundFigures = value"
-      @update:minWeight="value => minWeight = value"
-      @update:maxWeight="value => maxWeight = value"
     />
 
   </div>
