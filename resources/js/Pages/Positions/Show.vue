@@ -8,7 +8,7 @@ import DeleteDialog from "@/Components/DeleteDialog.vue";
 import DangerButton from '@/Components/DangerButton.vue'
 import SecondaryLink from '@/Components/SecondaryLink.vue'
 import FamilyPillbox from '@/Components/FamilyPillbox.vue'
-import { PencilSquareIcon, TrashIcon } from '@heroicons/vue/24/outline'
+import { PencilSquareIcon, TrashIcon, PlusCircleIcon } from '@heroicons/vue/24/outline'
 
 const props = defineProps({
   position: Object,
@@ -37,9 +37,16 @@ export default {
   <div class="">
     <Head :title="position.name" />
 
-    <div class="flex items-baseline">
-      <h1 class="text-2xl">{{position.name}}</h1>
-      <FamilyPillbox class="ml-2" v-if="position.position_family" :text="position.position_family.name" />
+    <div class="flex items-center">
+      <div class="flex items-baseline">
+        <h1 class="text-2xl">{{position.name}}</h1>
+        <FamilyPillbox class="ml-2" v-if="position.position_family" :text="position.position_family.name" />
+      </div>
+
+      <SecondaryLink v-if="show_edit_delete_icons" class="ml-auto h-fit" :href="route('positions.create')" >
+        <PlusCircleIcon class="-ml-1 text-gray-600 h-6 w-6 shrink-0" />
+        <p class="ml-1 whitespace-nowrap">New position</p>
+      </SecondaryLink>
     </div>
 
     <div class="mt-4">

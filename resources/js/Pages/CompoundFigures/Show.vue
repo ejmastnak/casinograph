@@ -7,8 +7,10 @@ import PlaceholderParagraph from '@/Components/PlaceholderParagraph.vue'
 import DeleteDialog from "@/Components/DeleteDialog.vue";
 import DangerButton from '@/Components/DangerButton.vue'
 import SecondaryLink from '@/Components/SecondaryLink.vue'
+import SecondaryButton from '@/Components/SecondaryButton.vue'
 import FamilyPillbox from '@/Components/FamilyPillbox.vue'
-import { PencilSquareIcon, TrashIcon } from '@heroicons/vue/24/outline'
+import NewFigureDialog from '../Figures/Partials/NewFigureDialog.vue'
+import { PencilSquareIcon, TrashIcon, PlusCircleIcon } from '@heroicons/vue/24/outline'
 
 const props = defineProps({
   compound_figure: Object,
@@ -24,6 +26,15 @@ function deletePosition() {
   }
   idToDelete.value = null
 }
+
+const newFigureDialog = ref(null)
+function newSimpleFigure() {
+  router.get(route('figures.create'));
+}
+function newCompoundFigure() {
+  router.get(route('compound_figures.create'));
+}
+
 </script>
 
 <script>
@@ -37,10 +48,18 @@ export default {
   <div class="">
     <Head :title="compound_figure.name" />
 
-    <!-- Figure and figure family name -->
-    <div class="flex items-baseline">
-      <h1 class="text-2xl">{{compound_figure.name}}</h1>
-      <FamilyPillbox class="ml-2" v-if="compound_figure.figure_family" :text="compound_figure.figure_family.name" />
+    <div class="flex items-center">
+      <!-- Figure and figure family name -->
+      <div class="flex items-baseline">
+        <h1 class="text-2xl">{{compound_figure.name}}</h1>
+        <FamilyPillbox class="ml-2" v-if="compound_figure.figure_family" :text="compound_figure.figure_family.name" />
+      </div>
+
+      <!-- New Figure button -->
+      <SecondaryButton v-if="show_edit_delete_icons" class="ml-auto h-fit" @click="newFigureDialog.open()" >
+        <PlusCircleIcon class="-ml-1 text-gray-600 h-6 w-6 shrink-0" />
+        <p class="ml-1 whitespace-nowrap">New figure</p>
+      </SecondaryButton>
     </div>
 
     <!-- From position / to position -->
@@ -94,6 +113,12 @@ export default {
       description="figure"
       @delete="deletePosition"
       @cancel="idToDelete = null"
+    />
+
+    <NewFigureDialog
+      ref="newFigureDialog"
+      @simple="newSimpleFigure"
+      @compound="newCompoundFigure"
     />
 
   </div>

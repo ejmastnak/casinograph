@@ -74,12 +74,12 @@ function closeAndChooseCompound() {
             <PopoverOverlay class="fixed inset-0 bg-black opacity-20" />
 
             <PopoverPanel class="absolute mt-0.5 px-6 py-3 w-96 max-w-sm rounded-lg overflow-hidden bg-gray-50 shadow text-gray-800">
-              Definition:
+              Explanation:
               <ul class="mt-2 list-disc ml-4">
                 <li>A <span class="font-semibold">simple figure</span> takes a single 8-count.</li>
                 <li>A <span class="font-semibold">compound figure</span> takes two or more 8-counts and is composed of a sequence of simple figures.</li>
               </ul>
-              <p class="mt-4">If your figure takes one 8-count, make it a simple figure. Otherwise choose a compound figure.</p>
+              <p class="mt-4">If your figure takes one 8-count, make it a simple figure. Otherwise make it a compound figure.</p>
             </PopoverPanel>
           </Popover>
 
