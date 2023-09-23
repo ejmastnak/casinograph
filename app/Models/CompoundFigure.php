@@ -28,11 +28,11 @@ class CompoundFigure extends Model
     }
 
     public function from_position() {
-        return $this->belongsTo(Figure::class, 'from_position_id', 'id');
+        return $this->belongsTo(Position::class, 'from_position_id', 'id');
     }
 
     public function to_position() {
-        return $this->belongsTo(Figure::class, 'to_position_id', 'id');
+        return $this->belongsTo(Position::class, 'to_position_id', 'id');
     }
 
 }
