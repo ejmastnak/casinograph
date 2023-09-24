@@ -4,8 +4,7 @@ namespace Database\Seeders;
 
 use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
-use Illuminate\Support\Facades\Storage;
-use App\Models\PositionFamily;
+use Illuminate\Support\Facades\DB;
 
 class PositionFamilySeeder extends Seeder
 {
@@ -14,13 +13,7 @@ class PositionFamilySeeder extends Seeder
      */
     public function run(): void
     {
-        $json = Storage::disk('db-seed')->get('position-families.json');
-        $position_families = json_decode($json, true);
-
-        foreach ($position_families as $position_family) {
-            PositionFamily::updateOrCreate([
-                'name' => $position_family['name'],
-            ]);
-        }
+        $path = database_path('/seeders/data/sql/position_families.sql');
+        DB::unprepared(file_get_contents($path));
     }
 }
