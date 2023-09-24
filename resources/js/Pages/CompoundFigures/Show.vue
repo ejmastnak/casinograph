@@ -77,11 +77,21 @@ export default {
     <!-- Figure sequence -->
     <div class="mt-2">
       <h2 class="text-lg text-gray-700">Figure sequence</h2>
-      <ol class="list-decimal ml-5">
+      <ol class="mt-1 list-decimal ml-5 space-y-1">
         <li v-for="compound_figure_figure in compound_figure.compound_figure_figures" :key="compound_figure_figure.id">
-          <MyLink :href="route('figures.show', compound_figure_figure.figure_id)" >
+          <MyLink class="inline-block" :href="route('figures.show', compound_figure_figure.figure_id)" >
             {{compound_figure_figure.figure.name}}
           </MyLink>
+          <p class="-mt-1 text-sm text-gray-600">
+            From
+            <MyLink class="font-medium" :href="route('positions.show', compound_figure_figure.figure.from_position_id)" >
+              {{compound_figure_figure.figure.from_position.name}}
+            </MyLink>
+            to
+            <MyLink class="font-medium" :href="route('positions.show', compound_figure_figure.figure.to_position_id)" >
+              {{compound_figure_figure.figure.to_position.name}}
+            </MyLink>
+          </p>
         </li>
       </ol>
     </div>
