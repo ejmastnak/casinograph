@@ -20,6 +20,7 @@ class DatabaseSeeder extends Seeder
             PositionSeeder::class,
             FigureSeeder::class,
             CompoundFigureSeeder::class,
+            CompoundFigureFigureSeeder::class,
         ]);
     }
 }
