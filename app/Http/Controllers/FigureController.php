@@ -167,7 +167,7 @@ class FigureController extends Controller
                     'to_position_id' => $validated['to_position_id'],
                     'description' => isset($validated['description']) ? $validated['description'] : null,
                     'figure_family_id' => $figure_family_id,
-                    'weight' => isset($validated['weight']) ? $validated['weight'] : null,
+                    'weight' => isset($validated['weight']) ? $validated['weight'] : config('misc.default_figure_weight'),
                 ]);
 
                 // If this update will orphan a figure family, delete it.
