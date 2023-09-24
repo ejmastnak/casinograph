@@ -1,5 +1,5 @@
 <script setup>
-import { InformationCircleIcon, ExclamationCircleIcon } from '@heroicons/vue/24/outline'
+import { InformationCircleIcon, ExclamationCircleIcon, XCircleIcon } from '@heroicons/vue/24/outline'
 import { router, usePage } from '@inertiajs/vue3'
 import {watch, ref, computed } from 'vue'
 
@@ -8,8 +8,11 @@ const props = defineProps({
 })
 
 const show = ref(true)
+
 function hide() {
   show.value = false;
+  props.flash.message = null
+  props.flash.error = null
 }
 
 // Show flash message when props.flash.message changes,
@@ -27,7 +30,7 @@ watch(() => props.flash, () => {
     setTimeout(() => {
       props.flash.error = null
       show.value = false
-    }, 10000);
+    }, 30000);
   }
 });
 
@@ -39,10 +42,13 @@ watch(() => props.flash, () => {
       <div
         v-show="flash.message && show"
         @click="hide"
-        class="absolute inset-x-0 mx-auto  flex items-center text-sm text-gray-800 bg-blue-50 px-4 py-3 rounded-b-md border-b-2 border-blue-400 z-50"
+        class="absolute inset-x-0 mx-auto flex items-center text-sm text-gray-800 bg-blue-50 px-4 py-3 rounded-b-md border-b-2 border-blue-400 z-50"
       >
-        <InformationCircleIcon class="w-5 h-5 text-gray-600 shrink-0" />
-        <span class="ml-1 translate-y-px">{{ flash.message }}</span>
+        <InformationCircleIcon class="mw-6 h-6 text-blue-700 shrink-0" />
+        <p class="ml-1">{{ flash.message }}</p>
+        <button class="ml-auto" type="button" @click="message">
+          <XCircleIcon class="h-6 w-6 text-blue-700 shrink-0" />
+        </button>
       </div>
     </Transition>
 
@@ -50,10 +56,13 @@ watch(() => props.flash, () => {
       <div
         v-show="flash.error && show"
         @click="hide"
-        class="absolute inset-x-0 mx-auto  flex items-center text-sm text-gray-800 bg-red-200 px-4 py-3 rounded-b-md border-b-2 border-red-400 z-50"
+        class="absolute inset-x-0 mx-auto flex items-start text-sm text-gray-800 bg-red-200 px-4 py-3 rounded-b-md border-b-2 border-red-400 z-50"
       >
-        <ExclamationCircleIcon class="w-6 h-6 text-gray-600 shrink-0" />
-        <span class="ml-2 translate-y-px">{{ flash.error }}</span>
+        <ExclamationCircleIcon class="mt-1 w-6 h-6 text-red-800 shrink-0" />
+        <p class="ml-2 translate-y-px">{{ flash.error }}</p>
+        <button class="mt-1 ml-auto" type="button" @click="message">
+          <XCircleIcon class="h-6 w-6 text-red-800 shrink-0" />
+        </button>
       </div>
     </Transition>
 
