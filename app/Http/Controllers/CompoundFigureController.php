@@ -69,6 +69,7 @@ class CompoundFigureController extends Controller
                         'figure_id' => $figure_id,
                         'compound_figure_id' => $compound_figure->id,
                         'idx' => $idx + 1,
+                        'is_final' => $idx === count($validated['figure_ids']) - 1,
                         'user_id' => $user ? $user->id : null,
                     ]);
                 }
@@ -163,6 +164,7 @@ class CompoundFigureController extends Controller
                         'figure_id' => $figure_id,
                         'compound_figure_id' => $compound_figure->id,
                         'idx' => $idx + 1,
+                        'is_final' => $idx === count($validated['figure_ids']) - 1,
                         'user_id' => $user ? $user->id : null,
                     ]);
                 }

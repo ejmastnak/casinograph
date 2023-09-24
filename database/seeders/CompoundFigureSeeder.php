@@ -84,6 +84,7 @@ class CompoundFigureSeeder extends Seeder
                     'figure_id' => $figure->id,
                     'compound_figure_id' => $eloquent_compound_figure->id,
                     'idx' => $idx + 1,
+                    'is_final' => $idx === count($figures) - 1,
                 ]);
             }
         }
