@@ -81,6 +81,12 @@ FIGURES_QUERY2="select * from (select id, from_position_id, to_position_id, name
 # --------------------------------------------------------------------------- #
 # Prepare DOT file for Graphviz
 # --------------------------------------------------------------------------- #
+FONT_NAME="Figtree"
+FONT_COLOR="#172554"
+STROKE_COLOR="#172554"
+FILL_COLOR="#eff6ff"
+ASPECT_RATIO="1.0"
+
 echo 'digraph CasinoGraph {' > ${TMP_GV}
 
 # Notes to self for later:
@@ -88,8 +94,9 @@ echo 'digraph CasinoGraph {' > ${TMP_GV}
 # URL=\"%s/%s\" becomes e.g. URL="https://casinograph.ejmastnak.com/positions/1"
 
 # Global options
-echo '  node [fontname="Figtree", fontcolor="#172554", color="#172554", style=filled, fillcolor="#eff6ff", target="_top"];' >> ${TMP_GV}
-echo '  edge [fontname="Figtree", fontcolor="#172554", color="#172554", target="_top"];' >> ${TMP_GV}
+echo "  graph [ratio=${ASPECT_RATIO}];" >> ${TMP_GV}
+echo "  node [fontname=\"${FONT_NAME}\", fontcolor=\"${FONT_COLOR}\", color=\"${STROKE_COLOR}\", style=filled, fillcolor=\"${FILL_COLOR}\", target=\"_top\"];" >> ${TMP_GV}
+echo "  edge [fontname=\"${FONT_NAME}\", fontcolor=\"${FONT_COLOR}\", color=\"${STROKE_COLOR}\", target=\"_top\"];" >> ${TMP_GV}
 
 # Positions
 sqlite3 ${DB} "${POSITIONS_QUERY}" \
