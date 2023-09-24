@@ -43,11 +43,9 @@ class RegenerateCasinoGraph implements ShouldQueue
         ];
         $result = Process::path(resource_path('scripts'))->run(implode(' ', $command_with_params));
 
-        if (\App::environment('local')) {
-            if ($result->failed()) {
-                print("Process failed.\n");
-                dd($result->errorOutput());
-            }
+        if (\App::environment('local') && $result->failed()) {
+            print("RegenerateCasinoGraph failed.\n");
+            dd($result->errorOutput());
         }
 
     }

@@ -48,6 +48,15 @@ elif [[ ! -w ${OUTPUT%/*} ]]; then
     exit 1
 fi
 
+DENSE=0
+while getopts ":d" flag
+do
+  case "${flag}" in
+    d) DENSE=1;;
+    \?);; # Invalid option
+  esac
+done
+
 # Temporary DOT file with instructions for Graphviz
 TMP_GV="casinograph-`date +%Y-%m-%dT%H:%M:%S`.gv"
 function cleanup {
@@ -55,9 +64,19 @@ function cleanup {
 }
 trap cleanup EXIT INT ABRT KILL TERM ERR
 
-# Positions query is meant to leave out orphaned positions
+# The positions query is designed to leave out orphaned positions
 POSITIONS_QUERY="select positions.id,positions.name from positions inner join figures on figures.from_position_id = positions.id or figures.to_position_id = positions.id group by positions.id;"
-FIGURES_QUERY="select id,from_position_id, to_position_id, name from figures;"
+
+# This figure query is designed to only choose one figure between any two nodes, to
+# avoid overcrowding the graph. The figure is chosen randomly, so the graph
+# should change on every regeneration... to keep things interesting!
+FIGURES_QUERY="select * from (select id, from_position_id, to_position_id, name from figures order by random()) group by from_position_id, to_position_id;"
+
+# Alternate, used when -d (DENSE) flag is passed: select all
+# non-self-referencing edges, and only restrict selection of self-referencing
+# edges.
+FIGURES_QUERY1="select id,from_position_id, to_position_id, name from figures where from_position_id != to_position_id"
+FIGURES_QUERY2="select * from (select id, from_position_id, to_position_id, name from figures where from_position_id = to_position_id order by random()) group by from_position_id;"
 
 # --------------------------------------------------------------------------- #
 # Prepare DOT file for Graphviz
@@ -80,12 +99,29 @@ sqlite3 ${DB} "${POSITIONS_QUERY}" \
   >> ${TMP_GV}
 printf "\n" >> ${TMP_GV}
 
-# Figures
-sqlite3 ${DB} "${FIGURES_QUERY}" \
+if [[ ${DENSE} -eq 1 ]]; then
+  # Figures
+  sqlite3 ${DB} "${FIGURES_QUERY1}" \
+    | awk -F '|' \
+    -v URL="${FIGURES}" \
+    '{printf "  %s -> %s [label=\" %s \", URL=\"%s/%s\"];\n",$2,$3,$4,URL,$1}' \
+    >> ${TMP_GV}
+
+  # Figures with self-referencing edges
+  sqlite3 ${DB} "${FIGURES_QUERY2}" \
   | awk -F '|' \
   -v URL="${FIGURES}" \
   '{printf "  %s -> %s [label=\" %s \", URL=\"%s/%s\"];\n",$2,$3,$4,URL,$1}' \
   >> ${TMP_GV}
+else
+  # Figures
+  sqlite3 ${DB} "${FIGURES_QUERY}" \
+    | awk -F '|' \
+    -v URL="${FIGURES}" \
+    '{printf "  %s -> %s [label=\" %s \", URL=\"%s/%s\"];\n",$2,$3,$4,URL,$1}' \
+    >> ${TMP_GV}
+fi
+
 echo "}" >> ${TMP_GV}
 # --------------------------------------------------------------------------- #
 
