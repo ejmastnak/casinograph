@@ -36,7 +36,7 @@ class RegenerateCasinoGraph implements ShouldQueue
     public function handle(): void
     {
         $command_with_params = [
-            './casinograph.bash',
+            'bash ./casinograph.bash',
             database_path('sqlite/database.sqlite'),
             public_path(config('misc.casinograph_public_path')),
             config('app.url'),
