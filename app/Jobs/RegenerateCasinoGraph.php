@@ -14,6 +14,13 @@ class RegenerateCasinoGraph implements ShouldQueue
 {
     use Dispatchable, InteractsWithQueue, Queueable, SerializesModels;
 
+    // The number of times the job may be attempted.
+    public $tries = 1;
+
+    // The number of seconds the job can run before timing out.
+    public $timeout = 5;
+    public $failOnTimeout = true;
+
     /**
      * Create a new job instance.
      */
@@ -27,6 +34,20 @@ class RegenerateCasinoGraph implements ShouldQueue
      */
     public function handle(): void
     {
-        $result = Process::path(resource_path('scripts'))->run('./casinograph.bash' . ' ' . database_path('sqlite/database.sqlite'));
+        $command_with_params = [
+            './casinograph.bash',
+            database_path('sqlite/database.sqlite'),
+            public_path(config('misc.casinograph_public_path')),
+            config('app.url'),
+        ];
+        $result = Process::path(resource_path('scripts'))->run(implode(' ', $command_with_params));
+
+        if (\App::environment('local')) {
+            if ($result->failed()) {
+                print("Process failed.\n");
+                dd($result->errorOutput());
+            }
+        }
+
     }
 }
