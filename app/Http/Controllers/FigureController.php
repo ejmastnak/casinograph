@@ -6,6 +6,7 @@ use App\Models\Figure;
 use App\Models\CompoundFigure;
 use App\Models\FigureFamily;
 use App\Models\Position;
+use App\Exceptions\FigureUpdateCorruptsCompoundFigureException;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Redirect;
 use Illuminate\Support\Facades\Auth;
@@ -149,6 +150,23 @@ class FigureController extends Controller
         try {
             DB::transaction(function () use ($figure, $validated, $user) {
 
+                // Check that updating this figure's to/from position will not
+                // corrupt to/from position integrity in the figure sequence of
+                // any dependent CompoundFigures.
+                $new_from_position = $figure->from_position_id !== $validated['from_position_id'];
+                $new_to_position = $figure->to_position_id !== $validated['to_position_id'];
+                if (($new_from_position || $new_to_position) && $figure->compound_figure_figures()->count() > 0) {
+                    foreach ($figure->compound_figure_figures as $cff) {
+                        if ($cff->idx === 1 && $new_to_position) {
+                            throw new FigureUpdateCorruptsCompoundFigureException("Updating this figure is intentionally forbidden because it would cause incompatible starting and ending positions in the figure sequence of a dependent compound figure (" . $cff->compound_figure->name . "). You may want to create a new figure instead, update the compound figure to use the new figure, then delete this figure.\nThe problem is the first figure in " . $cff->compound_figure->name . ".");
+                        } else if ($cff->is_final && $new_from_position) {
+                            throw new FigureUpdateCorruptsCompoundFigureException("Updating this figure is intentionally forbidden because it would cause incompatible starting and ending positions in the figure sequence of a dependent compound figure (" . $cff->compound_figure->name . "). You may want to create a new figure instead, update the compound figure to use the new figure, then delete this figure.\nThe problem is the final figure in " . $cff->compound_figure->name . ".");
+                        } else if ($cff->idx > 1 && !$cff->is_final) {
+                            throw new FigureUpdateCorruptsCompoundFigureException("Updating this figure is intentionally forbidden because it would cause incompatible starting and ending positions in the figure sequence of a dependent compound figure (" . $cff->compound_figure->name . "). You may want to create a new figure instead, update the compound figure to use the new figure, then delete this figure.\nThe problem is figure " . $cff->idx . " in " . $cff->compound_figure->name . ".");
+                        }
+                    }
+                }
+
                 $previous_figure_family = $figure->figure_family;
                 $figure_family_id = null;
                 if (isset($validated['figure_family_id'])) {
@@ -177,6 +195,9 @@ class FigureController extends Controller
                     }
                 }
             });
+        } catch (FigureUpdateCorruptsCompoundFigureException $e) {
+            // throw $e;
+            return Redirect::route('figures.index')->with('error', $e->getMessage());
         } catch (\Exception $e) {
             // throw $e;
             return Redirect::route('figures.index')->with('error', 'Error. Failed to update figure.');
