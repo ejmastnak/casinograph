@@ -71,7 +71,7 @@ class PositionController extends Controller
 
             });
         } catch (\Exception $e) {
-            // throw $e;
+            if (\App::environment('local')) throw $e;
             return Redirect::route('positions.index')->with('error', 'Error. Failed to create position.');
         }
 
@@ -142,7 +142,7 @@ class PositionController extends Controller
 
             });
         } catch (\Exception $e) {
-            // throw $e;
+            if (\App::environment('local')) throw $e;
             return Redirect::route('positions.index')->with('error', 'Error. Failed to update position.');
         }
 

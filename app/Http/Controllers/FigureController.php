@@ -107,7 +107,7 @@ class FigureController extends Controller
 
             });
         } catch (\Exception $e) {
-            // throw $e;
+            if (\App::environment('local')) throw $e;
             return Redirect::route('figures.index')->with('error', 'Error. Failed to create figure.');
         }
 
@@ -196,10 +196,10 @@ class FigureController extends Controller
                 }
             });
         } catch (FigureUpdateCorruptsCompoundFigureException $e) {
-            // throw $e;
+            if (\App::environment('local')) throw $e;
             return Redirect::route('figures.index')->with('error', $e->getMessage());
         } catch (\Exception $e) {
-            // throw $e;
+            if (\App::environment('local')) throw $e;
             return Redirect::route('figures.index')->with('error', 'Error. Failed to update figure.');
         }
 
