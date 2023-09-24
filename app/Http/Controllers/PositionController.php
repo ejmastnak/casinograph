@@ -4,7 +4,6 @@ namespace App\Http\Controllers;
 
 use App\Models\Position;
 use App\Models\PositionFamily;
-use App\Jobs\RegenerateCasinoGraph;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Redirect;
 use Illuminate\Support\Facades\Auth;
@@ -75,7 +74,6 @@ class PositionController extends Controller
             return Redirect::route('positions.index')->with('error', 'Error. Failed to create position.');
         }
 
-        RegenerateCasinoGraph::dispatch();
         return Redirect::route('positions.show', $redirect_position_id)->with('message', 'Success! Position created successfully.');
     }
 
@@ -146,7 +144,6 @@ class PositionController extends Controller
             return Redirect::route('positions.index')->with('error', 'Error. Failed to update position.');
         }
 
-        RegenerateCasinoGraph::dispatch();
         return Redirect::route('positions.show', $position->id)->with('message', 'Success! Position updated successfully.');
     }
 
@@ -188,7 +185,6 @@ class PositionController extends Controller
             }
         });
 
-        RegenerateCasinoGraph::dispatch();
         return Redirect::route('positions.index')->with('message', 'Success! Position deleted successfully.');
     }
 

@@ -7,6 +7,7 @@ use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\PositionController;
 use App\Http\Controllers\FigureController;
 use App\Http\Controllers\CompoundFigureController;
+use App\Jobs\RegenerateCasinoGraph;
 use Illuminate\Foundation\Application;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
@@ -23,6 +24,7 @@ use Inertia\Inertia;
 */
 
 Route::get('/', function () {
+    RegenerateCasinoGraph::dispatch();
     return Inertia::render('Home');
 })->name('home');
 
