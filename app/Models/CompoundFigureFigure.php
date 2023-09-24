@@ -13,6 +13,7 @@ class CompoundFigureFigure extends Model
         "idx",
         "compound_figure_id",
         "figure_id",
+        "is_final",
         "user_id",
     ];
 
