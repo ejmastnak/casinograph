@@ -8,6 +8,7 @@ use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Bus\Dispatchable;
 use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Queue\SerializesModels;
+use Illuminate\Queue\Middleware\RateLimited;
 use Illuminate\Support\Facades\Process;
 
 class RegenerateCasinoGraph implements ShouldQueue
@@ -50,4 +51,15 @@ class RegenerateCasinoGraph implements ShouldQueue
         }
 
     }
+
+    /**
+     * Get the middleware the job should pass through.
+     *
+     * @return array<int, object>
+     */
+    public function middleware(): array
+    {
+        return [(new RateLimited('casinograph'))->dontRelease()];
+    }
+
 }
