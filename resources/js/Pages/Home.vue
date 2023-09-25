@@ -165,7 +165,7 @@ export default {
 
     <div class="mt-8">
       <h2 class="text-xl text-gray-700" id="qa">Questions and answers</h2>
-      <ul class="mt-2 list-disc space-y-1">
+      <ul class="mt-3 space-y-5">
         <li>
           <QuestionAndAnswer>
             <template #question>Can I add new positions and figures?</template>
@@ -212,10 +212,10 @@ export default {
 
     <div class="mt-8">
       <h2 class="text-xl text-gray-700" id="nerds">For nerds</h2>
-      <ul class="mt-2 list-disc space-y-1">
+      <ul class="mt-3 space-y-5">
         <li>
           <QuestionAndAnswer>
-            <template #question>I'm into web dev, what's your text stack?</template>
+            <template #question>I'm into web dev, what's the text stack?</template>
             <template #answer>
               The web site is built with
               <MyLink :colored="true" href="https://laravel.com/">Laravel</MyLink> and <MyLink :colored="true" href="https://vuejs.org/">Vue</MyLink>;
@@ -247,7 +247,7 @@ export default {
         </li>
         <li>
           <QuestionAndAnswer>
-            <template #question>Tell me more about your data structure.</template>
+            <template #question>Tell me more about the data structures.</template>
             <template #answer>
               <p>
                 The basic idea is to represent Casino as a directed graph in which positions are vertices and figures are edges.
