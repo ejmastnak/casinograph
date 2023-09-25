@@ -1,7 +1,9 @@
 <script setup>
 import { Head } from '@inertiajs/vue3'
 import MyLink from '@/Components/MyLink.vue'
+import { QuestionMarkCircleIcon, InformationCircleIcon } from '@heroicons/vue/24/outline'
 import QuestionAndAnswer from '@/Components/QuestionAndAnswer.vue'
+import { Popover, PopoverButton, PopoverPanel, PopoverOverlay } from '@headlessui/vue'
 </script>
 
 <script>
@@ -17,12 +19,73 @@ export default {
 
     <h1 class="text-2xl text-gray-800">CasinoGraph</h1>
 
-    <div class="mt-2 max-w-xl">
-      This site approaches Cuban Casino from a computer science perspective:
-      you're seeing a representation of Casino as a cyclic directed graph in which the figures (edges) connect the positions (vertices).
-      <a href="#more-info" class="p-px rounded-md text-blue-500 hover:text-blue-600 hover:underline focus:outline-none focus:ring-2 focus:ring-blue-700" >
-        More info lower on this page.
-      </a>
+    <div class="mt-2 flex">
+      <div class="max-w-xl ">
+        This site approaches Cuban Casino from a computer science perspective:
+        you're seeing a representation of Casino as a directed cyclic graph in which the figures (edges) connect the positions (vertices).
+        <a href="#more-info" class="p-px rounded-md text-blue-500 hover:text-blue-600 hover:underline focus:outline-none focus:ring-2 focus:ring-blue-700" >
+          More info lower on this page.
+        </a>
+      </div>
+      <div class="ml-auto w-fit">
+
+        <!-- What is Casino? -->
+        <div class="relative">
+          <Popover>
+            <PopoverButton class="w-full flex items-center px-3 py-1 bg-blue-50 border border-gray-300 rounded-lg text-sm text-gray-600 shadow-sm hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 disabled:opacity-25 transition ease-in-out duration-150" >
+              <InformationCircleIcon class="-ml-1 h-6 w-6 text-gray-500 shrink-0" />
+              <p class="ml-1.5">Wait, what is Casino?</p>
+            </PopoverButton>
+            <PopoverOverlay class="fixed inset-0 bg-black opacity-20" />
+
+            <PopoverPanel class="absolute right-0 mt-0.5 px-4 py-3 w-96 max-w-sm rounded-lg overflow-hidden bg-gray-50 shadow text-gray-800 z-50">
+              <p>
+                <MyLink :colored="true" href="https://en.wikipedia.org/wiki/Cuban_salsa">Casino</MyLink> is a social dance from Cuba, and more commonly goes by the name of Cuban salsa (much to the dismay of traditionalists, who insist Casino is the only proper name).
+              </p>
+
+              <p class="mt-2">
+                It has a loyal following and tends to produce fans who become quite obsessed, and end up spending their free time dancing, nerding out about <MyLink :colored="true" href="https://en.wikipedia.org/wiki/Timba"> timba music</MyLink> and Cuban ethnomusicology, and succumbing to eccentric acts of dedication like building websites devoted to Casino ;)
+              </p>
+
+              <p class="mt-2">
+                You can read more about Casino <MyLink :colored="true" href="https://en.wikipedia.org/wiki/Cuban_salsa">on Wikipedia</MyLink>.
+              </p>
+            </PopoverPanel>
+          </Popover>
+        </div>
+
+        <!-- What is a graph? -->
+        <div class="mt-1 relative">
+          <Popover>
+            <PopoverButton class="w-full flex items-center px-3 py-1 bg-white border border-gray-200 rounded-lg text-sm text-gray-600 shadow-sm hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 disabled:opacity-25 transition ease-in-out duration-150" >
+              <InformationCircleIcon class="-ml-1 h-6 w-6 text-gray-500 shrink-0" />
+              <p class="ml-1.5">And what is a graph?</p>
+            </PopoverButton>
+            <PopoverOverlay class="fixed inset-0 bg-black opacity-20" />
+
+            <PopoverPanel class="absolute right-0 mt-0.5 px-4 py-3 w-96 max-w-sm rounded-lg overflow-hidden bg-gray-50 shadow text-gray-800 z-50">
+              <p>
+                In the context of this website, a
+<MyLink :colored="true" href="https://en.wikipedia.org/wiki/Graph_(abstract_data_type)">graph</MyLink>
+                is a data structure used in computer science to efficiently represent a group of connected data points.
+                In the comp sci lingo, the data points are called <span class="italic">vertices</span> and the connections between them are called <span class="italic">edges</span>.
+              </p>
+
+              <p class="mt-2">
+                Graphs are ubiquitous in the modern computational infrastructure—common real-life examples include
+                social networks like Facebook and Instagram, where following and friending act as edges connecting users (vertices);
+                navigation applications like Google Maps and Apple Maps, where streets (edges) connect intersections (vertices);
+                and the Web, where web sites (vertices) are connected by links (edges).
+              </p>
+
+              <p class="mt-2">
+                You can read more about graphs <MyLink :colored="true" href="https://en.wikipedia.org/wiki/Graph_(abstract_data_type)">on Wikipedia</MyLink>.
+              </p>
+            </PopoverPanel>
+          </Popover>
+        </div>
+
+      </div>
     </div>
 
     <div class="mt-2 overflow-auto">
@@ -130,8 +193,8 @@ export default {
             <template #answer>
               I entertained the idea of using a graph-oriented database... but then realized this app generally queries only one level of adjacent vertices per web request,
               and doesn't actually traverse the graph or require any of the classic graph algorithms (finding shortest paths, etc.) that a graph database efficiently supports.
-              And so the convenience of using a relational database in the web development ecosystem justifies any slight performance penalty thus incurred.
-              (The one exception is drawing the graph on this page, but Graphviz builds its own representation of the graph when doing that anyway.)
+              And so the convenience of using a relational database in the web development ecosystem justifies any (potential) slight performance penalty thus incurred.
+              (The one exception is drawing the graph that appears higher up on this page, but Graphviz builds its own representation of the graph when doing that anyway.)
             </template>
 
           </QuestionAndAnswer>
