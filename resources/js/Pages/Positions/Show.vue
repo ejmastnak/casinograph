@@ -12,7 +12,9 @@ import { PencilSquareIcon, TrashIcon, PlusCircleIcon } from '@heroicons/vue/24/o
 
 const props = defineProps({
   position: Object,
-  show_edit_delete_icons: Boolean,
+  can_create: Boolean,
+  can_update: Boolean,
+  can_delete: Boolean,
 })
 
 let idToDelete = ref(null)
@@ -43,7 +45,7 @@ export default {
         <FamilyPillbox class="ml-2" v-if="position.position_family" :text="position.position_family.name" />
       </div>
 
-      <SecondaryLink v-if="show_edit_delete_icons" class="ml-auto h-fit" :href="route('positions.create')" >
+      <SecondaryLink v-if="can_create" class="ml-auto h-fit" :href="route('positions.create')" >
         <PlusCircleIcon class="-ml-1 text-gray-600 h-6 w-6 shrink-0" />
         <p class="ml-1 whitespace-nowrap">New position</p>
       </SecondaryLink>
@@ -98,13 +100,13 @@ export default {
     </PlaceholderParagraph>
 
     <!-- Edit and Delete buttons -->
-    <div v-if="show_edit_delete_icons" class="flex items-center mt-8">
-      <SecondaryLink :href="route('positions.edit', position.id)" class="flex items-center">
+    <div v-if="can_update || can_delete" class="flex items-center mt-8">
+      <SecondaryLink v-if="can_update" :href="route('positions.edit', position.id)" class="flex items-center">
         <PencilSquareIcon class="text-gray-600 h-5 w-5 -ml-1" />
         <p class="ml-1">Edit</p>
       </SecondaryLink>
 
-      <DangerButton @click="idToDelete = position.id; deleteDialog.open()" class="ml-2 flex items-center">
+      <DangerButton v-if="can_delete" @click="idToDelete = position.id; deleteDialog.open()" class="ml-2 flex items-center">
         <TrashIcon class="text-white h-5 w-5 -ml-1" />
         <p class="ml-1">Delete</p>
       </DangerButton>

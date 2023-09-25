@@ -14,7 +14,9 @@ import { PencilSquareIcon, TrashIcon, PlusCircleIcon } from '@heroicons/vue/24/o
 
 const props = defineProps({
   compound_figure: Object,
-  show_edit_delete_icons: Boolean,
+  can_create: Boolean,
+  can_update: Boolean,
+  can_delete: Boolean,
 })
 
 let idToDelete = ref(null)
@@ -56,7 +58,7 @@ export default {
       </div>
 
       <!-- New Figure button -->
-      <SecondaryButton v-if="show_edit_delete_icons" class="ml-auto h-fit" @click="newFigureDialog.open()" >
+      <SecondaryButton v-if="can_create" class="ml-auto h-fit" @click="newFigureDialog.open()" >
         <PlusCircleIcon class="-ml-1 text-gray-600 h-6 w-6 shrink-0" />
         <p class="ml-1 whitespace-nowrap">New figure</p>
       </SecondaryButton>
@@ -106,13 +108,13 @@ export default {
     </div>
 
     <!-- Edit and Delete buttons -->
-    <div v-if="show_edit_delete_icons" class="flex items-center mt-6">
-      <SecondaryLink :href="route('compound_figures.edit', compound_figure.id)" class="flex items-center">
+    <div v-if="can_update || can_delete" class="flex items-center mt-6">
+      <SecondaryLink v-if="can_update" :href="route('compound_figures.edit', compound_figure.id)" class="flex items-center">
         <PencilSquareIcon class="text-gray-600 h-5 w-5 -ml-1" />
         <p class="ml-1">Edit</p>
       </SecondaryLink>
 
-      <DangerButton @click="idToDelete = compound_figure.id; deleteDialog.open()" class="ml-2 flex items-center">
+      <DangerButton v-if="can_delete" @click="idToDelete = compound_figure.id; deleteDialog.open()" class="ml-2 flex items-center">
         <TrashIcon class="text-white h-5 w-5 -ml-1" />
         <p class="ml-1">Delete</p>
       </DangerButton>

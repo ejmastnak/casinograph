@@ -56,7 +56,7 @@ class FigureController extends Controller
         return Inertia::render('Figures/Index', [
             'figures' => $figures->concat($compound_figures)->sortBy('name')->values()->all(),
             'figure_families' => FigureFamily::orderBy('name')->get(['id', 'name']),
-            'show_edit_delete_icons' => Auth::user() ? Auth::user()->is_admin === 1 : false,
+            'show_edit_delete_icons' => Auth::user() && Auth::user()->is_admin === 1,
         ]);
     }
 
@@ -122,7 +122,9 @@ class FigureController extends Controller
         $figure->load(['figure_family:id,name', 'from_position:id,name', 'to_position:id,name']);
         return Inertia::render('Figures/Show', [
             'figure' => $figure->only(['id', 'name', 'description', 'weight', 'figure_family_id', 'figure_family', 'from_position_id', 'from_position', 'to_position_id', 'to_position']),
-            'show_edit_delete_icons' => Auth::user() ? Auth::user()->is_admin === 1 : false,
+            'can_create' => Auth::user() && Auth::user()->can('create', Figure::class),
+            'can_update' => Auth::user() && Auth::user()->can('update', $figure),
+            'can_delete' => Auth::user() && Auth::user()->can('delete', $figure),
         ]);
     }
 

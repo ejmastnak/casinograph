@@ -69,7 +69,7 @@ export default {
               </p>
 
               <p class="mt-2">
-                It has a loyal following and tends to produce fans who become quite obsessed, and end up spending their free time dancing, nerding out about <MyLink :colored="true" href="https://en.wikipedia.org/wiki/Timba"> timba music</MyLink> and Cuban ethnomusicology, and succumbing to eccentric acts of dedication like building websites devoted to Casino ;)
+                It has a loyal following and tends to produce fans who become quite obsessed, and end up spending their free time dancing, nerding out about <MyLink :colored="true" href="https://en.wikipedia.org/wiki/Timba"> timba music</MyLink> and Cuban ethnomusicology, and succumbing to eccentric acts of dedication like building websites that model Casino with directed cyclic graphs ;)
               </p>
 
               <p class="mt-2">
@@ -152,6 +152,11 @@ export default {
           Visit the <MyLink :colored="true" :href="route('figures.index')">figures page</MyLink> and use the filter to show only compound figures.
         </li>
         <li>
+          <span class="font-medium">No orphaned positions:</span>
+          The graph omits orphaned positions—positions without any incoming or outgoing figures.
+          (In case you just created a position and are wondering why it's not showing up in the graph.)
+        </li>
+        <li>
           <span class="font-medium">One figure per position pair:</span>
           Only one figure is drawn between each pair of positions—this is intentional, to avoid overcrowding the graph with parallel figures.
         </li>
@@ -171,9 +176,7 @@ export default {
             <template #question>Can I add new positions and figures?</template>
             <template #answer>
               That would be cool, please do!
-              You'll need an account—send me an email at <a href="mailto:admin@ejmastnak.com" class="p-px rounded-md text-blue-500 hover:text-blue-600 hover:underline focus:outline-none focus:ring-2 focus:ring-blue-700" >
-                admin@ejmastnak.com
-              </a> (in English, Slovene, or Spanish) and I'll set you up.
+              You'll need an account for that—you can create one <MyLink :colored="true" :href="route('register')">here</MyLink>.
             </template>
           </QuestionAndAnswer>
         </li>
@@ -289,7 +292,7 @@ export default {
     <!-- Footer with copyright -->
     <div class="mt-10 text-sm sm:text-base px-4 xs:px-6 sm:px-8 py-2 text-gray-400 flex gap-x-2 border-t border-gray-200 overflow-x-auto">
       <p>©{{new Date().getFullYear()}}</p>
-      <p class="whitespace-nowrap">Elijan Mastnak</p>
+      <MyLink href="https://ejmastnak.com" class="whitespace-nowrap">Elijan Mastnak</MyLink>
       <a href="mailto:elijan@ejmastnak.com">elijan@ejmastnak.com</a>
     </div>
 

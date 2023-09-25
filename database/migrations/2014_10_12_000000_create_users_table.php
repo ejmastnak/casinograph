@@ -16,9 +16,9 @@ return new class extends Migration {
             $table->string('email')->unique();
             $table->timestamp('email_verified_at')->nullable();
             $table->string('password');
-            $table->boolean('can_create')->default(false);
-            $table->boolean('can_update')->default(false);
-            $table->boolean('can_delete')->default(false);
+            $table->boolean('can_create')->default(true);
+            $table->boolean('can_update')->default(true);
+            $table->boolean('can_delete')->default(true);
             $table->boolean('is_admin')->default(false);
             $table->rememberToken();
             $table->timestamps();
