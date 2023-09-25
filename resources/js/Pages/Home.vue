@@ -1,9 +1,23 @@
 <script setup>
+import { ref } from 'vue'
 import { Head } from '@inertiajs/vue3'
 import MyLink from '@/Components/MyLink.vue'
-import { QuestionMarkCircleIcon, InformationCircleIcon } from '@heroicons/vue/24/outline'
 import QuestionAndAnswer from '@/Components/QuestionAndAnswer.vue'
-import { Popover, PopoverButton, PopoverPanel, PopoverOverlay } from '@headlessui/vue'
+import SecondaryButton from '@/Components/SecondaryButton.vue'
+import PrimaryButton from '@/Components/PrimaryButton.vue'
+import DangerButton from '@/Components/DangerButton.vue'
+import PlainButton from '@/Components/PlainButton.vue'
+import { QuestionMarkCircleIcon, InformationCircleIcon, ArrowsUpDownIcon, ArrowsPointingOutIcon, XMarkIcon } from '@heroicons/vue/24/outline'
+import {
+  Dialog, DialogPanel, DialogTitle, DialogDescription,
+  Popover, PopoverButton, PopoverPanel, PopoverOverlay
+} from '@headlessui/vue'
+
+const graphIsFullscreen = ref(false)
+function setGraphIsFullScreen(value) {
+  graphIsFullscreen.value = value
+}
+
 </script>
 
 <script>
@@ -20,25 +34,36 @@ export default {
     <h1 class="text-2xl text-gray-800">CasinoGraph</h1>
 
     <div class="mt-2 flex">
-      <div class="max-w-xl ">
+      <!-- Mobile -->
+      <div class="sm:hidden max-w-xl text-gray-600 text-sm">
+        Cuban Casino as a directed cyclic graph in which the figures (edges) connect the positions (vertices).
+        <a href="#more-info" class="p-px rounded-md text-blue-500 hover:text-blue-600 hover:underline focus:outline-none focus:ring-2 focus:ring-blue-700" >
+          More info below.
+        </a>
+      </div>
+      <!-- Desktop -->
+      <div class="hidden sm:block max-w-md lg:max-w-lg text-gray-700 mr-4">
         This site approaches Cuban Casino from a computer science perspective:
         you're seeing a representation of Casino as a directed cyclic graph in which the figures (edges) connect the positions (vertices).
         <a href="#more-info" class="p-px rounded-md text-blue-500 hover:text-blue-600 hover:underline focus:outline-none focus:ring-2 focus:ring-blue-700" >
           More info lower on this page.
         </a>
       </div>
-      <div class="ml-auto w-fit">
+
+      <!-- What is Casino, What is a graph? -->
+      <div class="hidden sm:block ml-auto w-fit">
 
         <!-- What is Casino? -->
         <div class="relative">
           <Popover>
             <PopoverButton class="w-full flex items-center px-3 py-1 bg-blue-50 border border-gray-300 rounded-lg text-sm text-gray-600 shadow-sm hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 disabled:opacity-25 transition ease-in-out duration-150" >
               <InformationCircleIcon class="-ml-1 h-6 w-6 text-gray-500 shrink-0" />
-              <p class="ml-1.5">Wait, what is Casino?</p>
+              <p class="md:hidden ml-1.5 whitespace-nowrap">What is Casino?</p>
+              <p class="hidden md:block ml-1.5">Wait, what is Casino?</p>
             </PopoverButton>
-            <PopoverOverlay class="fixed inset-0 bg-black opacity-20" />
 
-            <PopoverPanel class="absolute right-0 mt-0.5 px-4 py-3 w-96 max-w-sm rounded-lg overflow-hidden bg-gray-50 shadow text-gray-800 z-50">
+            <PopoverOverlay class="fixed inset-0 bg-black opacity-20 z-40" />
+            <PopoverPanel class="absolute right-0 mt-0.5 px-4 py-3 w-96 max-w-sm rounded-lg overflow-hidden border border-gray-400 bg-white shadow text-gray-800 z-50">
               <p>
                 <MyLink :colored="true" href="https://en.wikipedia.org/wiki/Cuban_salsa">Casino</MyLink> is a social dance from Cuba, and more commonly goes by the name of Cuban salsa (much to the dismay of traditionalists, who insist Casino is the only proper name).
               </p>
@@ -55,25 +80,26 @@ export default {
         </div>
 
         <!-- What is a graph? -->
-        <div class="mt-1 relative">
+        <div class="mt-2 relative">
           <Popover>
             <PopoverButton class="w-full flex items-center px-3 py-1 bg-white border border-gray-200 rounded-lg text-sm text-gray-600 shadow-sm hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 disabled:opacity-25 transition ease-in-out duration-150" >
               <InformationCircleIcon class="-ml-1 h-6 w-6 text-gray-500 shrink-0" />
-              <p class="ml-1.5">And what is a graph?</p>
+              <p class="md:hidden ml-1.5 whitespace-nowrap">What is a graph?</p>
+              <p class="hidden md:block ml-1.5">And what is a graph?</p>
             </PopoverButton>
-            <PopoverOverlay class="fixed inset-0 bg-black opacity-20" />
 
-            <PopoverPanel class="absolute right-0 mt-0.5 px-4 py-3 w-96 max-w-sm rounded-lg overflow-hidden bg-gray-50 shadow text-gray-800 z-50">
+            <PopoverOverlay class="fixed inset-0 bg-black opacity-20 z-40" />
+            <PopoverPanel class="absolute right-0 mt-0.5 px-4 py-3 w-96 max-w-sm rounded-lg overflow-hidden border border-gray-400 bg-white shadow text-gray-800 z-50">
               <p>
                 In the context of this website, a
-<MyLink :colored="true" href="https://en.wikipedia.org/wiki/Graph_(abstract_data_type)">graph</MyLink>
+                <MyLink :colored="true" href="https://en.wikipedia.org/wiki/Graph_(abstract_data_type)">graph</MyLink>
                 is a data structure used in computer science to efficiently represent a group of connected data points.
                 In the comp sci lingo, the data points are called <span class="italic">vertices</span> and the connections between them are called <span class="italic">edges</span>.
               </p>
 
               <p class="mt-2">
                 Graphs are ubiquitous in the modern computational infrastructure—common real-life examples include
-                social networks like Facebook and Instagram, where following and friending act as edges connecting users (vertices);
+                social networks like Facebook and Instagram, where relationships (e.g., following and friending) act as edges connecting users (vertices);
                 navigation applications like Google Maps and Apple Maps, where streets (edges) connect intersections (vertices);
                 and the Web, where web sites (vertices) are connected by links (edges).
               </p>
@@ -88,11 +114,31 @@ export default {
       </div>
     </div>
 
-    <div class="mt-2 overflow-auto">
-      <object class="w-full" type="image/svg+xml" data="img/casinograph.svg"></object>
+    <!-- Graph -->
+    <div class="relative mt-8 -mx-2">
+      <div class="border overflow-auto border-gray-200 shadow rounded-lg h-96 sm:h-[36rem]">
+
+        <!-- Enter full screen -->
+        <PlainButton class="absolute left-2 top-2" @click="setGraphIsFullScreen(true)">
+          <ArrowsPointingOutIcon class="-ml-1 w-6 h-6 text-gray-500 shrink-0" />
+          <p class="ml-1">Full screen</p>
+        </PlainButton>
+
+        <!-- Scroll to explore -->
+        <div class="absolute left-2 top-14 px-2 py-1 bg-white/95 flex items-center rounded">
+          <ArrowsUpDownIcon class="-ml-1 w-6 h-6 text-gray-500 shrink-0" />
+          <p class="ml-1 -mt-0.5 text-sm text-gray-600">Scroll to explore</p>
+        </div>
+
+        <!-- Graph -->
+        <Transition name="zoom" appear>
+          <object class="p-1 mx-auto max-w-xl md:max-w-3xl lg:max-w-4xl" type="image/svg+xml" data="img/casinograph.svg"></object>
+        </Transition>
+      </div>
     </div>
 
-    <div class="">
+    <!-- About the graph -->
+    <section class="mt-8">
       <h2 class="text-xl text-gray-700" id="more-info">About the graph</h2>
       <ul class="mt-2 list-disc space-y-1">
         <li>
@@ -111,11 +157,11 @@ export default {
         </li>
         <li>
           <span class="font-medium">Refresh the page for new parallel figures:</span>
-          Of course, two positions are often connected by multiple figures (for example, Vacílala, Enchufa, and Dile que sí all take you from the Open position to Caida), so showing only one figure per position pair will leave other figures out.
+          Two positions are often connected by multiple figures (for example, Vacílala, Enchufa, and Dile que sí all take you from the Open position to Caida), so showing only one figure per position pair leaves other figures out.
           To keep things interesting, you can refresh the page to display a new (randomly chosen) set of parallel figures.
         </li>
       </ul>
-    </div>
+    </section>
 
     <div class="mt-8">
       <h2 class="text-xl text-gray-700" id="qa">Questions and answers</h2>
@@ -169,14 +215,6 @@ export default {
       <ul class="mt-2 list-disc space-y-1">
         <li>
           <QuestionAndAnswer>
-            <template #question>Have source code available?</template>
-            <template #answer>
-              Sure, <MyLink :colored="true" href="https://github.com/ejmastnak/casinograph">github.com/ejmastnak/casinograph</MyLink>.
-            </template>
-          </QuestionAndAnswer>
-        </li>
-        <li>
-          <QuestionAndAnswer>
             <template #question>I'm into web dev, what's your text stack?</template>
             <template #answer>
               The web site is built with
@@ -189,9 +227,17 @@ export default {
         </li>
         <li>
           <QuestionAndAnswer>
+            <template #question>Have source code available?</template>
+            <template #answer>
+              Sure, <MyLink :colored="true" href="https://github.com/ejmastnak/casinograph">github.com/ejmastnak/casinograph</MyLink>.
+            </template>
+          </QuestionAndAnswer>
+        </li>
+        <li>
+          <QuestionAndAnswer>
             <template #question>What, you're storing a graph in a relational database?!</template>
             <template #answer>
-              I entertained the idea of using a graph-oriented database... but then realized this app generally queries only one level of adjacent vertices per web request,
+              I entertained the idea of using a graph-oriented database... but this app generally queries only one level of adjacent vertices per web request,
               and doesn't actually traverse the graph or require any of the classic graph algorithms (finding shortest paths, etc.) that a graph database efficiently supports.
               And so the convenience of using a relational database in the web development ecosystem justifies any (potential) slight performance penalty thus incurred.
               (The one exception is drawing the graph that appears higher up on this page, but Graphviz builds its own representation of the graph when doing that anyway.)
@@ -247,5 +293,37 @@ export default {
       <a href="mailto:elijan@ejmastnak.com">elijan@ejmastnak.com</a>
     </div>
 
+    <!-- Full screen graph dialog -->
+    <Dialog :open="graphIsFullscreen" @close="setGraphIsFullScreen">
+      <DialogPanel class="fixed inset-0 bg-white overflow-auto">
+
+        <!-- Graph -->
+        <Transition name="zoom" appear>
+          <object class="mx-auto max-w-2xl sm:max-w-3xl md:max-w-5xl lg:max-w-7xl xl:max-w-none" type="image/svg+xml" data="img/casinograph.svg"></object>
+        </Transition>
+
+        <!-- Close button -->
+        <Transition name="zoom" appear>
+          <DangerButton class="fixed top-4 right-4" @click="setGraphIsFullScreen(false)" >
+            <XMarkIcon class="-ml-1 w-6 h-6 text-white shrink-0"/>
+            <p class="ml-1">Close</p>
+          </DangerButton>
+        </Transition>
+      </DialogPanel>
+    </Dialog>
+
   </div>
 </template>
+
+<style>
+.zoom-enter-active {animation: zoom-in 1s ease-in-out;}
+.zoom-leave-active {animation: zoom-out 1s ease-in-out;}
+@keyframes zoom-in {
+from {transform: scale(0,0);}
+to {transform: scale(1,1);}
+}
+@keyframes zoom-out {
+from {transform: scale(1,1);}
+to {transform: scale(0,0);}
+}
+</style>

@@ -174,7 +174,7 @@ const showingNavigationDropdown = ref(false);
       </header>
 
       <!-- Page Content -->
-      <main class="py-6 px-2 sm:px-6">
+      <main class="py-6 px-1 sm:px-6">
         <slot />
       </main>
     </div>
