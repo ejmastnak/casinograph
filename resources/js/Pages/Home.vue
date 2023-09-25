@@ -177,5 +177,12 @@ export default {
       </ul>
     </div>
 
+    <!-- Footer with copyright -->
+    <div class="mt-10 text-sm sm:text-base px-4 xs:px-6 sm:px-8 py-2 text-gray-400 flex gap-x-2 border-t border-gray-200 overflow-x-auto">
+      <p>©{{new Date().getFullYear()}}</p>
+      <p class="whitespace-nowrap">Elijan Mastnak</p>
+      <a href="mailto:elijan@ejmastnak.com">elijan@ejmastnak.com</a>
+    </div>
+
   </div>
 </template>
