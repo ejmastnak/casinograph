@@ -17,9 +17,10 @@
     </head>
     <noscript>
         <div>
-            <h2 class="text-sm">This web site requires JavaScript.</h2>
+            <h2 style="font-size: 1.5em; margin-bottom: 0.83em; font-weight: bold;">This web site requires JavaScript.</h2>
             <p style="max-width: 42rem; line-height: 1.5; color: rgb(31 41 55);">
-                I'm sorry that I have to require this—I tend to disable JavaScript myself—but I'm using a JavaScript framework (Vue.js) for this site and there's no way around it. I promise I won't do anything yucky; if you feel inspired to check for yourself, you can find the source code <a href="https://github.com/ejmastnak/casinograph">on GitHub</a>.
+                I'm sorry that I have to require this—I tend to disable JavaScript myself—but I'm using a JavaScript framework (Vue.js) for this site and there's no way around it. I promise I won't do anything yucky; if you feel inspired to check for yourself, you can find the source code
+                <a style="color: rgb(7 99 235); text-decoration-line: underline;" href="https://github.com/ejmastnak/casinograph">on GitHub</a>.
             </p>
         </div>
     </noscript>
