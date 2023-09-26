@@ -99,12 +99,12 @@ const submit = () => {
   <form @submit.prevent="submit" class="">
 
     <!-- Name input -->
-    <div class="mt-4 w-full max-w-[22rem]">
+    <div class="mt-4 w-full max-w-xl">
       <InputLabel for="name" value="Name" />
       <TextInput
         id="name"
         type="text"
-        class="block w-full"
+        class="block w-80"
         v-model="form.name"
         required
       />
@@ -125,7 +125,7 @@ const submit = () => {
           <div ref="entryDivRefs" class="flex items-center">
 
             <FuzzyCombobox
-              class="w-96 ml-2"
+              class="w-80 ml-2"
               searchKey="name"
               inputClasses="text-sm"
               :bespokeDisplayForCompoundFigureFigures="true"
@@ -194,7 +194,7 @@ const submit = () => {
       <!-- Figure family input -->
       <div>
         <CustomValueCombobox
-          class="max-w-[16rem]"
+          class="w-72"
           :options="figure_families"
           :nullable="true"
           labelText="Figure family (optional)"
@@ -216,7 +216,7 @@ const submit = () => {
       <InputLabel for="description" value="Description (optional)" />
       <TextArea
         id="description"
-        class="block w-full h-64 text-sm"
+        class="block w-full h-64 text-sm max-w-xl"
         v-model="form.description"
       />
       <InputError class="mt-2" :message="form.errors.description" />

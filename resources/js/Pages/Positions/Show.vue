@@ -40,21 +40,20 @@ export default {
     <Head :title="position.name" />
 
     <div class="flex items-center">
-      <div class="flex items-baseline">
+      <div class="mr-4">
         <h1 class="text-2xl">{{position.name}}</h1>
-        <FamilyPillbox class="ml-2" v-if="position.position_family" :text="position.position_family.name" />
       </div>
 
       <SecondaryLink v-if="can_create" class="ml-auto h-fit" :href="route('positions.create')" >
         <PlusCircleIcon class="-ml-1 text-gray-600 h-6 w-6 shrink-0" />
-        <p class="ml-1 whitespace-nowrap">New position</p>
+        <p class="ml-1 whitespace-nowrap">New <span class="hidden sm:inline">position</span></p>
       </SecondaryLink>
     </div>
 
     <div class="mt-4">
       <div v-if="position.description">
         <p class="text-gray-600">Description</p>
-        <p class="">{{position.description}}</p>
+        <p class="max-w-xl">{{position.description}}</p>
       </div>
       <PlaceholderParagraph v-else class="">This position does not have a description yet.</PlaceholderParagraph>
     </div>

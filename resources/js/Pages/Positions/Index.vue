@@ -100,20 +100,22 @@ export default {
     <div class="flex">
       <div class="">
         <h1 class="text-xl">Positions</h1>
-        <p class="mt-1 text-sm text-gray-500 max-w-xs">This is a list of all positions. You can use this page to view, edit, delete, or add new positions.</p>
+        <p class="mt-1 text-sm text-gray-500 max-w-xs mr-2">This is a list of all positions. You can use this page to view, edit, delete, or add new positions.</p>
       </div>
 
       <SecondaryLink class="ml-auto h-fit" :href="route('positions.create')" >
         <PlusCircleIcon class="-ml-1 text-gray-600 h-6 w-6" />
-        <p class="ml-1 whitespace-nowrap">New position</p>
+        <p class="ml-1 whitespace-nowrap">New <span class="hidden sm:inline">position</span></p>
       </SecondaryLink>
     </div>
 
     <!-- Main panel for table and search -->
     <div class="mt-6 border border-gray-100 shadow-md rounded-lg">
-      <div class="m-3 flex">
+
+      <!-- Search and filter components -->
+      <div class="m-3 flex flex-col space-y-2 md:flex-row md:space-y-0">
         <!-- Fuzzy search by name -->
-        <div>
+        <div class="mr-auto w-full md:w-fit">
           <label for="position-search-query" class="ml-1 text-sm text-gray-500">
             Search by name
           </label>
@@ -122,7 +124,7 @@ export default {
               <MagnifyingGlassIcon class="w-5 h-5 text-gray-500" />
             </div>
             <TextInput
-              class="py-1.5 pl-10 text-gray-700 w-72 bg-gray-50"
+              class="w-80 max-w-full py-1.5 pl-10 text-gray-700 bg-gray-50"
               type="text"
               id="position-search-query"
               v-model="positionSearchQuery"
@@ -131,8 +133,7 @@ export default {
           </div>
         </div>
 
-
-        <div class="flex items-end ml-auto">
+        <div class="flex items-end">
 
           <!-- PositionFamily Filter -->
           <MultiSelect
@@ -141,7 +142,6 @@ export default {
             labelText="Filter by family"
             :modelValue="selectedPositionFamilies"
             @update:modelValue="newValue => selectedPositionFamilies = newValue"
-            class="ml-4"
           />
 
           <!-- Clear filters buttom -->
@@ -162,7 +162,7 @@ export default {
 
       </div>
 
-      <table class="mt-6 sm:table-fixed w-full text-sm sm:text-base text-left">
+      <table class="mt-6 md:table-fixed w-full text-sm sm:text-base text-left">
         <thead class="text-xs text-gray-700 uppercase bg-gray-50">
           <tr>
             <th

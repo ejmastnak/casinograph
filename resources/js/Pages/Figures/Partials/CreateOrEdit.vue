@@ -43,12 +43,12 @@ const submit = () => {
   <form @submit.prevent="submit" class="">
 
     <!-- Name input -->
-    <div class="mt-4 w-full max-w-[22rem]">
+    <div class="mt-4 w-full max-w-xl">
       <InputLabel for="name" value="Name" />
       <TextInput
         id="name"
         type="text"
-        class="block w-full"
+        class="block w-80"
         v-model="form.name"
         required
       />
@@ -58,7 +58,7 @@ const submit = () => {
     <!-- From/to position -->
     <div class="mt-3">
       <FuzzyCombobox
-        class="w-full max-w-[22rem]"
+        class="w-80"
         labelText="From position"
         searchKey="name"
         :options="positions"
@@ -71,30 +71,30 @@ const submit = () => {
       <InputError class="mt-2" :message="form.errors.from_position_id" />
     </div>
 
-    <div class="mt-3 flex items-start border-b pb-8 border-gray-200">
-      <FuzzyCombobox
-        class="w-full max-w-[22rem]"
-        labelText="To position"
-        searchKey="name"
-        :options="positions"
-        :modelValue="form.to_position"
-        @update:modelValue="(newValue) => {
-          form.to_position = newValue;
-          form.to_position_id = newValue.id;
-        }"
-      />
-      <InputError class="mt-2" :message="form.errors.to_position_id" />
+    <div class="mt-3 flex items-start border-b pb-6 border-gray-200">
+      <div>
+        <FuzzyCombobox
+          class="w-80"
+          labelText="To position"
+          searchKey="name"
+          :options="positions"
+          :modelValue="form.to_position"
+          @update:modelValue="(newValue) => {
+            form.to_position = newValue;
+            form.to_position_id = newValue.id;
+          }"
+        />
+        <InputError class="mt-2" :message="form.errors.to_position_id" />
+      </div>
     </div>
 
-
-
     <!-- Figure family and weight -->
-    <div class="mt-3 flex items-start">
+    <div class="mt-5 flex items-start">
 
       <!-- Figure family input -->
       <div>
         <CustomValueCombobox
-          class="max-w-[16rem]"
+          class="w-72"
           :options="figure_families"
           :nullable="true"
           labelText="Figure family (optional)"
@@ -112,11 +112,11 @@ const submit = () => {
     </div>
 
     <!-- Description input -->
-    <div class="mt-4 w-full">
+    <div class="mt-5 w-full">
       <InputLabel for="description" value="Description (optional)" />
       <TextArea
         id="description"
-        class="block w-full h-64 text-sm"
+        class="block w-full h-64 text-sm max-w-xl"
         v-model="form.description"
       />
       <InputError class="mt-2" :message="form.errors.description" />

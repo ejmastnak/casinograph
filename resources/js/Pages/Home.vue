@@ -33,25 +33,10 @@ export default {
 
     <h1 class="text-2xl text-gray-800">CasinoGraph</h1>
 
-    <div class="mt-2 flex">
-      <!-- Mobile -->
-      <div class="sm:hidden max-w-xl text-gray-600 text-sm">
-        Cuban Casino as a directed cyclic graph in which the figures (edges) connect the positions (vertices).
-        <a href="#more-info" class="p-px rounded-md text-blue-500 hover:text-blue-600 hover:underline focus:outline-none focus:ring-2 focus:ring-blue-700" >
-          More info below.
-        </a>
-      </div>
-      <!-- Desktop -->
-      <div class="hidden sm:block max-w-md lg:max-w-lg text-gray-700 mr-4">
-        This site approaches Cuban Casino from a computer science perspective:
-        you're seeing a representation of Casino as a directed cyclic graph in which the figures (edges) connect the positions (vertices).
-        <a href="#more-info" class="p-px rounded-md text-blue-500 hover:text-blue-600 hover:underline focus:outline-none focus:ring-2 focus:ring-blue-700" >
-          More info lower on this page.
-        </a>
-      </div>
+    <div class="mt-2">
 
-      <!-- What is Casino, What is a graph? -->
-      <div class="hidden sm:block ml-auto w-fit">
+      <!-- Popover buttons for What is Casino, What is a graph? -->
+      <div class="w-fit h-fit float-right ml-2 xs:ml-4">
 
         <!-- What is Casino? -->
         <div class="relative">
@@ -59,13 +44,14 @@ export default {
             <PopoverButton class="w-full flex items-center px-3 py-1 bg-blue-50 border border-gray-300 rounded-lg text-sm text-gray-600 shadow-sm hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 disabled:opacity-25 transition ease-in-out duration-150" >
               <InformationCircleIcon class="-ml-1 h-6 w-6 text-gray-500 shrink-0" />
               <p class="md:hidden ml-1.5 whitespace-nowrap">What is Casino?</p>
-              <p class="hidden md:block ml-1.5">Wait, what is Casino?</p>
+              <p class="hidden md:block ml-1.5 whitespace-nowrap">Wait, what is Casino?</p>
             </PopoverButton>
 
             <PopoverOverlay class="fixed inset-0 bg-black opacity-20 z-40" />
-            <PopoverPanel class="absolute right-0 mt-0.5 px-4 py-3 w-96 max-w-sm rounded-lg overflow-hidden border border-gray-400 bg-white shadow text-gray-800 z-50">
+            <PopoverPanel class="absolute right-0 w-[90vw] xs:w-96 mt-0.5 px-4 py-3 rounded-lg overflow-hidden border border-gray-400 bg-white shadow text-gray-800 z-50">
               <p>
-                <MyLink :colored="true" href="https://en.wikipedia.org/wiki/Cuban_salsa">Casino</MyLink> is a social dance from Cuba, and more commonly goes by the name of Cuban salsa (much to the dismay of traditionalists, who insist Casino is the only proper name).
+                <MyLink :colored="true" href="https://en.wikipedia.org/wiki/Cuban_salsa">Casino</MyLink> is a social dance from Cuba.
+                It is a style of salsa, and more commonly goes by the name of <span class="italic">Cuban salsa</span> (much to the dismay of traditionalists, who insist Casino is the only proper name).
               </p>
 
               <p class="mt-2">
@@ -85,11 +71,11 @@ export default {
             <PopoverButton class="w-full flex items-center px-3 py-1 bg-white border border-gray-200 rounded-lg text-sm text-gray-600 shadow-sm hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 disabled:opacity-25 transition ease-in-out duration-150" >
               <InformationCircleIcon class="-ml-1 h-6 w-6 text-gray-500 shrink-0" />
               <p class="md:hidden ml-1.5 whitespace-nowrap">What is a graph?</p>
-              <p class="hidden md:block ml-1.5">And what is a graph?</p>
+              <p class="hidden md:block ml-1.5 whitespace-nowrap">And what is a graph?</p>
             </PopoverButton>
 
             <PopoverOverlay class="fixed inset-0 bg-black opacity-20 z-40" />
-            <PopoverPanel class="absolute right-0 mt-0.5 px-4 py-3 w-96 max-w-sm rounded-lg overflow-hidden border border-gray-400 bg-white shadow text-gray-800 z-50">
+            <PopoverPanel class="absolute right-0 w-[90vw] xs:w-96 mt-0.5 px-4 py-3 rounded-lg overflow-hidden border border-gray-400 bg-white shadow text-gray-800 z-50">
               <p>
                 In the context of this website, a
                 <MyLink :colored="true" href="https://en.wikipedia.org/wiki/Graph_(abstract_data_type)">graph</MyLink>
@@ -112,6 +98,15 @@ export default {
         </div>
 
       </div>
+
+      <!-- Explanation of site -->
+      <div class="max-w-lg text-gray-600">
+        You're seeing Cuban Casino represented as a directed cyclic graph in which the figures (edges) connect the positions (vertices).
+        <a href="#more-info" class="p-px rounded-md text-blue-500 hover:text-blue-600 hover:underline focus:outline-none focus:ring-2 focus:ring-blue-700" >
+          More info below.
+        </a>
+      </div>
+
     </div>
 
     <!-- Graph -->
@@ -144,6 +139,7 @@ export default {
         <li>
           <span class="font-medium">It's clickable!</span>
           Click on any figure or position to learn more.
+          (Disclaimer: descriptions are currently minimal.)
         </li>
         <li>
           <span class="font-medium">Simple figures:</span>

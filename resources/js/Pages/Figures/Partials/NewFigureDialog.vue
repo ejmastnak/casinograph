@@ -32,11 +32,12 @@ function closeAndChooseCompound() {
 </script>
 
 <template>
-  <Dialog :open="isOpen" @close="cancel" class="relative z-50">
-    <div class="fixed inset-0 flex items-center justify-center p-4 bg-blue-50/80">
-      <DialogPanel class="px-6 pt-6 w-full max-w-sm rounded-lg overflow-hidden bg-white shadow">
+  <Dialog :open="isOpen" @close="cancel" class="z-50">
+    <div class="fixed inset-0 flex items-center justify-center p-4 bg-blue-50/80 overflow-auto pb-4">
+      <DialogPanel class="px-6 pt-6 w-full max-w-sm rounded-lg overflow-auto bg-white shadow">
 
-        <div class="">
+        <!-- Top panel with white background and main content -->
+        <div>
 
           <DialogTitle class="text-lg font-bold text-gray-600">
             Choose figure type
@@ -64,16 +65,16 @@ function closeAndChooseCompound() {
         </div>
 
         <!-- More info and cancel buttons -->
-        <div class="flex mt-8 -mx-6 px-4 py-3 bg-gray-50">
+        <div class="flex mt-8 -mx-6 min-w-fit px-4 py-3 bg-gray-50 z-10">
 
-          <Popover class="absolute">
+          <Popover>
             <PopoverButton class="ml-auto inline-flex items-center px-4 py-2 bg-white border border-gray-200 rounded-md font-semibold text-xs text-gray-600 uppercase tracking-widest shadow-sm hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 disabled:opacity-25 transition ease-in-out duration-150" >
               <InformationCircleIcon class="-ml-1 h-6 w-6 text-gray-500 shrink-0" />
               <p class="ml-1.5">Explanation</p>
             </PopoverButton>
             <PopoverOverlay class="fixed inset-0 bg-black opacity-20" />
 
-            <PopoverPanel class="absolute mt-0.5 px-6 py-3 w-96 max-w-sm rounded-lg overflow-hidden bg-gray-50 shadow text-gray-800">
+            <PopoverPanel class="absolute inset-x-2 xs:inset-x-auto xs:w-96 max-w-fit mt-0.5 px-6 py-3 rounded-lg overflow-hidden bg-gray-50 shadow text-gray-800 z-50">
               Explanation:
               <ul class="mt-2 list-disc ml-4">
                 <li>A <span class="font-semibold">simple figure</span> takes a single 8-count.</li>
@@ -83,12 +84,13 @@ function closeAndChooseCompound() {
             </PopoverPanel>
           </Popover>
 
-          <SecondaryButton @click="cancel" class="ml-40 !py-3 !text-gray-600 !border-gray-200" >
+          <SecondaryButton @click="cancel" class="ml-3 !py-3 !text-gray-600 !border-gray-200" >
             Cancel
           </SecondaryButton>
         </div>
 
       </DialogPanel>
     </div>
+
   </Dialog>
 </template>

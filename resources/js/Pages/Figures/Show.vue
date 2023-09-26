@@ -51,20 +51,19 @@ export default {
 
     <div class="flex items-center">
       <!-- Figure and figure family name -->
-      <div class="flex items-baseline">
+      <div class="mr-4">
         <h1 class="text-2xl">{{figure.name}}</h1>
-        <FamilyPillbox class="ml-2" v-if="figure.figure_family" :text="figure.figure_family.name" />
       </div>
 
       <!-- New Figure button -->
       <SecondaryButton v-if="can_create" class="ml-auto h-fit" @click="newFigureDialog.open()" >
         <PlusCircleIcon class="-ml-1 text-gray-600 h-6 w-6 shrink-0" />
-        <p class="ml-1 whitespace-nowrap">New figure</p>
+        <p class="ml-1 whitespace-nowrap">New <span class="hidden sm:inline">figure</span></p>
       </SecondaryButton>
     </div>
 
     <!-- From position / to position -->
-    <div class="mt-0.5 text-gray-600">
+    <div class="mt-1 sm:mt-0.5 text-gray-600">
       From
       <MyLink :href="route('positions.show', figure.from_position_id)" class="font-semibold" >
         {{figure.from_position.name}}

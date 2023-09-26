@@ -124,19 +124,21 @@ export default {
     <Head title="Figures" />
 
     <div class="flex">
-      <div class="">
+      <div class="mr-2">
         <h1 class="text-xl">Figures</h1>
         <p class="mt-1 text-sm text-gray-500 max-w-xs">This is a list of all figures. You can use this page to view, edit, delete, or add new figures.</p>
       </div>
 
       <SecondaryButton class="ml-auto h-fit" @click="newFigureDialog.open()" >
         <PlusCircleIcon class="-ml-1 text-gray-600 h-6 w-6 shrink-0" />
-        <p class="ml-1 whitespace-nowrap">New figure</p>
+        <p class="ml-1 whitespace-nowrap">New <span class="hidden sm:inline">figure</span></p>
       </SecondaryButton>
     </div>
 
     <!-- Main panel for table and search -->
-    <div class="mt-6 border border-gray-100 shadow-md rounded-lg">
+    <div class="mt-6 border border-gray-100 shadow-md rounded-lg overflow-auto">
+
+      <!-- Search and filter components -->
       <div class="m-3 flex items-end">
         <!-- Fuzzy search by name -->
         <div>
@@ -222,7 +224,7 @@ export default {
 
       </div>
 
-      <table class="mt-6 sm:table-fixed w-full text-sm sm:text-base text-left">
+      <table class="mt-6 md:table-fixed w-full text-sm sm:text-base text-left">
         <thead class="text-xs text-gray-700 uppercase bg-gray-50">
           <tr>
             <th
