@@ -226,7 +226,7 @@ export default {
       <ul class="mt-3 space-y-5">
         <li>
           <QuestionAndAnswer>
-            <template #question>I'm into web dev, what's the text stack?</template>
+            <template #question>I'm into web dev, what's the tech stack?</template>
             <template #answer>
               The web site is built with
               <MyLink :colored="true" href="https://laravel.com/">Laravel</MyLink> and <MyLink :colored="true" href="https://vuejs.org/">Vue</MyLink>;
