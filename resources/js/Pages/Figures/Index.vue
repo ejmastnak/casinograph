@@ -136,10 +136,11 @@ export default {
     </div>
 
     <!-- Main panel for table and search -->
-    <div class="mt-6 border border-gray-100 shadow-md rounded-lg overflow-auto">
+    <div class="mt-6 pt-3 border border-gray-100 shadow-md rounded-lg overflow-auto">
 
       <!-- Search and filter components -->
-      <div class="m-3 flex items-end">
+      <div class="px-3 flex flex-wrap items-end space-y-2 gap-x-4">
+
         <!-- Fuzzy search by name -->
         <div>
           <label for="figure-search-query" class="ml-1 text-sm text-gray-500">
@@ -161,9 +162,8 @@ export default {
 
         <!-- FigureFamily Filter -->
         <MultiSelect
-          class="ml-3"
           :options="figure_families"
-          width="w-48"
+          width="w-44"
           labelText="Filter by family"
           inputClasses="!py-2.5"
           :modelValue="selectedFigureFamilies"
@@ -171,7 +171,7 @@ export default {
         />
 
         <!-- Simple and compound figure checkboxes -->
-        <div class="ml-4 text-gray-700 text-sm">
+        <div class="text-gray-700 text-sm">
 
           <p class="text-gray-500">Figures to show</p>
 
@@ -204,7 +204,7 @@ export default {
         </div>
 
         <!-- Clear filters buttom -->
-        <div class="ml-auto flex items-center h-fit">
+        <div class="flex items-center h-fit">
           <label for="clear-filters" class="sr-only">
             Clear filters
           </label>
@@ -214,13 +214,11 @@ export default {
             @click="clearFilters"
           >
             <XMarkIcon class="-ml-2 w-6 h-6 text-gray-500 shrink-0" />
-            <div class="ml-2 text-gray-600">
-              <p>Clear</p>
-              <p>filters</p>
+            <div class="ml-0.5 text-gray-600 whitespace-nowrap">
+              Clear filters
             </div>
           </PlainButton>
         </div>
-
 
       </div>
 

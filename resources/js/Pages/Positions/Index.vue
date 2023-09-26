@@ -110,12 +110,13 @@ export default {
     </div>
 
     <!-- Main panel for table and search -->
-    <div class="mt-6 border border-gray-100 shadow-md rounded-lg">
+    <div class="mt-6 pt-3 border border-gray-100 shadow-md rounded-lg overflow-auto">
 
       <!-- Search and filter components -->
-      <div class="m-3 flex flex-col space-y-2 md:flex-row md:space-y-0">
+      <div class="px-3 flex flex-wrap items-end space-y-2 gap-x-4">
+
         <!-- Fuzzy search by name -->
-        <div class="mr-auto w-full md:w-fit">
+        <div class="w-80 sm:w-fit">
           <label for="position-search-query" class="ml-1 text-sm text-gray-500">
             Search by name
           </label>
@@ -133,31 +134,28 @@ export default {
           </div>
         </div>
 
-        <div class="flex items-end">
+        <!-- PositionFamily Filter -->
+        <MultiSelect
+          :options="position_families"
+          width="w-40"
+          labelText="Filter by family"
+          :modelValue="selectedPositionFamilies"
+          @update:modelValue="newValue => selectedPositionFamilies = newValue"
+        />
 
-          <!-- PositionFamily Filter -->
-          <MultiSelect
-            :options="position_families"
-            width="w-36"
-            labelText="Filter by family"
-            :modelValue="selectedPositionFamilies"
-            @update:modelValue="newValue => selectedPositionFamilies = newValue"
-          />
-
-          <!-- Clear filters buttom -->
-          <div class="ml-4 flex items-center">
-            <label for="clear-filters" class="sr-only">
-              Clear filters
-            </label>
-            <PlainButton
-              id="clear-filters"
-              class="!bg-gray-50"
-              @click="clearFilters"
-            >
-              <XMarkIcon class="-ml-1 w-5 h-5 text-gray-600 shrink-0" />
-              <span class="ml-1 text-gray-600">Clear filters</span>
-            </PlainButton>
-          </div>
+        <!-- Clear filters buttom -->
+        <div class="flex items-center">
+          <label for="clear-filters" class="sr-only">
+            Clear filters
+          </label>
+          <PlainButton
+            id="clear-filters"
+            class="!bg-gray-50"
+            @click="clearFilters"
+          >
+            <XMarkIcon class="-ml-1 w-5 h-5 text-gray-600 shrink-0" />
+            <span class="ml-1 text-gray-600 whitespace-nowrap">Clear filters</span>
+          </PlainButton>
         </div>
 
       </div>
