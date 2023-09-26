@@ -172,7 +172,18 @@ export default {
             <template #question>Can I add new positions and figures?</template>
             <template #answer>
               That would be cool, please do!
-              You'll need an account for that—you can create one <MyLink :colored="true" :href="route('register')">here</MyLink>.
+              You'll need an account for that—if you aren't already logged in, you can create one <MyLink :colored="true" :href="route('register')">here</MyLink>.
+              You can then add to the positions and figures already on this page.
+            </template>
+          </QuestionAndAnswer>
+        </li>
+        <li>
+          <QuestionAndAnswer>
+            <template #question>That's nice, but I'd prefer to have <span class="italic">only</span> my positions/figures and none of the pre-existing ones.</template>
+            <template #answer>
+              Contact me.
+              It's possible to set up a private account where you have complete control over the positions, figures, names, descriptions, etc.
+              You can reach me at <MyLink :colored="true" href="mailto:admin@ejmastnak.com">admin@ejmastnak.com</MyLink> in English, Slovene, or Spanish.
             </template>
           </QuestionAndAnswer>
         </li>
@@ -184,6 +195,7 @@ export default {
               Choosing names was tricky for me—even common figures often have many names (e.g. Enchufa or Enchufla?),
               and many figures and positions don't have well-accepted names at all!
               I've mixed the names I was originally taught with what I've most commonly found online, and done my best to think of sensible new names when I couldn't find an existing one.
+              Also, see the previous question.
             </template>
           </QuestionAndAnswer>
         </li>
