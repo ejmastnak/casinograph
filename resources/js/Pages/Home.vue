@@ -142,6 +142,15 @@ export default {
           (Disclaimer: descriptions are currently minimal.)
         </li>
         <li>
+          <span class="font-medium">One figure per position pair:</span>
+          Only one figure is drawn between each pair of positions—this is intentional, to avoid overcrowding the graph with parallel figures.
+        </li>
+        <li>
+          <span class="font-medium">Refresh the page for new parallel figures:</span>
+          Two positions are often connected by multiple figures (for example, Vacílala, Enchufa, and Dile que sí all take you from the Open position to Caida), so showing only one figure per position pair leaves many figures out.
+          To keep things interesting, you can refresh the page to display a new (randomly chosen) figure from each group of parallel figures.
+        </li>
+        <li>
           <span class="font-medium">Simple figures:</span>
           Only simple figures (one dancer's eight-count) are shown.
           Want to see compound figures?
@@ -151,15 +160,6 @@ export default {
           <span class="font-medium">No orphaned positions:</span>
           The graph omits orphaned positions—positions without any incoming or outgoing figures.
           (In case you just created a position and are wondering why it's not showing up in the graph.)
-        </li>
-        <li>
-          <span class="font-medium">One figure per position pair:</span>
-          Only one figure is drawn between each pair of positions—this is intentional, to avoid overcrowding the graph with parallel figures.
-        </li>
-        <li>
-          <span class="font-medium">Refresh the page for new parallel figures:</span>
-          Two positions are often connected by multiple figures (for example, Vacílala, Enchufa, and Dile que sí all take you from the Open position to Caida), so showing only one figure per position pair leaves other figures out.
-          To keep things interesting, you can refresh the page to display a new (randomly chosen) set of parallel figures.
         </li>
       </ul>
     </section>
