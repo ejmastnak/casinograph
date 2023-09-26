@@ -265,7 +265,7 @@ export default {
               {{figure.obj.compound ? "Compound" : "Simple"}}
             </td>
             <!-- FigureFamily -->
-            <td class="px-5 py-2 text-gray-600 whitespace-nowrap">
+            <td class="px-5 py-2 text-gray-600">
               {{figure.obj.figure_family?.name}}
             </td>
             <!-- Delete/Edit -->
