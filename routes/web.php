@@ -7,6 +7,8 @@ use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\PositionController;
 use App\Http\Controllers\FigureController;
 use App\Http\Controllers\CompoundFigureController;
+use App\Http\Controllers\PositionFamilyController;
+use App\Http\Controllers\FigureFamilyController;
 use App\Jobs\RegenerateCasinoGraph;
 use Illuminate\Foundation\Application;
 use Illuminate\Support\Facades\Route;
@@ -59,5 +61,7 @@ Route::middleware('auth')->group(function () {
 Route::get('positions/{position}', [PositionController::class, 'show'])->name('positions.show');
 Route::get('figures/{figure}', [FigureController::class, 'show'])->name('figures.show');
 Route::get('compound-figures/{compound_figure}', [CompoundFigureController::class, 'show'])->name('compound_figures.show');
+Route::get('position-families/{position_family}}', [PositionFamilyController::class, 'show'])->name('position_families.show');
+Route::get('figure-families/{figure_family}', [FigureFamilyController::class, 'show'])->name('figure_families.show');
 
 require __DIR__.'/auth.php';
