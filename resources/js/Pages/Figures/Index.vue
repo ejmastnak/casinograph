@@ -1,5 +1,5 @@
 <script setup>
-import { ref, watch, computed } from 'vue'
+import { ref, watch, computed, onBeforeUnmount, onMounted} from 'vue'
 import { router } from '@inertiajs/vue3'
 import fuzzysort from 'fuzzysort'
 import throttle from "lodash/throttle";
@@ -109,6 +109,31 @@ function newSimpleFigure() {
 function newCompoundFigure() {
   router.get(route('compound_figures.create'));
 }
+
+
+// Preserve scroll position and search queries when leaving page.
+onBeforeUnmount(() => {
+  sessionStorage.setItem('figuresIndexScrollX', window.scrollX)
+  sessionStorage.setItem('figuresIndexScrollY', window.scrollY)
+})
+
+// Preserve scroll position and search queries on manual page reload.
+window.onbeforeunload = function() {
+  sessionStorage.setItem('figuresIndexScrollX', window.scrollX)
+  sessionStorage.setItem('figuresIndexScrollY', window.scrollY)
+}
+
+// Restore scroll position and search queries when loading page
+onMounted(() => {
+  const scrollX = sessionStorage.getItem('figuresIndexScrollX')
+  const scrollY = sessionStorage.getItem('figuresIndexScrollY')
+  if (scrollX && scrollY) {
+    setTimeout(() => {
+      window.scrollTo(scrollX, scrollY)
+    })
+  }
+})
+
 
 </script>
 

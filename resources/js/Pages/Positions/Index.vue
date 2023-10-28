@@ -1,5 +1,5 @@
 <script setup>
-import { ref, watch, computed } from 'vue'
+import { ref, watch, computed, onBeforeUnmount, onMounted } from 'vue'
 import { router } from '@inertiajs/vue3'
 import fuzzysort from 'fuzzysort'
 import throttle from "lodash/throttle";
@@ -84,6 +84,31 @@ function deletePosition() {
   }
   idToDelete.value = null
 }
+
+
+// Preserve scroll position and search queries when leaving page.
+onBeforeUnmount(() => {
+  sessionStorage.setItem('positionsIndexScrollX', window.scrollX)
+  sessionStorage.setItem('positionsIndexScrollY', window.scrollY)
+})
+
+// Preserve scroll position and search queries on manual page reload.
+window.onbeforeunload = function() {
+  sessionStorage.setItem('positionsIndexScrollX', window.scrollX)
+  sessionStorage.setItem('positionsIndexScrollY', window.scrollY)
+}
+
+// Restore scroll position and search queries when loading page
+onMounted(() => {
+  const scrollX = sessionStorage.getItem('positionsIndexScrollX')
+  const scrollY = sessionStorage.getItem('positionsIndexScrollY')
+  if (scrollX && scrollY) {
+    setTimeout(() => {
+      window.scrollTo(scrollX, scrollY)
+    })
+  }
+})
+
 </script>
 
 <script>
