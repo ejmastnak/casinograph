@@ -170,26 +170,6 @@ export default {
       <ul class="mt-3 space-y-5">
         <li>
           <QuestionAndAnswer>
-            <template #question>Can I add new positions and figures?</template>
-            <template #answer>
-              That would be cool, please do!
-              You'll need an account for that—if you aren't already logged in, you can create one <MyLink :colored="true" :href="route('register')">here</MyLink>.
-              You can then add to the positions and figures already on this page.
-            </template>
-          </QuestionAndAnswer>
-        </li>
-        <li>
-          <QuestionAndAnswer>
-            <template #question>That's nice, but I'd prefer to have <span class="italic">only</span> my positions/figures and none of the pre-existing ones.</template>
-            <template #answer>
-              Contact me.
-              It's possible to set up a private account where you have complete control over the positions, figures, names, descriptions, etc.
-              You can reach me at <MyLink :colored="true" href="mailto:admin@ejmastnak.com">admin@ejmastnak.com</MyLink> in English, Slovene, or Spanish.
-            </template>
-          </QuestionAndAnswer>
-        </li>
-        <li>
-          <QuestionAndAnswer>
             <template #question>I don't like your names.</template>
             <template #answer>
               Fair enough.
@@ -206,7 +186,27 @@ export default {
             <template #answer>
               I know.
               There definitely <span class="italic">should</span> be be videos—dance is inherently visual and you can only get so far with plain-text descriptions.
-              But that's a project beyond the scope of what I can currently commit to.
+              But filming and/or procuring videos is a project beyond the scope of what I can currently commit to.
+            </template>
+          </QuestionAndAnswer>
+        </li>
+        <li>
+          <QuestionAndAnswer>
+            <template #question>Can I add new positions and figures?</template>
+            <template #answer>
+              That would be cool, please do!
+              You'll need an account for that (sorry for the hassle). If you aren't already logged in, you can create one <MyLink :colored="true" :href="route('register')">here</MyLink>.
+              You can then add to the positions and figures already on this page.
+            </template>
+          </QuestionAndAnswer>
+        </li>
+        <li>
+          <QuestionAndAnswer>
+            <template #question>That's nice, but I'd prefer to have <span class="italic">only</span> my positions/figures and none of the pre-existing ones.</template>
+            <template #answer>
+              Contact me.
+              If you're interested enough in this project to want your own version, I could set up a private account where you have complete control over the positions, figures, names, descriptions, etc.
+              You can reach me at <MyLink :colored="true" href="mailto:admin@ejmastnak.com">admin@ejmastnak.com</MyLink> in English, Slovene, or Spanish.
             </template>
           </QuestionAndAnswer>
         </li>
@@ -214,8 +214,12 @@ export default {
           <QuestionAndAnswer>
             <template #question>Why do this?</template>
             <template #answer>
-              It seemed cool, and it simplifies the dance into variations on a handful of fundamental figures connecting a handful of fundamental positions.
-              At least for me, this made Casino more approachable and less overwhelming; maybe it will be helpful and/or interesting to you, too.
+              Three reasons:
+              <ul class="list-disc ml-5">
+                <li>To practice building web applications.</li>
+                <li>To explore the idea that Casino's structure is fundamentally simple—at its core lie only a handful of fundamental figures connecting a handful of fundamental positions; at least for me, this made the dance more approachable and less overwhelming.</li>
+                <li>I'm both a Casino and computer nerd, and the Casino-graph connection seemed too cool to resist.</li>
+              </ul>
             </template>
           </QuestionAndAnswer>
         </li>
@@ -224,6 +228,9 @@ export default {
 
     <div class="mt-8">
       <h2 class="text-xl text-gray-700" id="nerds">For nerds</h2>
+      <p class="mt-0.5 text-gray-600 text-sm">
+        (Read: I want to geek out about the tech stack to anyone who will listen.)
+      </p>
       <ul class="mt-3 space-y-5">
         <li>
           <QuestionAndAnswer>
