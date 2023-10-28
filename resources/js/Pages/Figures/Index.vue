@@ -115,12 +115,14 @@ function newCompoundFigure() {
 onBeforeUnmount(() => {
   sessionStorage.setItem('figuresIndexScrollX', window.scrollX)
   sessionStorage.setItem('figuresIndexScrollY', window.scrollY)
+  sessionStorage.setItem('figuresIndexSearchQuery', figureSearchQuery.value)
 })
 
 // Preserve scroll position and search queries on manual page reload.
 window.onbeforeunload = function() {
   sessionStorage.setItem('figuresIndexScrollX', window.scrollX)
   sessionStorage.setItem('figuresIndexScrollY', window.scrollY)
+  sessionStorage.setItem('figuresIndexSearchQuery', figureSearchQuery.value)
 }
 
 // Restore scroll position and search queries when loading page
@@ -131,6 +133,12 @@ onMounted(() => {
     setTimeout(() => {
       window.scrollTo(scrollX, scrollY)
     })
+  }
+
+  const storedSearchQuery = sessionStorage.getItem('figuresIndexSearchQuery');
+  if (storedSearchQuery) {
+    figureSearchQuery.value = storedSearchQuery
+    search(figureSearchQuery.value)
   }
 })
 

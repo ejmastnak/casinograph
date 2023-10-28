@@ -90,12 +90,14 @@ function deletePosition() {
 onBeforeUnmount(() => {
   sessionStorage.setItem('positionsIndexScrollX', window.scrollX)
   sessionStorage.setItem('positionsIndexScrollY', window.scrollY)
+  sessionStorage.setItem('positionsIndexSearchQuery', positionSearchQuery.value)
 })
 
 // Preserve scroll position and search queries on manual page reload.
 window.onbeforeunload = function() {
   sessionStorage.setItem('positionsIndexScrollX', window.scrollX)
   sessionStorage.setItem('positionsIndexScrollY', window.scrollY)
+  sessionStorage.setItem('positionsIndexSearchQuery', positionSearchQuery.value)
 }
 
 // Restore scroll position and search queries when loading page
@@ -106,6 +108,12 @@ onMounted(() => {
     setTimeout(() => {
       window.scrollTo(scrollX, scrollY)
     })
+  }
+
+  const storedSearchQuery = sessionStorage.getItem('positionsIndexSearchQuery');
+  if (storedSearchQuery) {
+    positionSearchQuery.value = storedSearchQuery
+    search(positionSearchQuery.value)
   }
 })
 
