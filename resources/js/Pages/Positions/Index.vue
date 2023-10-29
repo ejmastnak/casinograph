@@ -228,7 +228,12 @@ export default {
             </td>
             <!-- PositionFamily -->
             <td class="px-6 py-2 text-gray-600">
-              {{position.obj.position_family?.name}}
+              <MyLink
+                v-if="position.obj.position_family"
+                :href="route('position_families.show', position.obj.position_family.id)"
+              >
+                {{position.obj.position_family.name}}
+              </MyLink>
             </td>
             <!-- Delete/Edit -->
             <td v-if="show_edit_delete_icons">

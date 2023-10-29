@@ -50,6 +50,15 @@ export default {
       </SecondaryLink>
     </div>
 
+    <div v-if="position.position_family" class="mt-0">
+      <div class="text-gray-600">
+          Position family:
+          <MyLink class="font-semibold" :href="route('position_families.show', position.position_family_id)">
+            {{position.position_family.name}}
+          </MyLink>
+      </div>
+    </div>
+
     <div class="mt-4">
       <div v-if="position.description">
         <p class="text-gray-600">Description</p>

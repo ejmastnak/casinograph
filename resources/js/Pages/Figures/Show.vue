@@ -74,6 +74,16 @@ export default {
       </MyLink>
     </div>
 
+    <div v-if="figure.figure_family">
+      <div class="text-gray-600 ">
+          Figure family:
+          <MyLink class="font-semibold" :href="route('figure_families.show', figure.figure_family_id)">
+            {{figure.figure_family.name}}
+          </MyLink>
+      </div>
+    </div>
+
+
     <!-- Description -->
     <div class="mt-4">
       <div v-if="figure.description">

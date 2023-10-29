@@ -299,7 +299,12 @@ export default {
             </td>
             <!-- FigureFamily -->
             <td class="px-5 py-2 text-gray-600">
-              {{figure.obj.figure_family?.name}}
+              <MyLink
+                v-if="figure.obj.figure_family"
+                :href="route('figure_families.show', figure.obj.figure_family.id)"
+              >
+                {{figure.obj.figure_family.name}}
+              </MyLink>
             </td>
             <!-- Delete/Edit -->
             <td v-if="show_edit_delete_icons" class="px-2">
