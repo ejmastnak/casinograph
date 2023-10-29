@@ -11,8 +11,8 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Redirect;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
-use App\Http\Requests\FigureStoreRequest;
-use App\Http\Requests\FigureUpdateRequest;
+use App\Http\Requests\StoreFigureRequest;
+use App\Http\Requests\UpdateFigureRequest;
 use Inertia\Inertia;
 
 class FigureController extends Controller
@@ -74,7 +74,7 @@ class FigureController extends Controller
     /**
      * Store a newly created resource in storage.
      */
-    public function store(FigureStoreRequest $request)
+    public function store(StoreFigureRequest $request)
     {
         $validated = $request->validated();
         $user = Auth::user();
@@ -144,7 +144,7 @@ class FigureController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(FigureUpdateRequest $request, Figure $figure)
+    public function update(UpdateFigureRequest $request, Figure $figure)
     {
         $validated = $request->validated();
         $user = Auth::user();

@@ -3,16 +3,18 @@
 namespace App\Http\Requests;
 
 use Illuminate\Foundation\Http\FormRequest;
-use App\Models\Figure;
+use App\Models\CompoundFigure;
+use App\Rules\SuccessiveFiguresConsistent;
 
-class FigureStoreRequest extends FormRequest
+class UpdateCompoundFigureRequest extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
      */
     public function authorize(): bool
     {
-        return $this->user()->can('create', Figure::class);
+        $compoundFigure = $this->route('compound_figure');
+        return $compoundFigure && $this->user()->can('update', $compoundFigure);
     }
 
     /**
@@ -26,11 +28,12 @@ class FigureStoreRequest extends FormRequest
             'name' => ['required', 'string', 'min:1', config('validation.max_name_length')],
             'description' => ['nullable', 'string', 'min:0', config('validation.max_description_length')],
             'weight' => ['nullable', 'integer', 'min:1', config('validation.max_weight')],
-            'from_position_id' => ['required', 'integer', 'exists:App\Models\Position,id'],
-            'to_position_id' => ['required', 'integer', 'exists:App\Models\Position,id'],
             'figure_family_id' => ['nullable', 'integer', 'exists:App\Models\FigureFamily,id'],
             'figure_family' => ['nullable', 'array', 'required_array_keys:id,name'],
             'figure_family.name' => ['required_with:figure_family', 'string', 'min:1', config('validation.max_name_length')],
+            'figure_ids' => ['required', 'array', 'min:2', config('validation.max_compound_figure_figures')],
+            'figure_ids.*' => ['integer', 'exists:App\Models\Figure,id'],
+            'figure_ids' => [new SuccessiveFiguresConsistent],
         ];
     }
 
@@ -42,8 +45,6 @@ class FigureStoreRequest extends FormRequest
     public function attributes(): array
     {
         return [
-            'from_position_id' => 'from position',
-            'to_position_id' => 'to position',
             'figure_family_id' => 'figure family',
             'figure_family.name' => 'figure family name',
         ];

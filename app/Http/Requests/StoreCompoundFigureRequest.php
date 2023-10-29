@@ -6,15 +6,14 @@ use Illuminate\Foundation\Http\FormRequest;
 use App\Models\CompoundFigure;
 use App\Rules\SuccessiveFiguresConsistent;
 
-class CompoundFigureUpdateRequest extends FormRequest
+class StoreCompoundFigureRequest extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
      */
     public function authorize(): bool
     {
-        $compoundFigure = $this->route('compound_figure');
-        return $compoundFigure && $this->user()->can('update', $compoundFigure);
+        return $this->user()->can('create', CompoundFigure::class);
     }
 
     /**
@@ -32,10 +31,11 @@ class CompoundFigureUpdateRequest extends FormRequest
             'figure_family' => ['nullable', 'array', 'required_array_keys:id,name'],
             'figure_family.name' => ['required_with:figure_family', 'string', 'min:1', config('validation.max_name_length')],
             'figure_ids' => ['required', 'array', 'min:2', config('validation.max_compound_figure_figures')],
-            'figure_ids.*' => ['integer', 'exists:App\Models\Figure,id'],
+            'figure_ids.*' => ['required', 'integer', 'exists:App\Models\Figure,id'],
             'figure_ids' => [new SuccessiveFiguresConsistent],
         ];
     }
+
 
     /**
      * Get custom attributes for validator errors.
@@ -47,6 +47,7 @@ class CompoundFigureUpdateRequest extends FormRequest
         return [
             'figure_family_id' => 'figure family',
             'figure_family.name' => 'figure family name',
+            'figure_ids.*' => 'figure',
         ];
     }
 

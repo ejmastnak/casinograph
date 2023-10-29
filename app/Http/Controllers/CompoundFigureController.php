@@ -7,8 +7,8 @@ use App\Models\CompoundFigureFigure;
 use App\Models\Figure;
 use App\Models\FigureFamily;
 use Illuminate\Http\Request;
-use App\Http\Requests\CompoundFigureStoreRequest;
-use App\Http\Requests\CompoundFigureUpdateRequest;
+use App\Http\Requests\StoreCompoundFigureRequest;
+use App\Http\Requests\UpdateCompoundFigureRequest;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Redirect;
 use Illuminate\Support\Facades\DB;
@@ -30,7 +30,7 @@ class CompoundFigureController extends Controller
     /**
      * Store a newly created resource in storage.
      */
-    public function store(CompoundFigureStoreRequest $request)
+    public function store(StoreCompoundFigureRequest $request)
     {
         $validated = $request->validated();
         $user = Auth::user();
@@ -124,7 +124,7 @@ class CompoundFigureController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(CompoundFigureUpdateRequest $request, CompoundFigure $compoundFigure)
+    public function update(UpdateCompoundFigureRequest $request, CompoundFigure $compoundFigure)
     {
         $validated = $request->validated();
         $user = Auth::user();

@@ -2,7 +2,7 @@
 
 namespace App\Http\Controllers;
 
-use App\Http\Requests\FigureFamilyUpdateRequest;
+use App\Http\Requests\UpdateFigureFamilyRequest;
 use App\Models\FigureFamily;
 use Illuminate\Support\Facades\Auth;
 
@@ -29,7 +29,7 @@ class FigureFamilyController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(FigureFamilyUpdateRequest $request, FigureFamily $figureFamily)
+    public function update(UpdateFigureFamilyRequest $request, FigureFamily $figureFamily)
     {
         $validated = $request->validated();
         $figureFamily->update(['name' => $validated['name']]);

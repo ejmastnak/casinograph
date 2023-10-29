@@ -5,15 +5,14 @@ namespace App\Http\Requests;
 use Illuminate\Foundation\Http\FormRequest;
 use App\Models\Figure;
 
-class FigureUpdateRequest extends FormRequest
+class StoreFigureRequest extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
      */
     public function authorize(): bool
     {
-        $figure = $this->route('figure');
-        return $figure && $this->user()->can('update', $figure);
+        return $this->user()->can('create', Figure::class);
     }
 
     /**

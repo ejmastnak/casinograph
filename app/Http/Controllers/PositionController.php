@@ -9,8 +9,8 @@ use Illuminate\Support\Facades\Redirect;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Process;
-use App\Http\Requests\PositionStoreRequest;
-use App\Http\Requests\PositionUpdateRequest;
+use App\Http\Requests\StorePositionRequest;
+use App\Http\Requests\UpdatePositionRequest;
 use Inertia\Inertia;
 
 class PositionController extends Controller
@@ -40,7 +40,7 @@ class PositionController extends Controller
     /**
      * Store a newly created resource in storage.
      */
-    public function store(PositionStoreRequest $request)
+    public function store(StorePositionRequest $request)
     {
         $validated = $request->validated();
         $user = Auth::user();
@@ -106,7 +106,7 @@ class PositionController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(PositionUpdateRequest $request, Position $position)
+    public function update(UpdatePositionRequest $request, Position $position)
     {
         $validated = $request->validated();
         $user = Auth::user();

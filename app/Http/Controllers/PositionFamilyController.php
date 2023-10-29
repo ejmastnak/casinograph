@@ -2,7 +2,7 @@
 
 namespace App\Http\Controllers;
 
-use App\Http\Requests\PositionFamilyUpdateRequest;
+use App\Http\Requests\UpdatePositionFamilyRequest;
 use App\Models\PositionFamily;
 
 class PositionFamilyController extends Controller
@@ -26,7 +26,7 @@ class PositionFamilyController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(PositionFamilyUpdateRequest $request, PositionFamily $positionFamily)
+    public function update(UpdatePositionFamilyRequest $request, PositionFamily $positionFamily)
     {
         $validated = $request->validated();
         $positionFamily->update(['name' => $validated['name']]);
