@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Http\Requests\UpdateFigureFamilyRequest;
 use App\Models\FigureFamily;
+use Inertia\Inertia;
 use Illuminate\Support\Facades\Auth;
 
 class FigureFamilyController extends Controller
@@ -17,7 +18,7 @@ class FigureFamilyController extends Controller
         $userId = $user ? $user->id : null;
 
         return Inertia::render('FigureFamilies/Show', [
-            'figure' => $figureFamily->load([
+            'figure_family' => $figureFamily->load([
                 'figures:id,name,figure_family_id,from_position_id,to_position_id',
                 'figures.from_position:id,name',
                 'figures.to_position:id,name',

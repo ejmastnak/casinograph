@@ -4,6 +4,8 @@ namespace App\Http\Controllers;
 
 use App\Http\Requests\UpdatePositionFamilyRequest;
 use App\Models\PositionFamily;
+use Inertia\Inertia;
+use Illuminate\Support\Facades\Auth;
 
 class PositionFamilyController extends Controller
 {
@@ -16,7 +18,7 @@ class PositionFamilyController extends Controller
         $userId = $user ? $user->id : null;
 
         return Inertia::render('PositionFamilies/Show', [
-            'position' => $positionFamily->load([
+            'position_family' => $positionFamily->load([
                 'positions:id,name,position_family_id',
             ])->only(['id', 'name', 'positions']),
             'can_update' => $user ? $user->can('update', $positionFamily) : false,
