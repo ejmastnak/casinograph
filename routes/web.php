@@ -56,6 +56,9 @@ Route::middleware('auth')->group(function () {
     Route::get('compound-figures/{compound_figure}/edit', [CompoundFigureController::class, 'edit'])->name('compound_figures.edit')->can('update', 'compound_figure');
     Route::put('compound-figures/{compound_figure}', [CompoundFigureController::class, 'update'])->name('compound_figures.update')->can('update', 'compound_figure');
     Route::delete('compound-figures/{compound_figure}', [CompoundFigureController::class, 'destroy'])->name('compound_figures.destroy')->can('delete', 'compound_figure');
+
+    Route::put('position-families/{position_family}', [PositionFamilyController::class, 'update'])->name('position_families.update')->can('update', 'position_family');
+    Route::put('figure-families/{figure_family}', [FigureFamilyController::class, 'update'])->name('figure_families.update')->can('update', 'figure_family');
 });
 
 Route::get('positions/{position}', [PositionController::class, 'show'])->name('positions.show');
