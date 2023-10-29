@@ -13,9 +13,8 @@ class CompoundFigureUpdateRequest extends FormRequest
      */
     public function authorize(): bool
     {
-
-        $compound_figure = $this->route('compound_figure');
-        return $compound_figure && $this->user()->can('update', $compound_figure);
+        $compoundFigure = $this->route('compound_figure');
+        return $compoundFigure && $this->user()->can('update', $compoundFigure);
     }
 
     /**

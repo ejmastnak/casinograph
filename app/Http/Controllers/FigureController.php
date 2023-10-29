@@ -38,7 +38,7 @@ class FigureController extends Controller
             ]];
         });
 
-        $compound_figures = CompoundFigure::with(['figure_family:id,name', 'from_position:id,name', 'to_position:id,name'])->get()->mapWithKeys(function ($figure, $key) {
+        $compoundFigures = CompoundFigure::with(['figure_family:id,name', 'from_position:id,name', 'to_position:id,name'])->get()->mapWithKeys(function ($figure, $key) {
             return [ $key => [
                 'id' => $figure['id'],
                 'name' => $figure['name'],
@@ -54,7 +54,7 @@ class FigureController extends Controller
         });
 
         return Inertia::render('Figures/Index', [
-            'figures' => $figures->concat($compound_figures)->sortBy('name')->values()->all(),
+            'figures' => $figures->concat($compoundFigures)->sortBy('name')->values()->all(),
             'figure_families' => FigureFamily::orderBy('name')->get(['id', 'name']),
             'show_edit_delete_icons' => Auth::user() && Auth::user()->is_admin === 1,
         ]);
@@ -78,17 +78,17 @@ class FigureController extends Controller
     {
         $validated = $request->validated();
         $user = Auth::user();
-        $redirect_figure_id = null;
+        $redirectFigureId = null;
 
         try {
-            DB::transaction(function () use ($validated, $user, &$redirect_figure_id) {
+            DB::transaction(function () use ($validated, $user, &$redirectFigureId) {
 
-                $figure_family_id = null;
+                $figureFamilyId = null;
                 if (isset($validated['figure_family_id'])) {
-                    $figure_family_id = $validated['figure_family_id'];
+                    $figureFamilyId = $validated['figure_family_id'];
                 } // Create a new FigureFamily
                 else if (!isset($validated['figure_family_id']) && isset($validated['figure_family'])) {
-                    $figure_family_id = FigureFamily::create([
+                    $figureFamilyId = FigureFamily::create([
                         'name' => $validated['figure_family']['name'],
                         'user_id' => $user->id,
                     ])->id;
@@ -100,10 +100,10 @@ class FigureController extends Controller
                     'to_position_id' => $validated['to_position_id'],
                     'description' => isset($validated['description']) ? $validated['description'] : null,
                     'weight' => isset($validated['weight']) ? $validated['weight'] : config('misc.default_figure_weight'),
-                    'figure_family_id' => $figure_family_id,
+                    'figure_family_id' => $figureFamilyId,
                     'user_id' => $user ? $user->id : null,
                 ]);
-                $redirect_figure_id = $figure->id;
+                $redirectFigureId = $figure->id;
 
             });
         } catch (\Exception $e) {
@@ -111,7 +111,7 @@ class FigureController extends Controller
             return Redirect::route('figures.index')->with('error', 'Error. Failed to create figure.');
         }
 
-        return Redirect::route('figures.show', $redirect_figure_id)->with('message', 'Success! Figure created successfully.');
+        return Redirect::route('figures.show', $redirectFigureId)->with('message', 'Success! Figure created successfully.');
     }
 
     /**
@@ -155,13 +155,13 @@ class FigureController extends Controller
                 // Check that updating this figure's to/from position will not
                 // corrupt to/from position integrity in the figure sequence of
                 // any dependent CompoundFigures.
-                $new_from_position = $figure->from_position_id !== $validated['from_position_id'];
-                $new_to_position = $figure->to_position_id !== $validated['to_position_id'];
-                if (($new_from_position || $new_to_position) && $figure->compound_figure_figures()->count() > 0) {
+                $newFromPosition = $figure->from_position_id !== $validated['from_position_id'];
+                $newToPosition = $figure->to_position_id !== $validated['to_position_id'];
+                if (($newFromPosition || $newToPosition) && $figure->compound_figure_figures()->count() > 0) {
                     foreach ($figure->compound_figure_figures as $cff) {
-                        if ($cff->idx === 1 && $new_to_position) {
+                        if ($cff->idx === 1 && $newToPosition) {
                             throw new FigureUpdateCorruptsCompoundFigureException("Updating this figure is intentionally forbidden because it would cause incompatible starting and ending positions in the figure sequence of a dependent compound figure (" . $cff->compound_figure->name . "). You may want to create a new figure instead, update the compound figure to use the new figure, then delete this figure.\nThe problem is the first figure in " . $cff->compound_figure->name . ".");
-                        } else if ($cff->is_final && $new_from_position) {
+                        } else if ($cff->is_final && $newFromPosition) {
                             throw new FigureUpdateCorruptsCompoundFigureException("Updating this figure is intentionally forbidden because it would cause incompatible starting and ending positions in the figure sequence of a dependent compound figure (" . $cff->compound_figure->name . "). You may want to create a new figure instead, update the compound figure to use the new figure, then delete this figure.\nThe problem is the final figure in " . $cff->compound_figure->name . ".");
                         } else if ($cff->idx > 1 && !$cff->is_final) {
                             throw new FigureUpdateCorruptsCompoundFigureException("Updating this figure is intentionally forbidden because it would cause incompatible starting and ending positions in the figure sequence of a dependent compound figure (" . $cff->compound_figure->name . "). You may want to create a new figure instead, update the compound figure to use the new figure, then delete this figure.\nThe problem is figure " . $cff->idx . " in " . $cff->compound_figure->name . ".");
@@ -169,13 +169,13 @@ class FigureController extends Controller
                     }
                 }
 
-                $previous_figure_family = $figure->figure_family;
-                $figure_family_id = null;
+                $previousFigureFamily = $figure->figure_family;
+                $figureFamilyId = null;
                 if (isset($validated['figure_family_id'])) {
-                    $figure_family_id = $validated['figure_family_id'];
+                    $figureFamilyId = $validated['figure_family_id'];
                 } // Create a new FigureFamily
                 else if (!isset($validated['figure_family_id']) && isset($validated['figure_family'])) {
-                    $figure_family_id = FigureFamily::create([
+                    $figureFamilyId = FigureFamily::create([
                         'name' => $validated['figure_family']['name'],
                         'user_id' => $user->id,
                     ])->id;
@@ -186,14 +186,14 @@ class FigureController extends Controller
                     'from_position_id' => $validated['from_position_id'],
                     'to_position_id' => $validated['to_position_id'],
                     'description' => isset($validated['description']) ? $validated['description'] : null,
-                    'figure_family_id' => $figure_family_id,
+                    'figure_family_id' => $figureFamilyId,
                     'weight' => isset($validated['weight']) ? $validated['weight'] : config('misc.default_figure_weight'),
                 ]);
 
                 // If this update will orphan a figure family, delete it.
-                if ($previous_figure_family) {
-                    if (Figure::where('figure_family_id', $previous_figure_family->id)->count() === 0 && CompoundFigure::where('figure_family_id', $previous_figure_family->id)->count() === 0 && $validated['figure_family_id'] !== $previous_figure_family->id) {
-                        $previous_figure_family->delete();
+                if ($previousFigureFamily) {
+                    if (Figure::where('figure_family_id', $previousFigureFamily->id)->count() === 0 && CompoundFigure::where('figure_family_id', $previousFigureFamily->id)->count() === 0 && $validated['figure_family_id'] !== $previousFigureFamily->id) {
+                        $previousFigureFamily->delete();
                     }
                 }
             });
@@ -232,12 +232,12 @@ class FigureController extends Controller
         }
 
         DB::transaction(function () use ($figure) {
-            $figure_family = $figure->figure_family;
+            $figureFamily = $figure->figure_family;
             $figure->delete();
 
             // If this update will orphan a figure family, delete it.
-            if ($figure_family && Figure::where('figure_family_id', $figure_family->id)->count() === 0 && CompoundFigure::where('figure_family_id', $figure_family->id)->count() === 0) {
-                $figure_family->delete();
+            if ($figureFamily && Figure::where('figure_family_id', $figureFamily->id)->count() === 0 && CompoundFigure::where('figure_family_id', $figureFamily->id)->count() === 0) {
+                $figureFamily->delete();
             }
         });
 

@@ -34,40 +34,40 @@ class CompoundFigureController extends Controller
     {
         $validated = $request->validated();
         $user = Auth::user();
-        $redirect_compound_figure_id = null;
+        $redirectCompoundFigureId = null;
 
         try {
-            DB::transaction(function () use ($validated, $user, &$redirect_compound_figure_id) {
+            DB::transaction(function () use ($validated, $user, &$redirectCompoundFigureId) {
 
-                $figure_family_id = null;
+                $figureFamilyId = null;
                 if (isset($validated['figure_family_id'])) {
-                    $figure_family_id = $validated['figure_family_id'];
+                    $figureFamilyId = $validated['figure_family_id'];
                 } // Create a new FigureFamily
                 else if (!isset($validated['figure_family_id']) && isset($validated['figure_family'])) {
-                    $figure_family_id = FigureFamily::create([
+                    $figureFamilyId = FigureFamily::create([
                         'name' => $validated['figure_family']['name'],
                         'user_id' => $user->id,
                     ])->id;
                 }
 
-                $from_position_id = Figure::find($validated['figure_ids'][0])->from_position_id;
-                $to_position_id = Figure::find($validated['figure_ids'][count($validated['figure_ids']) - 1])->to_position_id;
+                $fromPositionId = Figure::find($validated['figure_ids'][0])->from_position_id;
+                $toPositionId = Figure::find($validated['figure_ids'][count($validated['figure_ids']) - 1])->to_position_id;
 
-                $compound_figure = CompoundFigure::create([
+                $compoundFigure = CompoundFigure::create([
                     'name' => $validated['name'],
-                    'from_position_id' => $from_position_id,
-                    'to_position_id' => $to_position_id,
+                    'from_position_id' => $fromPositionId,
+                    'to_position_id' => $toPositionId,
                     'description' => isset($validated['description']) ? $validated['description'] : null,
                     'weight' => isset($validated['weight']) ? $validated['weight'] : config('misc.default_figure_weight'),
-                    'figure_family_id' => $figure_family_id,
+                    'figure_family_id' => $figureFamilyId,
                     'user_id' => $user ? $user->id : null,
                 ]);
-                $redirect_compound_figure_id = $compound_figure->id;
+                $redirectCompoundFigureId = $compoundFigure->id;
 
-                foreach ($validated['figure_ids'] as $idx=>$figure_id) {
+                foreach ($validated['figure_ids'] as $idx=>$figureId) {
                     CompoundFigureFigure::create([
-                        'figure_id' => $figure_id,
-                        'compound_figure_id' => $compound_figure->id,
+                        'figure_id' => $figureId,
+                        'compound_figure_id' => $compoundFigure->id,
                         'idx' => $idx + 1,
                         'is_final' => $idx === count($validated['figure_ids']) - 1,
                         'user_id' => $user ? $user->id : null,
@@ -79,15 +79,15 @@ class CompoundFigureController extends Controller
             return Redirect::route('figures.index')->with('error', 'Error. Failed to create figure.');
         }
 
-        return Redirect::route('compound_figures.show', $redirect_compound_figure_id)->with('message', 'Success! Compound Figure created successfully.');
+        return Redirect::route('compound_figures.show', $redirectCompoundFigureId)->with('message', 'Success! Compound Figure created successfully.');
     }
 
     /**
      * Display the specified resource.
      */
-    public function show(CompoundFigure $compound_figure)
+    public function show(CompoundFigure $compoundFigure)
     {
-        $compound_figure->load([
+        $compoundFigure->load([
             'figure_family:id,name',
             'compound_figure_figures:id,idx,compound_figure_id,figure_id',
             'compound_figure_figures.figure:id,name,from_position_id,to_position_id',
@@ -95,19 +95,19 @@ class CompoundFigureController extends Controller
             'compound_figure_figures.figure.to_position:id,name'
         ]);
         return Inertia::render('CompoundFigures/Show', [
-            'compound_figure' => $compound_figure->only(['id', 'name', 'description', 'weight', 'figure_family_id', 'figure_family', 'compound_figure_figures']),
+            'compound_figure' => $compoundFigure->only(['id', 'name', 'description', 'weight', 'figure_family_id', 'figure_family', 'compound_figure_figures']),
             'can_create' => Auth::user() && Auth::user()->can('create', CompoundFigure::class),
-            'can_update' => Auth::user() && Auth::user()->can('update', $compound_figure),
-            'can_delete' => Auth::user() && Auth::user()->can('delete', $compound_figure),
+            'can_update' => Auth::user() && Auth::user()->can('update', $compoundFigure),
+            'can_delete' => Auth::user() && Auth::user()->can('delete', $compoundFigure),
         ]);
     }
 
     /**
      * Show the form for editing the specified resource.
      */
-    public function edit(CompoundFigure $compound_figure)
+    public function edit(CompoundFigure $compoundFigure)
     {
-        $compound_figure->load([
+        $compoundFigure->load([
             'figure_family:id,name',
             'compound_figure_figures:id,idx,compound_figure_id,figure_id',
             'compound_figure_figures.figure:id,name,from_position_id,to_position_id',
@@ -115,7 +115,7 @@ class CompoundFigureController extends Controller
             'compound_figure_figures.figure.to_position:id,name'
         ]);
         return Inertia::render('CompoundFigures/Edit', [
-            'compound_figure' => $compound_figure->only(['id', 'name', 'description', 'weight', 'figure_family_id', 'figure_family', 'compound_figure_figures']),
+            'compound_figure' => $compoundFigure->only(['id', 'name', 'description', 'weight', 'figure_family_id', 'figure_family', 'compound_figure_figures']),
             'figure_families' => FigureFamily::orderBy('name')->get(['id', 'name']),
             'figures' => Figure::orderBy('name')->with(['from_position:id,name', 'to_position:id,name'])->get(['id', 'name', 'from_position_id', 'to_position_id']),
         ]);
@@ -124,47 +124,47 @@ class CompoundFigureController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(CompoundFigureUpdateRequest $request, CompoundFigure $compound_figure)
+    public function update(CompoundFigureUpdateRequest $request, CompoundFigure $compoundFigure)
     {
         $validated = $request->validated();
         $user = Auth::user();
 
         try {
-            DB::transaction(function () use ($validated, $user, $compound_figure) {
+            DB::transaction(function () use ($validated, $user, $compoundFigure) {
 
-                $previous_figure_family = $compound_figure->figure_family;
-                $figure_family_id = null;
+                $previousFigureFamily = $compoundFigure->figure_family;
+                $figureFamilyId = null;
                 if (isset($validated['figure_family_id'])) {
-                    $figure_family_id = $validated['figure_family_id'];
+                    $figureFamilyId = $validated['figure_family_id'];
                 } // Create a new FigureFamily
                 else if (!isset($validated['figure_family_id']) && isset($validated['figure_family'])) {
-                    $figure_family_id = FigureFamily::create([
+                    $figureFamilyId = FigureFamily::create([
                         'name' => $validated['figure_family']['name'],
                         'user_id' => $user->id,
                     ])->id;
                 }
 
-                $from_position_id = Figure::find($validated['figure_ids'][0])->from_position_id;
-                $to_position_id = Figure::find($validated['figure_ids'][count($validated['figure_ids']) - 1])->to_position_id;
+                $fromPositionId = Figure::find($validated['figure_ids'][0])->from_position_id;
+                $toPositionId = Figure::find($validated['figure_ids'][count($validated['figure_ids']) - 1])->to_position_id;
 
-                $compound_figure->update([
+                $compoundFigure->update([
                     'name' => $validated['name'],
-                    'from_position_id' => $from_position_id,
-                    'to_position_id' => $to_position_id,
+                    'from_position_id' => $fromPositionId,
+                    'to_position_id' => $toPositionId,
                     'description' => isset($validated['description']) ? $validated['description'] : null,
                     'weight' => isset($validated['weight']) ? $validated['weight'] : config('misc.default_figure_weight'),
-                    'figure_family_id' => $figure_family_id,
+                    'figure_family_id' => $figureFamilyId,
                     'user_id' => $user ? $user->id : null,
                 ]);
 
                 // I'm just deleting old CompoundFigureFigures and creating new
                 // ones on each update, doesn't seem worth the extra complexity of
                 // trying to update existing ones.
-                foreach ($compound_figure->compound_figure_figures as $compound_figure_figure) $compound_figure_figure->delete();
-                foreach ($validated['figure_ids'] as $idx=>$figure_id) {
+                foreach ($compoundFigure->compound_figure_figures as $cff) $cff->delete();
+                foreach ($validated['figure_ids'] as $idx=>$figureId) {
                     CompoundFigureFigure::create([
-                        'figure_id' => $figure_id,
-                        'compound_figure_id' => $compound_figure->id,
+                        'figure_id' => $figureId,
+                        'compound_figure_id' => $compoundFigure->id,
                         'idx' => $idx + 1,
                         'is_final' => $idx === count($validated['figure_ids']) - 1,
                         'user_id' => $user ? $user->id : null,
@@ -172,9 +172,9 @@ class CompoundFigureController extends Controller
                 }
 
                 // If this update will orphan a figure family, delete it.
-                if ($previous_figure_family) {
-                    if (Figure::where('figure_family_id', $previous_figure_family->id)->count() === 0 && CompoundFigure::where('figure_family_id', $previous_figure_family->id)->count() === 0 && $validated['figure_family_id'] !== $previous_figure_family->id) {
-                        $previous_figure_family->delete();
+                if ($previousFigureFamily) {
+                    if (Figure::where('figure_family_id', $previousFigureFamily->id)->count() === 0 && CompoundFigure::where('figure_family_id', $previousFigureFamily->id)->count() === 0 && $validated['figure_family_id'] !== $previousFigureFamily->id) {
+                        $previousFigureFamily->delete();
                     }
                 }
             });
@@ -183,26 +183,26 @@ class CompoundFigureController extends Controller
             return Redirect::route('figures.index')->with('error', 'Error. Failed to update figure.');
         }
 
-        return Redirect::route('compound_figures.show', $compound_figure->id)->with('message', 'Success! Compound Figure updated successfully.');
+        return Redirect::route('compound_figures.show', $compoundFigure->id)->with('message', 'Success! Compound Figure updated successfully.');
     }
 
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(CompoundFigure $compound_figure)
+    public function destroy(CompoundFigure $compoundFigure)
     {
-        DB::transaction(function () use ($compound_figure) {
-            $figure_family = $compound_figure->figure_family;
+        DB::transaction(function () use ($compoundFigure) {
+            $figureFamily = $compoundFigure->figure_family;
 
             // Delete CompoundFigureFigures
-            $compound_figure_figures = $compound_figure->compound_figure_figures;
-            foreach ($compound_figure_figures as $compound_figure_figure) $compound_figure_figure->delete();
+            $compoundFigureFigures = $compoundFigure->compound_figure_figures;
+            foreach ($compoundFigureFigures as $cff) $cff->delete();
 
-            $compound_figure->delete();
+            $compoundFigure->delete();
 
             // If this update will orphan a figure family, delete it.
-            if ($figure_family && Figure::where('figure_family_id', $figure_family->id)->count() === 0 && CompoundFigure::where('figure_family_id', $figure_family->id)->count() === 0) {
-                $figure_family->delete();
+            if ($figureFamily && Figure::where('figure_family_id', $figureFamily->id)->count() === 0 && CompoundFigure::where('figure_family_id', $figureFamily->id)->count() === 0) {
+                $figureFamily->delete();
             }
         });
 

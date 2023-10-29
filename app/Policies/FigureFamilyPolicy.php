@@ -21,7 +21,7 @@ class FigureFamilyPolicy
     /**
      * Determine whether the user can view the model.
      */
-    public function view(User $user, FigureFamily $figure_family): bool
+    public function view(User $user, FigureFamily $figureFamily): bool
     {
         return true;
     }
@@ -29,8 +29,8 @@ class FigureFamilyPolicy
     /**
      * Determine whether the user can update the model.
      */
-    public function update(User $user, FigureFamily $figure_family): bool
+    public function update(User $user, FigureFamily $figureFamily): bool
     {
-        return $user->can_update && $figure_family->user_id === $user->id;
+        return $user->can_update && $figureFamily->user_id === $user->id;
     }
 }

@@ -44,17 +44,17 @@ class PositionController extends Controller
     {
         $validated = $request->validated();
         $user = Auth::user();
-        $redirect_position_id = null;
+        $redirectPositionId = null;
 
         try {
-            DB::transaction(function () use ($validated, $user, &$redirect_position_id) {
+            DB::transaction(function () use ($validated, $user, &$redirectPositionId) {
 
-                $position_family_id = null;
+                $positionFamilyId = null;
                 if (isset($validated['position_family_id'])) {
-                    $position_family_id = $validated['position_family_id'];
+                    $positionFamilyId = $validated['position_family_id'];
                 } // Create a new PositionFamily
                 else if (!isset($validated['position_family_id']) && isset($validated['position_family'])) {
-                    $position_family_id = PositionFamily::create([
+                    $positionFamilyId = PositionFamily::create([
                         'name' => $validated['position_family']['name'],
                         'user_id' => $user->id,
                     ])->id;
@@ -63,10 +63,10 @@ class PositionController extends Controller
                 $position = Position::create([
                     'name' => $validated['name'],
                     'description' => isset($validated['description']) ? $validated['description'] : null,
-                    'position_family_id' => $position_family_id,
+                    'position_family_id' => $positionFamilyId,
                     'user_id' => $user ? $user->id : null,
                 ]);
-                $redirect_position_id = $position->id;
+                $redirectPositionId = $position->id;
 
             });
         } catch (\Exception $e) {
@@ -74,7 +74,7 @@ class PositionController extends Controller
             return Redirect::route('positions.index')->with('error', 'Error. Failed to create position.');
         }
 
-        return Redirect::route('positions.show', $redirect_position_id)->with('message', 'Success! Position created successfully.');
+        return Redirect::route('positions.show', $redirectPositionId)->with('message', 'Success! Position created successfully.');
     }
 
     /**
@@ -114,14 +114,14 @@ class PositionController extends Controller
         try {
             DB::transaction(function () use ($position, $validated, $user) {
 
-                $previous_position_family = $position->position_family;
+                $previousPositionFamily = $position->position_family;
 
-                $position_family_id = null;
+                $positionFamilyId = null;
                 if (isset($validated['position_family_id'])) {
-                    $position_family_id = $validated['position_family_id'];
+                    $positionFamilyId = $validated['position_family_id'];
                 } // Create a new PositionFamily
                 else if (!isset($validated['position_family_id']) && isset($validated['position_family'])) {
-                    $position_family_id = PositionFamily::create([
+                    $positionFamilyId = PositionFamily::create([
                         'name' => $validated['position_family']['name'],
                         'user_id' => $user->id,
                     ])->id;
@@ -130,13 +130,13 @@ class PositionController extends Controller
                 $position->update([
                     'name' => $validated['name'],
                     'description' => isset($validated['description']) ? $validated['description'] : null,
-                    'position_family_id' => $position_family_id,
+                    'position_family_id' => $positionFamilyId,
                 ]);
 
                 // If this update will orphan a position family, delete it.
-                if ($previous_position_family) {
-                    if (Position::where('position_family_id', $previous_position_family->id)->count() === 0 && $validated['position_family_id'] !== $previous_position_family->id) {
-                        $previous_position_family->delete();
+                if ($previousPositionFamily) {
+                    if (Position::where('position_family_id', $previousPositionFamily->id)->count() === 0 && $validated['position_family_id'] !== $previousPositionFamily->id) {
+                        $previousPositionFamily->delete();
                     }
                 }
 
@@ -178,12 +178,12 @@ class PositionController extends Controller
         }
 
         DB::transaction(function () use ($position) {
-            $position_family = $position->position_family;
+            $positionFamily = $position->position_family;
             $position->delete();
 
             // If this update will orphan a position family, delete it.
-            if ($position_family && Position::where('position_family_id', $position_family->id)->count() === 0) {
-                $position_family->delete();
+            if ($positionFamily && Position::where('position_family_id', $positionFamily->id)->count() === 0) {
+                $positionFamily->delete();
             }
         });
 

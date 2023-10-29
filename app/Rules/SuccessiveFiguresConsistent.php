@@ -26,24 +26,24 @@ class SuccessiveFiguresConsistent implements ValidationRule
             return;
         }
 
-        $prev_figure_id = $value[0];
+        $prevFigureId = $value[0];
         for ($i = 1; $i < count($value); $i++) {
-            $figure_id = $value[$i];
-            $prev_figure = Figure::find($prev_figure_id);
-            $figure = Figure::find($figure_id);
+            $figureId = $value[$i];
+            $prevFigure = Figure::find($prevFigureId);
+            $figure = Figure::find($figureId);
 
             // E.g. if frontend submited empty figures. No need to call fail
             // here because error will have been raised by FormRequest rules.
-            if (is_null($prev_figure) || is_null($figure)) {
-                $prev_figure_id = $figure_id;
+            if (is_null($prevFigure) || is_null($figure)) {
+                $prevFigureId = $figureId;
                 continue;
             }
 
-            if ($prev_figure->to_position_id !== $figure->from_position_id) {
-                $fail("Incompatible starting and ending positions: the figure sequence's " . $i . ($i === 1 ? "st" : ($i === 2 ? "nd" : ($i === 3 ? "rd" : "th"))) . " figure ends in " . $prev_figure->to_position->name . ", but the " . ($i + 1) . ($i === 1 ? "nd" : ($i === 2 ? "rd" : "th")) . " figure starts from " . $figure->from_position->name . ".");
+            if ($prevFigure->to_position_id !== $figure->from_position_id) {
+                $fail("Incompatible starting and ending positions: the figure sequence's " . $i . ($i === 1 ? "st" : ($i === 2 ? "nd" : ($i === 3 ? "rd" : "th"))) . " figure ends in " . $prevFigure->to_position->name . ", but the " . ($i + 1) . ($i === 1 ? "nd" : ($i === 2 ? "rd" : "th")) . " figure starts from " . $figure->from_position->name . ".");
             }
 
-            $prev_figure_id = $figure_id;
+            $prevFigureId = $figureId;
         }
 
     }

@@ -21,7 +21,7 @@ class PositionFamilyPolicy
     /**
      * Determine whether the user can view the model.
      */
-    public function view(User $user, PositionFamily $position_family): bool
+    public function view(User $user, PositionFamily $positionFamily): bool
     {
         return true;
     }
@@ -29,8 +29,8 @@ class PositionFamilyPolicy
     /**
      * Determine whether the user can update the model.
      */
-    public function update(User $user, PositionFamily $position_family): bool
+    public function update(User $user, PositionFamily $positionFamily): bool
     {
-        return $user->can_update && $position_family->user_id === $user->id;
+        return $user->can_update && $positionFamily->user_id === $user->id;
     }
 }

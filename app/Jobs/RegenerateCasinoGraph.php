@@ -35,13 +35,13 @@ class RegenerateCasinoGraph implements ShouldQueue
      */
     public function handle(): void
     {
-        $command_with_params = [
+        $commandWithParams = [
             'bash ./casinograph.bash',
             database_path('sqlite/database.sqlite'),
             public_path(config('misc.casinograph_public_path')),
             config('app.url'),
         ];
-        $result = Process::path(resource_path('scripts'))->run(implode(' ', $command_with_params));
+        $result = Process::path(resource_path('scripts'))->run(implode(' ', $commandWithParams));
 
         if (\App::environment('local') && $result->failed()) {
             print("RegenerateCasinoGraph failed.\n");

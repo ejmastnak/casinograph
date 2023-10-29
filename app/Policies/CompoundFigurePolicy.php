@@ -29,7 +29,7 @@ class CompoundFigurePolicy
     /**
      * Determine whether the user can view the model.
      */
-    public function view(User $user, CompoundFigure $compound_figure): bool
+    public function view(User $user, CompoundFigure $compoundFigure): bool
     {
         return true;
     }
@@ -45,23 +45,23 @@ class CompoundFigurePolicy
     /**
      * Determine whether the user can update the model.
      */
-    public function update(User $user, CompoundFigure $compound_figure): bool
+    public function update(User $user, CompoundFigure $compoundFigure): bool
     {
-        return $user->can_update && $compound_figure->user_id === $user->id;
+        return $user->can_update && $compoundFigure->user_id === $user->id;
     }
 
     /**
      * Determine whether the user can delete the model.
      */
-    public function delete(User $user, CompoundFigure $compound_figure): bool
+    public function delete(User $user, CompoundFigure $compoundFigure): bool
     {
-        return $user->can_delete && $compound_figure->user_id === $user->id;
+        return $user->can_delete && $compoundFigure->user_id === $user->id;
     }
 
     /**
      * Determine whether the user can restore the model.
      */
-    public function restore(User $user, CompoundFigure $compound_figure): bool
+    public function restore(User $user, CompoundFigure $compoundFigure): bool
     {
         //
     }
@@ -69,7 +69,7 @@ class CompoundFigurePolicy
     /**
      * Determine whether the user can permanently delete the model.
      */
-    public function forceDelete(User $user, CompoundFigure $compound_figure): bool
+    public function forceDelete(User $user, CompoundFigure $compoundFigure): bool
     {
         //
     }
