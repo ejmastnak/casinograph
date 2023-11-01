@@ -72,6 +72,32 @@ class FigureController extends Controller
     }
 
     /**
+     * Create a figure with a pre-filled from_position.
+     */
+    public function createFromPosition(Position $position)
+    {
+        $this->authorize('createFromPosition', [Figure::class, $position]);
+        return Inertia::render('Figures/Create', [
+            'from_position' => $position->only(['id', 'name']),
+            'figure_families' => FigureFamily::orderBy('name')->get(['id', 'name']),
+            'positions' => Position::orderBy('name')->get(['id', 'name']),
+        ]);
+    }
+
+    /**
+     * Create a figure with a pre-filled to_position.
+     */
+    public function createToPosition(Position $position)
+    {
+        $this->authorize('createToPosition', [Figure::class, $position]);
+        return Inertia::render('Figures/Create', [
+            'to_position' => $position->only(['id', 'name']),
+            'figure_families' => FigureFamily::orderBy('name')->get(['id', 'name']),
+            'positions' => Position::orderBy('name')->get(['id', 'name']),
+        ]);
+    }
+
+    /**
      * Store a newly created resource in storage.
      */
     public function store(StoreFigureRequest $request)

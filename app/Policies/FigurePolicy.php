@@ -3,6 +3,7 @@
 namespace App\Policies;
 
 use App\Models\Figure;
+use App\Models\Position;
 use App\Models\User;
 use Illuminate\Auth\Access\Response;
 
@@ -38,6 +39,16 @@ class FigurePolicy
      * Determine whether the user can create models.
      */
     public function create(User $user): bool
+    {
+        return $user->can_create;
+    }
+
+    public function createFromPosition(User $user, Position $position): bool
+    {
+        return $user->can_create;
+    }
+
+    public function createToPosition(User $user, Position $position): bool
     {
         return $user->can_create;
     }

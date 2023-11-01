@@ -5,6 +5,8 @@ import CreateOrEdit from './Partials/CreateOrEdit.vue';
 const props = defineProps({
   figure_families: Array,
   positions: Array,
+  from_position: Object,
+  to_position: Object,
 })
 </script>
 
@@ -29,10 +31,10 @@ export default {
         name: '',
         weight: null,
         description: null,
-        from_position_id: null,
-        from_position: null,
-        to_position_id: null,
-        to_position: null,
+        from_position_id: from_position ? from_position.id : null,
+        from_position: from_position,
+        to_position_id: to_position ? to_position.id : null,
+        to_position: to_position,
         figure_family_id: null,
         figure_family: null,
       }"

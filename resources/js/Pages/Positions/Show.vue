@@ -26,6 +26,7 @@ function deletePosition() {
   }
   idToDelete.value = null
 }
+
 </script>
 
 <script>
@@ -64,18 +65,19 @@ export default {
         <p class="text-gray-600">Description</p>
         <p class="max-w-xl">{{position.description}}</p>
       </div>
-      <PlaceholderParagraph v-else class="">This position does not have a description yet.</PlaceholderParagraph>
+      <PlaceholderParagraph v-else>
+        This position does not have a description yet.
+      </PlaceholderParagraph>
     </div>
 
     <!-- Incoming and outgoing figures -->
     <div
-      v-if="position.incoming_figures.length || position.outgoing_figures.length"
-      class="mt-6 grid grid-cols-2 space-x-4 w-fit"
+      class="mt-6 grid grid-cols-2 gap-x-12 w-fit max-w-2xl"
     >
       <!-- Incoming figures -->
-      <div class="">
+      <div>
         <h2 class="text-lg text-gray-600">Incoming figures</h2>
-        <ul v-if="position.incoming_figures.length" class="space-y-1.5">
+        <ul v-if="position.incoming_figures.length" class="space-y-1.5 ml-4 list-disc">
           <li v-for="figure in position.incoming_figures" :key="figure.id">
             <MyLink class="inline-block" :href="route('figures.show', figure.id)" >
               {{figure.name}}
@@ -85,12 +87,15 @@ export default {
             </p>
           </li>
         </ul>
-        <PlaceholderParagraph v-else class="">This position doesn't have any incoming figures.</PlaceholderParagraph>
+        <PlaceholderParagraph class="text-sm" v-else>
+          This position doesn't have any incoming figures.
+        </PlaceholderParagraph>
       </div>
+
       <!-- Outgoing figures -->
-      <div class="">
+      <div>
         <h2 class="text-lg text-gray-600">Outgoing figures</h2>
-        <ul v-if="position.outgoing_figures.length" class="space-y-1.5">
+        <ul v-if="position.outgoing_figures.length" class="space-y-1.5 list-disc ml-4">
           <li v-for="figure in position.outgoing_figures" :key="figure.id">
             <MyLink class="inline-block" :href="route('figures.show', figure.id)" >
               {{figure.name}}
@@ -100,15 +105,34 @@ export default {
             </p>
           </li>
         </ul>
-        <PlaceholderParagraph v-else class="">This position doesn't have any outgoing figures.</PlaceholderParagraph>
+        <PlaceholderParagraph class="text-sm" v-else>
+          This position doesn't have any outgoing figures.
+        </PlaceholderParagraph>
       </div>
+
+      <MyLink
+        v-if="can_create"
+        :href="route('figures.create_to_position', position.id)"
+        class="!ml-0 mt-4 w-fit h-fit inline-flex items-center rounded border border-gray-300 px-3 py-1 text-sm text-gray-800"
+      >
+        <PlusCircleIcon class="-ml-1 text-gray-600 h-5 w-5 shrink-0" />
+        <p class="ml-1 leading-tight">Add incoming figure</p>
+      </MyLink>
+
+      <MyLink
+        v-if="can_create"
+        :href="route('figures.create_from_position', position.id)"
+        class="mt-4 w-fit h-fit inline-flex items-center rounded border border-gray-300 px-3 py-1 text-sm text-gray-800"
+      >
+        <PlusCircleIcon class="-ml-1 text-gray-600 h-5 w-5 shrink-0" />
+        <p class="ml-1 leading-tight">Add outgoing figure</p>
+      </MyLink>
     </div>
-    <PlaceholderParagraph class="mt-4" v-else>
-      There are no figures leading into or out of this position.
-    </PlaceholderParagraph>
+
+
 
     <!-- Edit and Delete buttons -->
-    <div v-if="can_update || can_delete" class="flex items-center mt-8">
+    <div v-if="can_update || can_delete" class="flex items-center mt-10">
       <SecondaryLink v-if="can_update" :href="route('positions.edit', position.id)" class="flex items-center">
         <PencilSquareIcon class="text-gray-600 h-5 w-5 -ml-1" />
         <p class="ml-1">Edit</p>

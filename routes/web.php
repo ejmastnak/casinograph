@@ -46,6 +46,8 @@ Route::middleware('auth')->group(function () {
     Route::delete('positions/{position}', [PositionController::class, 'destroy'])->name('positions.destroy')->can('delete', 'position');
 
     Route::get('figures/create', [FigureController::class, 'create'])->name('figures.create')->can('create', Figure::class);
+    Route::get('figures/create-from-position/{position}', [FigureController::class, 'createFromPosition'])->name('figures.create_from_position');
+    Route::get('figures/create-to-position/{position}', [FigureController::class, 'createToPosition'])->name('figures.create_to_position');
     Route::post('figures', [FigureController::class, 'store'])->name('figures.store')->can('create', Figure::class);
     Route::get('figures/{figure}/edit', [FigureController::class, 'edit'])->name('figures.edit')->can('update', 'figure');
     Route::put('figures/{figure}', [FigureController::class, 'update'])->name('figures.update')->can('update', 'figure');
