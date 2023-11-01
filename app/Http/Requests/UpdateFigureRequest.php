@@ -4,6 +4,7 @@ namespace App\Http\Requests;
 
 use Illuminate\Foundation\Http\FormRequest;
 use App\Models\Figure;
+use App\Rules\FigureUnique;
 
 class UpdateFigureRequest extends FormRequest
 {
@@ -24,7 +25,7 @@ class UpdateFigureRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'name' => ['required', 'string', 'min:1', config('validation.max_name_length')],
+            'name' => ['required', 'string', 'min:1', config('validation.max_name_length'), new FigureUnique],
             'description' => ['nullable', 'string', 'min:0', config('validation.max_description_length')],
             'weight' => ['nullable', 'integer', 'min:1', config('validation.max_weight')],
             'from_position_id' => ['required', 'integer', 'exists:App\Models\Position,id'],
