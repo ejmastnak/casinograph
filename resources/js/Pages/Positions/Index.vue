@@ -20,11 +20,11 @@ const props = defineProps({
 
 // For filtering Positions by PositionFamily
 const selectedPositionFamilies = ref([])
-const selectedPositionFamilyIDs = computed(() => {
+const selectedPositionFamilyIds = computed(() => {
   return selectedPositionFamilies.value.map(positionFamily => positionFamily.id)
 })
 function shouldDisplay(position) {
-  return (selectedPositionFamilies.value.length === 0) || selectedPositionFamilyIDs.value.includes(position.position_family_id)
+  return (selectedPositionFamilies.value.length === 0) || selectedPositionFamilyIds.value.includes(position.position_family_id)
 }
 
 function removeAccents(str) {
@@ -91,6 +91,7 @@ onBeforeUnmount(() => {
   sessionStorage.setItem('positionsIndexScrollX', window.scrollX)
   sessionStorage.setItem('positionsIndexScrollY', window.scrollY)
   sessionStorage.setItem('positionsIndexSearchQuery', positionSearchQuery.value)
+  sessionStorage.setItem('positionsIndexSelectedFamilies', JSON.stringify(selectedPositionFamilies.value))
 })
 
 // Preserve scroll position and search queries on manual page reload.
@@ -98,6 +99,7 @@ window.onbeforeunload = function() {
   sessionStorage.setItem('positionsIndexScrollX', window.scrollX)
   sessionStorage.setItem('positionsIndexScrollY', window.scrollY)
   sessionStorage.setItem('positionsIndexSearchQuery', positionSearchQuery.value)
+  sessionStorage.setItem('positionsIndexSelectedFamilies', JSON.stringify(selectedPositionFamilies.value))
 }
 
 // Restore scroll position and search queries when loading page
@@ -115,6 +117,12 @@ onMounted(() => {
     positionSearchQuery.value = storedSearchQuery
     search(positionSearchQuery.value)
   }
+
+  const storedSelectedFamilies = sessionStorage.getItem('positionsIndexSelectedFamilies');
+  if (storedSelectedFamilies) {
+    selectedPositionFamilies.value = JSON.parse(storedSelectedFamilies);
+  }
+
 })
 
 </script>

@@ -110,12 +110,14 @@ function newCompoundFigure() {
   router.get(route('compound_figures.create'));
 }
 
-
 // Preserve scroll position and search queries when leaving page.
 onBeforeUnmount(() => {
   sessionStorage.setItem('figuresIndexScrollX', window.scrollX)
   sessionStorage.setItem('figuresIndexScrollY', window.scrollY)
   sessionStorage.setItem('figuresIndexSearchQuery', figureSearchQuery.value)
+  sessionStorage.setItem('figuresIndexShowSimpleFigures', showSimpleFigures.value)
+  sessionStorage.setItem('figuresIndexShowCompoundFigures', showCompoundFigures.value)
+  sessionStorage.setItem('figuresIndexSelectedFamilies', JSON.stringify(selectedFigureFamilies.value))
 })
 
 // Preserve scroll position and search queries on manual page reload.
@@ -123,6 +125,9 @@ window.onbeforeunload = function() {
   sessionStorage.setItem('figuresIndexScrollX', window.scrollX)
   sessionStorage.setItem('figuresIndexScrollY', window.scrollY)
   sessionStorage.setItem('figuresIndexSearchQuery', figureSearchQuery.value)
+  sessionStorage.setItem('figuresIndexShowSimpleFigures', showSimpleFigures.value)
+  sessionStorage.setItem('figuresIndexShowCompoundFigures', showCompoundFigures.value)
+  sessionStorage.setItem('figuresIndexSelectedFamilies', JSON.stringify(selectedFigureFamilies.value))
 }
 
 // Restore scroll position and search queries when loading page
@@ -139,7 +144,24 @@ onMounted(() => {
   if (storedSearchQuery) {
     figureSearchQuery.value = storedSearchQuery
     search(figureSearchQuery.value)
+
   }
+
+  const storedShowSimpleFigures = sessionStorage.getItem('figuresIndexShowSimpleFigures');
+  if (storedShowSimpleFigures) {
+    showSimpleFigures.value = (storedShowSimpleFigures === 'true')
+  }
+
+  const storedShowCompoundFigures = sessionStorage.getItem('figuresIndexShowCompoundFigures');
+  if (storedShowCompoundFigures) {
+    showCompoundFigures.value = (storedShowCompoundFigures === 'true')
+  }
+
+  const storedSelectedFamilies = sessionStorage.getItem('figuresIndexSelectedFamilies');
+  if (storedSelectedFamilies) {
+    selectedFigureFamilies.value = JSON.parse(storedSelectedFamilies);
+  }
+
 })
 
 
