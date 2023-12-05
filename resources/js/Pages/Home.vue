@@ -102,7 +102,7 @@ export default {
       <!-- Explanation of site -->
       <div class="max-w-lg text-gray-600">
         You're seeing Cuban Casino represented as a directed cyclic graph in which the figures (edges) connect the positions (vertices).
-        The goal of this project is to vizualize the interconnections between positions and figures in Casino.
+        The goal of this project is to visualize the interconnections between positions and figures in Casino.
         <a href="#more-info" class="p-px rounded-md text-blue-500 hover:text-blue-600 hover:underline focus:outline-none focus:ring-2 focus:ring-blue-700" >
           More info below.
         </a>
