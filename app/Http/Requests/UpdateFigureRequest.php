@@ -4,7 +4,7 @@ namespace App\Http\Requests;
 
 use Illuminate\Foundation\Http\FormRequest;
 use App\Models\Figure;
-use App\Rules\FigureUnique;
+use App\Rules\FigureUniqueForUser;
 
 class UpdateFigureRequest extends FormRequest
 {
@@ -25,13 +25,13 @@ class UpdateFigureRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'name' => ['required', 'string', 'min:1', config('validation.max_name_length'), new FigureUnique],
+            'name' => ['required', 'string', 'min:1', config('validation.max_name_length'), new FigureUniqueForUser],
             'description' => ['nullable', 'string', 'min:0', config('validation.max_description_length')],
             'weight' => ['nullable', 'integer', 'min:1', config('validation.max_weight')],
-            'from_position_id' => ['required', 'integer', 'exists:App\Models\Position,id'],
-            'to_position_id' => ['required', 'integer', 'exists:App\Models\Position,id'],
-            'figure_family_id' => ['nullable', 'integer', 'exists:App\Models\FigureFamily,id'],
+            'from_position_id' => ['required', 'integer', 'exists:positions,id'],
+            'to_position_id' => ['required', 'integer', 'exists:positions,id'],
             'figure_family' => ['nullable', 'array', 'required_array_keys:id,name'],
+            'figure_family.id' => ['nullable', 'integer', 'exists:figure_families,id'],
             'figure_family.name' => ['required_with:figure_family', 'string', 'min:1', config('validation.max_name_length')],
         ];
     }
@@ -46,7 +46,7 @@ class UpdateFigureRequest extends FormRequest
         return [
             'from_position_id' => 'from position',
             'to_position_id' => 'to position',
-            'figure_family_id' => 'figure family',
+            'figure_family.id' => 'figure family',
             'figure_family.name' => 'figure family name',
         ];
     }

@@ -3,14 +3,15 @@
 namespace App\Rules;
 
 use Closure;
-use App\Models\Figure;
+use App\Models\CompoundFigure;
 use Illuminate\Contracts\Validation\ValidationRule;use Illuminate\Contracts\Validation\DataAwareRule;
+use Illuminate\Support\Facades\Auth;
 
 /**
- *  Ensures the figure has a unique combination of name, from_position_id, and
- *  to_position_id.
+ *  Ensures the compound figure has a unique combination of name,
+ *  from_position_id, and to_position_id for the given user.
  */
-class FigureUnique implements ValidationRule, DataAwareRule
+class CompoundFigureUniqueForUser implements ValidationRule, DataAwareRule
 {
 
     /**
@@ -38,13 +39,14 @@ class FigureUnique implements ValidationRule, DataAwareRule
      */
     public function validate(string $attribute, mixed $value, Closure $fail): void
     {
-        $figure = Figure::where([
+        $figure = CompoundFigure::where([
             ['name', 'like', $this->data['name']],
             ['from_position_id', '=', $this->data['from_position_id']],
             ['to_position_id', '=', $this->data['to_position_id']],
+            ['user_id', '=', Auth::id()],
         ])->first();
         if (!is_null($figure) && $figure->id !== $this->data['id']) {
-            $fail("A Figure with this combination of name, from position, and to position already exists. Change this Figure's the name, from position, or to position.");
+            $fail("A figure with this combination of name, from position, and to position already exists. Change this figure's the name, from position, or to position.");
         }
     }
 }
