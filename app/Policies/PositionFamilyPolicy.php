@@ -23,7 +23,7 @@ class PositionFamilyPolicy
      */
     public function view(User $user, PositionFamily $positionFamily): bool
     {
-        return true;
+        return is_null($positionFamily->user_id) || $positionFamily->user_id === $user->id;
     }
 
     /**

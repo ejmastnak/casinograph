@@ -23,7 +23,7 @@ class FigureFamilyPolicy
      */
     public function view(User $user, FigureFamily $figureFamily): bool
     {
-        return true;
+        return is_null($figureFamily->user_id) || $figureFamily->user_id === $user->id;
     }
 
     /**

@@ -31,7 +31,7 @@ class PositionPolicy
      */
     public function view(User $user, Position $position): bool
     {
-        return true;
+        return is_null($position->user_id) || $position->user_id === $user->id;
     }
 
     /**

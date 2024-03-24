@@ -32,7 +32,7 @@ class FigurePolicy
      */
     public function view(User $user, Figure $figure): bool
     {
-        return true;
+        return is_null($figure->user_id) || $figure->user_id === $user->id;
     }
 
     /**

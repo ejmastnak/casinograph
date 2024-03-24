@@ -31,7 +31,7 @@ class CompoundFigurePolicy
      */
     public function view(User $user, CompoundFigure $compoundFigure): bool
     {
-        return true;
+        return is_null($figureFamily->user_id) || $figureFamily->user_id === $user->id;
     }
 
     /**
