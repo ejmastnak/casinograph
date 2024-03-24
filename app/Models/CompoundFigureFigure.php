@@ -10,7 +10,7 @@ class CompoundFigureFigure extends Model
     use HasFactory;
 
     protected $fillable = [
-        "idx",
+        "seq_num",
         "compound_figure_id",
         "figure_id",
         "is_final",

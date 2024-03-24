@@ -68,7 +68,7 @@ class CompoundFigureController extends Controller
                     CompoundFigureFigure::create([
                         'figure_id' => $figureId,
                         'compound_figure_id' => $compoundFigure->id,
-                        'idx' => $idx + 1,
+                        'seq_num' => $idx + 1,
                         'is_final' => $idx === count($validated['figure_ids']) - 1,
                         'user_id' => $user ? $user->id : null,
                     ]);
@@ -89,7 +89,7 @@ class CompoundFigureController extends Controller
     {
         $compoundFigure->load([
             'figure_family:id,name',
-            'compound_figure_figures:id,idx,compound_figure_id,figure_id',
+            'compound_figure_figures:id,seq_num,compound_figure_id,figure_id',
             'compound_figure_figures.figure:id,name,from_position_id,to_position_id',
             'compound_figure_figures.figure.from_position:id,name',
             'compound_figure_figures.figure.to_position:id,name'
@@ -109,7 +109,7 @@ class CompoundFigureController extends Controller
     {
         $compoundFigure->load([
             'figure_family:id,name',
-            'compound_figure_figures:id,idx,compound_figure_id,figure_id',
+            'compound_figure_figures:id,seq_num,compound_figure_id,figure_id',
             'compound_figure_figures.figure:id,name,from_position_id,to_position_id',
             'compound_figure_figures.figure.from_position:id,name',
             'compound_figure_figures.figure.to_position:id,name'
@@ -165,7 +165,7 @@ class CompoundFigureController extends Controller
                     CompoundFigureFigure::create([
                         'figure_id' => $figureId,
                         'compound_figure_id' => $compoundFigure->id,
-                        'idx' => $idx + 1,
+                        'seq_num' => $idx + 1,
                         'is_final' => $idx === count($validated['figure_ids']) - 1,
                         'user_id' => $user ? $user->id : null,
                     ]);
