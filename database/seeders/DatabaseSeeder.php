@@ -14,22 +14,24 @@ class DatabaseSeeder extends Seeder
      */
     public function run(): void
     {
+        if (\App::environment('local')) {
 
-        // Generate SQL statements for seeding tables
-        $result = Process::path(storage_path('app/seeders'))->run('bash ' . storage_path('app/seeders/prepare.bash'));
-        if ($result->failed()) {
-            $this->command->info('Error: failed to prepare SQL statements for seeding database; seeding aborted.');
+            // Generate SQL statements for seeding tables
+            $result = Process::path(storage_path('app/seeders'))->run('bash ' . storage_path('app/seeders/prepare.bash'));
+            if ($result->failed()) {
+                $this->command->info('Error: failed to prepare SQL statements for seeding database; seeding aborted.');
+            }
+
+            $this->call([
+                UserSeeder::class,
+                PositionFamilySeeder::class,
+                FigureFamilySeeder::class,
+                PositionSeeder::class,
+                FigureSeeder::class,
+                CompoundFigureSeeder::class,
+                CompoundFigureFigureSeeder::class,
+            ]);
+
         }
-
-        $this->call([
-            UserSeeder::class,
-            PositionFamilySeeder::class,
-            FigureFamilySeeder::class,
-            PositionSeeder::class,
-            FigureSeeder::class,
-            CompoundFigureSeeder::class,
-            CompoundFigureFigureSeeder::class,
-        ]);
-
     }
 }
