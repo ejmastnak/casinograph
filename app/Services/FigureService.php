@@ -82,4 +82,57 @@ class FigureService
         }
         return $figure->id;
     }
+
+    public function deleteFigure(Figure $figure): array
+    {
+        $restricted = false;
+        $success = false;
+        $message = "";
+
+        // Check for foreign key constraints
+        if ($figure->compound_figure_figures()->count() > 0) {
+            $limit = config('misc.restrict_on_delete_message_limit');
+            $i = 0;
+            $names = [];
+            foreach ($figure->compound_figure_figures as $cff) {
+                if ($i === $limit) break;
+                $name = $cff->compound_figure->name;
+                if (!in_array($name, $names)) {
+                    $names[] = $name;
+                    $i++;
+                }
+            }
+            $restricted = true;
+            $message = "Deleting this figure is intentionally forbidden because one or more compound figures rely on it. You should first delete all dependent compound figures, then delete this figure.\nThe dependent compound figures " . ($i < $limit ? "are " : "include ") . implode(", ", $names) . ".";
+        }
+
+        if (!$restricted) {
+            try {
+                DB::transaction(function () use ($figure, &$success) {
+                    $figureFamily = $figure->figure_family;
+                    $figure->delete();
+
+                    // If this update will orphan a figure family, delete it.
+                    if ($figureFamily && Figure::where('figure_family_id', $figureFamily->id)->count() === 0 && CompoundFigure::where('figure_family_id', $figureFamily->id)->count() === 0) {
+                        $figureFamily->delete();
+                    }
+
+                    $success = true;
+                });
+            } catch (\Exception $e) {
+                if (\App::environment('local')) throw $e;
+                Log::error($e);
+            }
+        }
+
+        if ($success) $message = 'Success! Figure deleted successfully.';
+        else if (!$success && !$restricted) $message = 'Error. Failed to delete figure.';
+
+        return [
+            'success' => $success,
+            'restricted' => $restricted,
+            'message' => $message,
+        ];
+    }
+
 }
