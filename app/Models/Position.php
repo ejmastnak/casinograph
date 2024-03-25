@@ -16,6 +16,53 @@ class Position extends Model
         "user_id",
     ];
 
+    public static function getForUser(?int $userId) {
+        return self::orderBy('name')->get(['id', 'name']);
+    }
+
+    public static function getForUserWithPositionFamilies(?int $userId) {
+        return self::with('position_family:id,name')
+            ->where('user_id', '=', $userId)
+            ->orderBy('name')
+            ->get(['id', 'name', 'position_family_id']);
+    }
+
+    public function withName() {
+        return $this->only(['id', 'name']);
+    }
+
+    public function withPositionFamily() {
+        $this->load([
+            'position_family:id,name',
+        ]);
+        return $this->only([
+            'id',
+            'name',
+            'description',
+            'position_family_id',
+            'position_family',
+        ]);
+    }
+
+    public function withPositionFamilyAndFigures() {
+        $this->load([
+            'position_family:id,name',
+            'incoming_figures:id,name,to_position_id,from_position_id',
+            'incoming_figures.from_position:id,name',
+            'outgoing_figures:id,name,from_position_id,to_position_id',
+            'outgoing_figures.to_position:id,name',
+        ]);
+        return $this->only([
+            'id',
+            'name',
+            'description',
+            'position_family_id',
+            'position_family',
+            'incoming_figures',
+            'outgoing_figures',
+        ]);
+    }
+
     public function position_family() {
         return $this->belongsTo(PositionFamily::class, 'position_family_id', 'id');
     }

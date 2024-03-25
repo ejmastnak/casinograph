@@ -15,12 +15,8 @@ class PositionFamilyController extends Controller
     public function show(PositionFamily $positionFamily)
     {
         $user = Auth::user();
-        $userId = $user ? $user->id : null;
-
         return Inertia::render('PositionFamilies/Show', [
-            'position_family' => $positionFamily->load([
-                'positions:id,name,position_family_id',
-            ])->only(['id', 'name', 'positions']),
+            'position_family' => $positionFamily->withPositions(),
             'can_update' => $user ? $user->can('update', $positionFamily) : false,
         ]);
     }

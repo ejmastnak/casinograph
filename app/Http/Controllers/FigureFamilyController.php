@@ -15,17 +15,8 @@ class FigureFamilyController extends Controller
     public function show(FigureFamily $figureFamily)
     {
         $user = Auth::user();
-        $userId = $user ? $user->id : null;
-
         return Inertia::render('FigureFamilies/Show', [
-            'figure_family' => $figureFamily->load([
-                'figures:id,name,figure_family_id,from_position_id,to_position_id',
-                'figures.from_position:id,name',
-                'figures.to_position:id,name',
-                'compound_figures:id,name,figure_family_id,from_position_id,to_position_id',
-                'compound_figures.from_position:id,name',
-                'compound_figures.to_position:id,name',
-            ])->only(['id', 'name', 'figures', 'compound_figures']),
+            'figure_family' => $figureFamily->withFiguresAndCompoundFigures(),
             'can_update' => $user ? $user->can('update', $figureFamily) : false,
         ]);
     }

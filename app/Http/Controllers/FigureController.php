@@ -22,40 +22,9 @@ class FigureController extends Controller
      */
     public function index()
     {
-
-        $figures = Figure::with(['figure_family:id,name', 'from_position:id,name', 'to_position:id,name'])->get()->mapWithKeys(function ($figure, $key) {
-            return [ $key => [
-                'id' => $figure['id'],
-                'name' => $figure['name'],
-                'weight' => $figure['weight'],
-                'figure_family_id' => $figure['figure_family_id'],
-                'figure_family' => $figure['figure_family'],
-                'from_position_id' => $figure['from_position_id'],
-                'from_position' => $figure['from_position'],
-                'to_position_id' => $figure['to_position_id'],
-                'to_position' => $figure['to_position'],
-                'compound' => false,
-            ]];
-        });
-
-        $compoundFigures = CompoundFigure::with(['figure_family:id,name', 'from_position:id,name', 'to_position:id,name'])->get()->mapWithKeys(function ($figure, $key) {
-            return [ $key => [
-                'id' => $figure['id'],
-                'name' => $figure['name'],
-                'weight' => $figure['weight'],
-                'figure_family_id' => $figure['figure_family_id'],
-                'figure_family' => $figure['figure_family'],
-                'from_position_id' => $figure['from_position_id'],
-                'from_position' => $figure['from_position'],
-                'to_position_id' => $figure['to_position_id'],
-                'to_position' => $figure['to_position'],
-                'compound' => true,
-            ]];
-        });
-
         return Inertia::render('Figures/Index', [
-            'figures' => $figures->concat($compoundFigures)->sortBy('name')->values()->all(),
-            'figure_families' => FigureFamily::orderBy('name')->get(['id', 'name']),
+            'figures' => Figure::getCombinedFiguresAndCompoundFiguresForUser(Auth::id()),
+            'figure_families' => FigureFamily::getForUser(Auth::id()),
             'show_edit_delete_icons' => Auth::user() && Auth::user()->is_admin === 1,
         ]);
     }
@@ -66,8 +35,8 @@ class FigureController extends Controller
     public function create()
     {
         return Inertia::render('Figures/Create', [
-            'figure_families' => FigureFamily::orderBy('name')->get(['id', 'name']),
-            'positions' => Position::orderBy('name')->get(['id', 'name']),
+            'figure_families' => FigureFamily::getForUser(Auth::id()),
+            'positions' => Position::getForUser(Auth::id()),
         ]);
     }
 
@@ -78,9 +47,9 @@ class FigureController extends Controller
     {
         $this->authorize('createFromPosition', [Figure::class, $position]);
         return Inertia::render('Figures/Create', [
-            'from_position' => $position->only(['id', 'name']),
-            'figure_families' => FigureFamily::orderBy('name')->get(['id', 'name']),
-            'positions' => Position::orderBy('name')->get(['id', 'name']),
+            'from_position' => $position->withName(),
+            'figure_families' => FigureFamily::getForUser(Auth::id()),
+            'positions' => Position::getForUser(Auth::id()),
         ]);
     }
 
@@ -91,9 +60,9 @@ class FigureController extends Controller
     {
         $this->authorize('createToPosition', [Figure::class, $position]);
         return Inertia::render('Figures/Create', [
-            'to_position' => $position->only(['id', 'name']),
-            'figure_families' => FigureFamily::orderBy('name')->get(['id', 'name']),
-            'positions' => Position::orderBy('name')->get(['id', 'name']),
+            'to_position' => $position->withName(),
+            'figure_families' => FigureFamily::getForUser(Auth::id()),
+            'positions' => Position::getForUser(Auth::id()),
         ]);
     }
 
@@ -145,9 +114,8 @@ class FigureController extends Controller
      */
     public function show(Figure $figure)
     {
-        $figure->load(['figure_family:id,name', 'from_position:id,name', 'to_position:id,name']);
         return Inertia::render('Figures/Show', [
-            'figure' => $figure->only(['id', 'name', 'description', 'weight', 'figure_family_id', 'figure_family', 'from_position_id', 'from_position', 'to_position_id', 'to_position']),
+            'figure' => $figure->withFamilyAndPositions(),
             'can_create' => Auth::user() && Auth::user()->can('create', Figure::class),
             'can_update' => Auth::user() && Auth::user()->can('update', $figure),
             'can_delete' => Auth::user() && Auth::user()->can('delete', $figure),
@@ -159,11 +127,10 @@ class FigureController extends Controller
      */
     public function edit(Figure $figure)
     {
-        $figure->load(['figure_family:id,name', 'from_position:id,name', 'to_position:id,name']);
         return Inertia::render('Figures/Edit', [
-            'figure' => $figure->only(['id', 'name', 'description', 'weight', 'figure_family_id', 'figure_family', 'from_position_id', 'from_position', 'to_position_id', 'to_position']),
-            'figure_families' => FigureFamily::orderBy('name')->get(['id', 'name']),
-            'positions' => Position::orderBy('name')->get(['id', 'name']),
+            'figure' => $figure->withFamilyAndPositions(),
+            'figure_families' => FigureFamily::getForUser(Auth::id()),
+            'positions' => Position::getForUser(Auth::id()),
         ]);
     }
 

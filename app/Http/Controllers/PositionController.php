@@ -21,8 +21,8 @@ class PositionController extends Controller
     public function index()
     {
         return Inertia::render('Positions/Index', [
-            'positions' => Position::with('position_family:id,name')->orderBy('name')->get(['id', 'name', 'position_family_id']),
-            'position_families' => PositionFamily::orderBy('name')->get(['id', 'name']),
+            'positions' => Position::getForUserWithPositionFamilies(Auth::id()),
+            'position_families' => PositionFamily::getForUser(Auth::id()),
             'show_edit_delete_icons' => Auth::user() ? Auth::user()->is_admin === 1 : false,
         ]);
     }
@@ -33,7 +33,7 @@ class PositionController extends Controller
     public function create()
     {
         return Inertia::render('Positions/Create', [
-            'position_families' => PositionFamily::orderBy('name')->get(['id', 'name']),
+            'position_families' => PositionFamily::getForUser(Auth::id()),
         ]);
     }
 
@@ -82,9 +82,8 @@ class PositionController extends Controller
      */
     public function show(Position $position)
     {
-        $position->load(['position_family:id,name', 'incoming_figures:id,name,to_position_id,from_position_id', 'incoming_figures.from_position:id,name', 'outgoing_figures:id,name,from_position_id,to_position_id', 'outgoing_figures.to_position:id,name']);
         return Inertia::render('Positions/Show', [
-            'position' => $position->only(['id', 'name', 'description', 'position_family_id', 'position_family', 'incoming_figures', 'outgoing_figures']),
+            'position' => $position->withPositionFamilyAndFigures(),
             'can_create' => Auth::user() && Auth::user()->can('create', Position::class),
             'can_update' => Auth::user() && Auth::user()->can('update', $position),
             'can_delete' => Auth::user() && Auth::user()->can('delete', $position),
@@ -96,10 +95,9 @@ class PositionController extends Controller
      */
     public function edit(Position $position)
     {
-        $position->load(['position_family:id,name']);
         return Inertia::render('Positions/Edit', [
-            'position' => $position->only(['id', 'name', 'description', 'position_family_id', 'position_family']),
-            'position_families' => PositionFamily::orderBy('name')->get(['id', 'name']),
+            'position' => $position->withPositionFamily(),
+            'position_families' => PositionFamily::getForUser(Auth::id()),
         ]);
     }
 

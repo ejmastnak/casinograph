@@ -22,8 +22,8 @@ class CompoundFigureController extends Controller
     public function create()
     {
         return Inertia::render('CompoundFigures/Create', [
-            'figure_families' => FigureFamily::orderBy('name')->get(['id', 'name']),
-            'figures' => Figure::orderBy('name')->with(['from_position:id,name', 'to_position:id,name'])->get(['id', 'name', 'from_position_id', 'to_position_id']),
+            'figure_families' => FigureFamily::getForUser(Auth::id()),
+            'figures' => Figure::getWithPositionsForUser(Auth::id()),
         ]);
     }
 
@@ -87,15 +87,8 @@ class CompoundFigureController extends Controller
      */
     public function show(CompoundFigure $compoundFigure)
     {
-        $compoundFigure->load([
-            'figure_family:id,name',
-            'compound_figure_figures:id,seq_num,compound_figure_id,figure_id',
-            'compound_figure_figures.figure:id,name,from_position_id,to_position_id',
-            'compound_figure_figures.figure.from_position:id,name',
-            'compound_figure_figures.figure.to_position:id,name'
-        ]);
         return Inertia::render('CompoundFigures/Show', [
-            'compound_figure' => $compoundFigure->only(['id', 'name', 'description', 'weight', 'figure_family_id', 'figure_family', 'compound_figure_figures']),
+            'compound_figure' => $compoundFigure->withFamilyAndFigures(),
             'can_create' => Auth::user() && Auth::user()->can('create', CompoundFigure::class),
             'can_update' => Auth::user() && Auth::user()->can('update', $compoundFigure),
             'can_delete' => Auth::user() && Auth::user()->can('delete', $compoundFigure),
@@ -107,17 +100,10 @@ class CompoundFigureController extends Controller
      */
     public function edit(CompoundFigure $compoundFigure)
     {
-        $compoundFigure->load([
-            'figure_family:id,name',
-            'compound_figure_figures:id,seq_num,compound_figure_id,figure_id',
-            'compound_figure_figures.figure:id,name,from_position_id,to_position_id',
-            'compound_figure_figures.figure.from_position:id,name',
-            'compound_figure_figures.figure.to_position:id,name'
-        ]);
         return Inertia::render('CompoundFigures/Edit', [
-            'compound_figure' => $compoundFigure->only(['id', 'name', 'description', 'weight', 'figure_family_id', 'figure_family', 'compound_figure_figures']),
-            'figure_families' => FigureFamily::orderBy('name')->get(['id', 'name']),
-            'figures' => Figure::orderBy('name')->with(['from_position:id,name', 'to_position:id,name'])->get(['id', 'name', 'from_position_id', 'to_position_id']),
+            'compound_figure' => $compoundFigure->withFamilyAndFigures(),
+            'figure_families' => FigureFamily::getForUser(Auth::id()),
+            'figures' => Figure::getWithPositionsForUser(Auth::id()),
         ]);
     }
 
