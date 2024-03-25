@@ -11,6 +11,7 @@ use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Process;
 use App\Http\Requests\StorePositionRequest;
 use App\Http\Requests\UpdatePositionRequest;
+use App\Services\PositionService;
 use Inertia\Inertia;
 
 class PositionController extends Controller
@@ -40,41 +41,12 @@ class PositionController extends Controller
     /**
      * Store a newly created resource in storage.
      */
-    public function store(StorePositionRequest $request)
+    public function store(StorePositionRequest $request, PositionService $positionService)
     {
-        $validated = $request->validated();
-        $user = Auth::user();
-        $redirectPositionId = null;
-
-        try {
-            DB::transaction(function () use ($validated, $user, &$redirectPositionId) {
-
-                $positionFamilyId = null;
-                if (isset($validated['position_family_id'])) {
-                    $positionFamilyId = $validated['position_family_id'];
-                } // Create a new PositionFamily
-                else if (!isset($validated['position_family_id']) && isset($validated['position_family'])) {
-                    $positionFamilyId = PositionFamily::create([
-                        'name' => $validated['position_family']['name'],
-                        'user_id' => $user->id,
-                    ])->id;
-                }
-
-                $position = Position::create([
-                    'name' => $validated['name'],
-                    'description' => isset($validated['description']) ? $validated['description'] : null,
-                    'position_family_id' => $positionFamilyId,
-                    'user_id' => $user ? $user->id : null,
-                ]);
-                $redirectPositionId = $position->id;
-
-            });
-        } catch (\Exception $e) {
-            if (\App::environment('local')) throw $e;
-            return Redirect::route('positions.index')->with('error', 'Error. Failed to create position.');
-        }
-
-        return Redirect::route('positions.show', $redirectPositionId)->with('message', 'Success! Position created successfully.');
+        $positionId = $positionService->storePosition($request->validated());
+        return $positionId
+            ? Redirect::route('positions.show', $positionId)->with('message', 'Success! Position created successfully.')
+            : back()->with('error', 'Error. Failed to create position.');
     }
 
     /**
@@ -104,88 +76,23 @@ class PositionController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(UpdatePositionRequest $request, Position $position)
+    public function update(UpdatePositionRequest $request, Position $position, PositionService $positionService)
     {
-        $validated = $request->validated();
-        $user = Auth::user();
-
-        try {
-            DB::transaction(function () use ($position, $validated, $user) {
-
-                $previousPositionFamily = $position->position_family;
-
-                $positionFamilyId = null;
-                if (isset($validated['position_family_id'])) {
-                    $positionFamilyId = $validated['position_family_id'];
-                } // Create a new PositionFamily
-                else if (!isset($validated['position_family_id']) && isset($validated['position_family'])) {
-                    $positionFamilyId = PositionFamily::create([
-                        'name' => $validated['position_family']['name'],
-                        'user_id' => $user->id,
-                    ])->id;
-                }
-
-                $position->update([
-                    'name' => $validated['name'],
-                    'description' => isset($validated['description']) ? $validated['description'] : null,
-                    'position_family_id' => $positionFamilyId,
-                ]);
-
-                // If this update will orphan a position family, delete it.
-                if ($previousPositionFamily) {
-                    if (Position::where('position_family_id', $previousPositionFamily->id)->count() === 0 && $validated['position_family_id'] !== $previousPositionFamily->id) {
-                        $previousPositionFamily->delete();
-                    }
-                }
-
-            });
-        } catch (\Exception $e) {
-            if (\App::environment('local')) throw $e;
-            return Redirect::route('positions.index')->with('error', 'Error. Failed to update position.');
-        }
-
-        return Redirect::route('positions.show', $position->id)->with('message', 'Success! Position updated successfully.');
+        $positionId = $positionService->updatePosition($request->validated(), $position);
+        return $positionId
+            ? Redirect::route('positions.show', $positionId)->with('message', 'Success! Position updated successfully.')
+            : back()->with('error', 'Error. Failed to update position.');
     }
 
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(Position $position)
+    public function destroy(Position $position, PositionService $positionService)
     {
-
-        // Warn user about restrictOnDelete foreign key constraints
-        if ($position->incoming_figures()->count() > 0 || $position->outgoing_figures()->count() > 0) {
-
-            $limit = config('restrict_on_delete_message_limit');
-            $i = 0;
-            $names = [];
-            foreach ($position->incoming_figures as $figure) {
-                if ($i === $limit) break;
-                $names[] = $figure->name;
-                $i++;
-            } foreach ($position->outgoing_figures as $figure) {
-                if ($i === $limit) break;
-                $name = $figure->name;
-                if (!in_array($name, $names)) {
-                    $names[] = $name;
-                    $i++;
-                }
-            }
-
-            return back()->with('error', "Deleting this position is intentionally forbidden because one or more figures rely on it. You should first delete all dependent figures, then delete this position.\nThe dependent figures " . ($i === $limit ? "include " : "are ") . implode(", ", $names) . ".");
-        }
-
-        DB::transaction(function () use ($position) {
-            $positionFamily = $position->position_family;
-            $position->delete();
-
-            // If this update will orphan a position family, delete it.
-            if ($positionFamily && Position::where('position_family_id', $positionFamily->id)->count() === 0) {
-                $positionFamily->delete();
-            }
-        });
-
-        return Redirect::route('positions.index')->with('message', 'Success! Position deleted successfully.');
+        $result = $positionService->deletePosition($position);
+        if ($result['success']) return Redirect::route('positions.index')->with('message', $result['message']);
+        else if ($result['restricted']) return back()->with('error', $result['message']);
+        else return back()->with('error', $result['message']);
     }
 
 }

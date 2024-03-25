@@ -4,12 +4,14 @@ namespace App\Services;
 use App\Models\Position;
 use App\Models\PositionFamily;
 use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Auth;
 
 class PositionService
 {
-    public function storePosition(array $data, int $userId): ?int
+    public function storePosition(array $data): ?int
     {
         $position = null;
+        $userId = Auth::id();
         try {
             DB::transaction(function () use ($data, $userId, &$position) {
 
@@ -38,8 +40,9 @@ class PositionService
         return $position->id;
     }
 
-    public function updatePosition(array $data, Position $position, int $userId): ?int
+    public function updatePosition(array $data, Position $position): ?int
     {
+        $userId = Auth::id();
         try {
             DB::transaction(function () use ($data, $position, $userId) {
 

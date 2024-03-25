@@ -6,7 +6,7 @@ use Illuminate\Support\Facades\Log;
 
 class PositionFamilyService
 {
-    public function updatePositionFamily(array $data, PositionFamily $positionFamily, int $userId): ?int
+    public function updatePositionFamily(array $data, PositionFamily $positionFamily): ?int
     {
         try {
             DB::transaction(function () use ($data, $positionFamily) {

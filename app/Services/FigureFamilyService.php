@@ -6,7 +6,7 @@ use Illuminate\Support\Facades\Log;
 
 class FigureFamilyService
 {
-    public function updateFigureFamily(array $data, FigureFamily $figureFamily, int $userId): ?int
+    public function updateFigureFamily(array $data, FigureFamily $figureFamily): ?int
     {
         try {
             DB::transaction(function () use ($data, $figureFamily) {

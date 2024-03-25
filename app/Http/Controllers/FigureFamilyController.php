@@ -2,10 +2,11 @@
 
 namespace App\Http\Controllers;
 
-use App\Http\Requests\UpdateFigureFamilyRequest;
 use App\Models\FigureFamily;
+use App\Http\Requests\UpdateFigureFamilyRequest;
 use Inertia\Inertia;
 use Illuminate\Support\Facades\Auth;
+use App\Services\FigureFamilyService;
 
 class FigureFamilyController extends Controller
 {
@@ -24,10 +25,11 @@ class FigureFamilyController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(UpdateFigureFamilyRequest $request, FigureFamily $figureFamily)
+    public function update(UpdateFigureFamilyRequest $request, FigureFamily $figureFamily, FigureFamilyService $figureFamilyService)
     {
-        $validated = $request->validated();
-        $figureFamily->update(['name' => $validated['name']]);
-        return back()->with('message', 'Success! Figure family renamed successfully.');
+        $figureFamilyId = $figureFamilyService->updateFigureFamily($request->validated, $figureFamily);
+        return $figureFamilyId
+            ? back()->with('message', 'Success! Figure family updated successfully.')
+            : back()->with('error', 'Error. Failed to update figure family.');
     }
 }

@@ -7,12 +7,14 @@ use App\Models\Figure;
 use App\Models\FigureFamily;
 use App\Exceptions\FigureUpdateCorruptsCompoundFigureException;
 use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Auth;
 
 class CompoundFigureService
 {
 
-    public function storeCompoundFigure(array $data, int $userId) {
+    public function storeCompoundFigure(array $data) {
         $compoundFigure = null;
+        $userId = Auth::id();
         try {
             DB::transaction(function () use ($data, $userId, &$compoundFigure) {
 
@@ -59,6 +61,7 @@ class CompoundFigureService
 
     public function updateCompoundFigure(array $data, CompoundFigure $compoundFigure): ?int
     {
+        $userId = Auth::id();
         try {
             DB::transaction(function () use ($data, &$compoundFigure) {
 
@@ -96,7 +99,7 @@ class CompoundFigureService
                         'compound_figure_id' => $compoundFigure->id,
                         'seq_num' => $idx + 1,
                         'is_final' => $idx === count($data['figure_ids']) - 1,
-                        'user_id' => $user ? $user->id : null,
+                        'user_id' => $userId,
                     ]);
                 }
 

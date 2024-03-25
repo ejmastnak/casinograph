@@ -2,8 +2,9 @@
 
 namespace App\Http\Controllers;
 
-use App\Http\Requests\UpdatePositionFamilyRequest;
 use App\Models\PositionFamily;
+use App\Http\Requests\UpdatePositionFamilyRequest;
+use App\Services\PositionFamilyService;
 use Inertia\Inertia;
 use Illuminate\Support\Facades\Auth;
 
@@ -24,10 +25,11 @@ class PositionFamilyController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(UpdatePositionFamilyRequest $request, PositionFamily $positionFamily)
+    public function update(UpdatePositionFamilyRequest $request, PositionFamily $positionFamily, PositionFamilyService $positionFamilyService)
     {
-        $validated = $request->validated();
-        $positionFamily->update(['name' => $validated['name']]);
-        return back()->with('message', 'Success! Position family renamed successfully.');
+        $positionFamilyId = $positionFamilyService->updatePositionFamily($request->validated, $positionFamily);
+        return $positionFamilyId
+            ? back()->with('message', 'Success! Position family updated successfully.')
+            : back()->with('error', 'Error. Failed to update position family.');
     }
 }
