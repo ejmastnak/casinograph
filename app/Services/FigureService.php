@@ -3,6 +3,7 @@ namespace App\Services;
 
 use App\Models\Figure;
 use App\Models\FigureFamily;
+use App\Models\CompoundFigure;
 use App\Exceptions\FigureUpdateCorruptsCompoundFigureException;
 use Illuminate\Support\Facades\Log;
 
@@ -70,7 +71,7 @@ class FigureService
 
                 // If this update will orphan a figure family, delete it.
                 if ($previousFigureFamily) {
-                    if (($figureFamilyId !== $previousFigureFamily->id) && Figure::where('figure_family_id', $previousFigureFamily->id)->count() === 0) {
+                    if (($figureFamilyId !== $previousFigureFamily->id) && Figure::where('figure_family_id', $previousFigureFamily->id)->count() === 0 && CompoundFigure::where('figure_family_id', $previousFigureFamily->id)->count() === 0) {
                         $previousFigureFamily->delete();
                     }
                 }
