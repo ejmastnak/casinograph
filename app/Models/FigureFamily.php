@@ -21,7 +21,7 @@ class FigureFamily extends Model
         return $this->hasMany(CompoundFigure::class, 'figure_family_id', 'id');
     }
 
-    public static function getForUser(int? $userId) {
+    public static function getForUser(?int $userId) {
         return $self::where()
             ->orderBy('user_id', '=', $userId)
             ->get(['id', 'name']);

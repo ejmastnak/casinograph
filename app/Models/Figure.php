@@ -19,8 +19,8 @@ class Figure extends Model
         "user_id",
     ];
 
-    public static function getWithPositionsForUser(int? $userId) {
-        return $self::where('user_id', '=', $userId),
+    public static function getWithPositionsForUser(?int $userId) {
+        return $self::where('user_id', '=', $userId)
         ->orderBy('name')
         ->with([
             'from_position:id,name',
@@ -34,7 +34,7 @@ class Figure extends Model
         ]);
     }
 
-    public static function getCombinedFiguresAndCompoundFiguresForUser(int? $userId) {
+    public static function getCombinedFiguresAndCompoundFiguresForUser(?int $userId) {
         $figures = Figure::with([
             'figure_family:id,name',
             'from_position:id,name',
