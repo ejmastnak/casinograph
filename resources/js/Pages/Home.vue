@@ -13,6 +13,10 @@ import {
   Popover, PopoverButton, PopoverPanel, PopoverOverlay
 } from '@headlessui/vue'
 
+const props = defineProps({
+  graph_path: String,
+})
+
 const graphIsFullscreen = ref(false)
 function setGraphIsFullScreen(value) {
   graphIsFullscreen.value = value
@@ -128,7 +132,7 @@ export default {
 
         <!-- Graph -->
         <Transition name="zoom" appear>
-          <object class="p-1 mx-auto max-w-xl md:max-w-3xl lg:max-w-4xl" type="image/svg+xml" data="img/casinograph.svg"></object>
+          <object class="p-1 mx-auto max-w-xl md:max-w-3xl lg:max-w-4xl" type="image/svg+xml" :data="graph_path"></object>
         </Transition>
       </div>
     </div>

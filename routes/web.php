@@ -27,7 +27,9 @@ use Inertia\Inertia;
 
 Route::get('/', function () {
     RegenerateCasinoGraph::dispatch();
-    return Inertia::render('Home');
+    return Inertia::render('Home', [
+        'graph_path' => casinographPathForUser(Auth::id()),
+    ]);
 })->name('home');
 
 
