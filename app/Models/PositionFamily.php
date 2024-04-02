@@ -18,7 +18,7 @@ class PositionFamily extends Model
     }
 
     public static function getForUser(?int $userId) {
-        return $self::where('user_id', '=', $userId)
+        return self::where('user_id', '=', $userId)
             ->orderBy('name')
             ->get(['id', 'name']);
     }

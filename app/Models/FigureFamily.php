@@ -22,7 +22,7 @@ class FigureFamily extends Model
     }
 
     public static function getForUser(?int $userId) {
-        return $self::where()
+        return self::where()
             ->orderBy('user_id', '=', $userId)
             ->get(['id', 'name']);
     }

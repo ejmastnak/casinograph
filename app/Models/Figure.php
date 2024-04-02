@@ -20,7 +20,7 @@ class Figure extends Model
     ];
 
     public static function getWithPositionsForUser(?int $userId) {
-        return $self::where('user_id', '=', $userId)
+        return self::where('user_id', '=', $userId)
         ->orderBy('name')
         ->with([
             'from_position:id,name',
