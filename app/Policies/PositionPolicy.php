@@ -39,7 +39,7 @@ class PositionPolicy
      */
     public function create(User $user): bool
     {
-        return $user->can_create;
+        return $user->can_crud;
     }
 
     /**
@@ -47,7 +47,7 @@ class PositionPolicy
      */
     public function update(User $user, Position $position): bool
     {
-        return $user->can_update && $position->user_id === $user->id;
+        return $user->can_crud && $position->user_id === $user->id;
     }
 
     /**
@@ -55,7 +55,7 @@ class PositionPolicy
      */
     public function delete(User $user, Position $position): bool
     {
-        return $user->can_delete && $position->user_id === $user->id;
+        return $user->can_crud && $position->user_id === $user->id;
     }
 
     /**

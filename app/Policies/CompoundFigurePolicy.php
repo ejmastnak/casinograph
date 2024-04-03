@@ -39,7 +39,7 @@ class CompoundFigurePolicy
      */
     public function create(User $user): bool
     {
-        return $user->can_create;
+        return $user->can_crud;
     }
 
     /**
@@ -47,7 +47,7 @@ class CompoundFigurePolicy
      */
     public function update(User $user, CompoundFigure $compoundFigure): bool
     {
-        return $user->can_update && $compoundFigure->user_id === $user->id;
+        return $user->can_crud && $compoundFigure->user_id === $user->id;
     }
 
     /**
@@ -55,7 +55,7 @@ class CompoundFigurePolicy
      */
     public function delete(User $user, CompoundFigure $compoundFigure): bool
     {
-        return $user->can_delete && $compoundFigure->user_id === $user->id;
+        return $user->can_crud && $compoundFigure->user_id === $user->id;
     }
 
     /**

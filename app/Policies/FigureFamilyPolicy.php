@@ -31,6 +31,6 @@ class FigureFamilyPolicy
      */
     public function update(User $user, FigureFamily $figureFamily): bool
     {
-        return $user->can_update && $figureFamily->user_id === $user->id;
+        return $user->can_crud && $figureFamily->user_id === $user->id;
     }
 }

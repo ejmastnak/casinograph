@@ -31,6 +31,6 @@ class PositionFamilyPolicy
      */
     public function update(User $user, PositionFamily $positionFamily): bool
     {
-        return $user->can_update && $positionFamily->user_id === $user->id;
+        return $user->can_crud && $positionFamily->user_id === $user->id;
     }
 }

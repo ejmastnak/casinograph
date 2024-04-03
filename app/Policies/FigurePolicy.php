@@ -40,17 +40,17 @@ class FigurePolicy
      */
     public function create(User $user): bool
     {
-        return $user->can_create;
+        return $user->can_crud;
     }
 
     public function createFromPosition(User $user, Position $position): bool
     {
-        return $user->can_create;
+        return $user->can_crud;
     }
 
     public function createToPosition(User $user, Position $position): bool
     {
-        return $user->can_create;
+        return $user->can_crud;
     }
 
     /**
@@ -58,7 +58,7 @@ class FigurePolicy
      */
     public function update(User $user, Figure $figure): bool
     {
-        return $user->can_update && $figure->user_id === $user->id;
+        return $user->can_crud && $figure->user_id === $user->id;
     }
 
     /**
@@ -66,7 +66,7 @@ class FigurePolicy
      */
     public function delete(User $user, Figure $figure): bool
     {
-        return $user->can_delete && $figure->user_id === $user->id;
+        return $user->can_crud && $figure->user_id === $user->id;
     }
 
     /**
