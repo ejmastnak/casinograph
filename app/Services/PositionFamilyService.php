@@ -3,6 +3,7 @@ namespace App\Services;
 
 use App\Models\PositionFamily;
 use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\DB;
 
 class PositionFamilyService
 {

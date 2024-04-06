@@ -35,7 +35,7 @@ class CompoundFigureController extends Controller
     {
         $compoundFigureId = $compoundFigureService->storeCompoundFigure($request->validated());
         return $compoundFigureId
-            ? Redirect::route('compound_figures.show', $redirectCompoundFigureId)->with('message', 'Success! Compound Figure created successfully.')
+            ? Redirect::route('compound_figures.show', $compoundFigureId)->with('message', 'Success! Compound Figure created successfully.')
             : back()->with('error', 'Error. Failed to create figure.');
     }
 
@@ -71,7 +71,7 @@ class CompoundFigureController extends Controller
     {
         $compoundFigureId = $compoundFigureService->updateCompoundFigure($request->validated(), $compoundFigure);
         return $compoundFigureId
-            ? Redirect::route('compound_figures.show', $redirectCompoundFigureId)->with('message', 'Success! Figure updated successfully.')
+            ? Redirect::route('compound_figures.show', $compoundFigureId)->with('message', 'Success! Figure updated successfully.')
             : back()->with('error', 'Error. Failed to update figure.');
     }
 
@@ -81,7 +81,7 @@ class CompoundFigureController extends Controller
     public function destroy(CompoundFigure $compoundFigure, CompoundFigureService $compoundFigureService)
     {
         $result = $compoundFigureService->deleteCompoundFigure($compoundFigure);
-        if ($result['success']) return Redirect::route('compound-figures.index')->with('message', $result['message']);
+        if ($result['success']) return Redirect::route('figures.index')->with('message', $result['message']);
         else if ($result['restricted']) return back()->with('error', $result['message']);
         else return back()->with('error', $result['message']);
     }

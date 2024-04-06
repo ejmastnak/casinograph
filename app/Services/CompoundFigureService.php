@@ -5,9 +5,9 @@ use App\Models\CompoundFigure;
 use App\Models\CompoundFigureFigure;
 use App\Models\Figure;
 use App\Models\FigureFamily;
-use App\Exceptions\FigureUpdateCorruptsCompoundFigureException;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
 
 class CompoundFigureService
 {
@@ -34,7 +34,7 @@ class CompoundFigureService
                 $compoundFigure = CompoundFigure::create([
                     'name' => $data['name'],
                     'description' => $data['description'],
-                    'weight' => $data['weight'] ? $data['weight'] : config('misc.default_figure_weight'),
+                    'weight' => isset($data['weight']) ? $data['weight'] : config('misc.default_figure_weight'),
                     'figure_family_id' => $figureFamilyId,
                     'from_position_id' => $fromPositionId,
                     'to_position_id' => $toPositionId,
@@ -63,7 +63,7 @@ class CompoundFigureService
     {
         $userId = Auth::id();
         try {
-            DB::transaction(function () use ($data, &$compoundFigure) {
+            DB::transaction(function () use ($data, $compoundFigure, $userId) {
 
                 $previousFigureFamily = $compoundFigure->figure_family;
 
@@ -83,7 +83,7 @@ class CompoundFigureService
                 $compoundFigure->update([
                     'name' => $data['name'],
                     'description' => $data['description'],
-                    'weight' => $data['weight'] ? $data['weight'] : config('misc.default_figure_weight'),
+                    'weight' => isset($data['weight']) ? $data['weight'] : config('misc.default_figure_weight'),
                     'figure_family_id' => $figureFamilyId,
                     'from_position_id' => $fromPositionId,
                     'to_position_id' => $toPositionId,

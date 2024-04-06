@@ -39,10 +39,13 @@ class CompoundFigureUniqueForUser implements ValidationRule, DataAwareRule
      */
     public function validate(string $attribute, mixed $value, Closure $fail): void
     {
+        $from_position_id = $this->data['figure_ids'][0];
+        $to_position_id = $this->data['figure_ids'][count($this->data['figure_ids']) - 1];
+
         $figure = CompoundFigure::where([
             ['name', 'like', $this->data['name']],
-            ['from_position_id', '=', $this->data['from_position_id']],
-            ['to_position_id', '=', $this->data['to_position_id']],
+            ['from_position_id', '=', $from_position_id],
+            ['to_position_id', '=', $to_position_id],
             ['user_id', '=', Auth::id()],
         ])->first();
         if (!is_null($figure) && $figure->id !== $this->data['id']) {

@@ -4,6 +4,9 @@ namespace App\Http\Requests;
 
 use Illuminate\Foundation\Http\FormRequest;
 use App\Models\Position;
+use Illuminate\Validation\Rule;
+use Illuminate\Database\Query\Builder;
+use Illuminate\Support\Facades\Auth;
 
 class StorePositionRequest extends FormRequest
 {
@@ -28,11 +31,11 @@ class StorePositionRequest extends FormRequest
                 'string',
                 'min:1',
                 config('validation.max_name_length'),
-                Rule::unique('positions')->where(fn (Builder $query) => $query->where('user_id', $this->user->id)),
+                Rule::unique('positions')->where(fn (Builder $query) => $query->where('user_id', Auth::id())),
             ],
             'description' => ['nullable', 'string', 'min:0', config('validation.max_description_length')],
             'position_family' => ['nullable', 'array', 'required_array_keys:id,name'],
-            'position_family.id' => ['nullable', 'integer', 'exists:positin_families,id'],
+            'position_family.id' => ['nullable', 'integer', 'exists:position_families,id'],
             'position_family.name' => ['required_with:position_family', 'string', 'min:1', config('validation.max_name_length')],
         ];
     }
@@ -45,6 +48,7 @@ class StorePositionRequest extends FormRequest
     public function attributes(): array
     {
         return [
+            'name' => 'position name',
             'position_family.id' => 'position family',
             'position_family.name' => 'position family name',
         ];

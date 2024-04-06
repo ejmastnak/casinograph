@@ -19,6 +19,26 @@ class CompoundFigure extends Model
         "user_id",
     ];
 
+    public function withFamilyAndFigures() {
+        $this->load([
+            'figure_family:id,name',
+            'compound_figure_figures:id,seq_num,compound_figure_id,figure_id',
+            'compound_figure_figures.figure:id,name,from_position_id,to_position_id',
+            'compound_figure_figures.figure.from_position:id,name',
+            'compound_figure_figures.figure.to_position:id,name',
+        ]);
+        return $this->only([
+            'id',
+            'name',
+            'description',
+            'weight',
+            'figure_family_id',
+            'figure_family',
+            'compound_figure_figures',
+        ]);
+    }
+
+
     public function compound_figure_figures() {
         return $this->hasMany(CompoundFigureFigure::class, 'compound_figure_id', 'id')->orderBy('seq_num');
     }

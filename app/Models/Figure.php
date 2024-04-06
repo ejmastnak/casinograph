@@ -20,7 +20,7 @@ class Figure extends Model
     ];
 
     public static function getWithPositionsForUser(?int $userId) {
-        return self::where('user_id', '=', $userId)
+        return self::where('user_id', $userId)
         ->orderBy('name')
         ->with([
             'from_position:id,name',
@@ -40,7 +40,7 @@ class Figure extends Model
             'from_position:id,name',
             'to_position:id,name'
         ])
-        ->where('user_id', '=', $userId)
+        ->where('user_id', $userId)
         ->get()
         ->mapWithKeys(function ($figure, $key) {
             return [
@@ -64,7 +64,7 @@ class Figure extends Model
             'from_position:id,name',
             'to_position:id,name'
         ])
-        ->where('user_id', '=', $userId)
+        ->where('user_id', $userId)
         ->get()
         ->mapWithKeys(function ($figure, $key) {
             return [
@@ -87,12 +87,12 @@ class Figure extends Model
     }
 
     public function withFamilyAndPositions() {
-        $this-load([
+        $this->load([
             'figure_family:id,name',
             'from_position:id,name',
             'to_position:id,name'
         ]);
-        return $this-only([
+        return $this->only([
             'id',
             'name',
             'description',

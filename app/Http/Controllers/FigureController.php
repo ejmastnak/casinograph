@@ -72,7 +72,7 @@ class FigureController extends Controller
      */
     public function store(StoreFigureRequest $request, FigureService $figureService)
     {
-        $figureId = $figureService->storeFigure($request->validated);
+        $figureId = $figureService->storeFigure($request->validated());
         return $figureId
             ? Redirect::route('figures.show', $figureId)->with('message', 'Success! Figure created successfully.')
             : back()->with('error', 'Error. Failed to create figure.');

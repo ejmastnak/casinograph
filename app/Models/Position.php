@@ -17,12 +17,14 @@ class Position extends Model
     ];
 
     public static function getForUser(?int $userId) {
-        return self::orderBy('name')->get(['id', 'name']);
+        return self::where('user_id', $userId)
+            ->orderBy('name')
+            ->get(['id', 'name']);
     }
 
     public static function getForUserWithPositionFamilies(?int $userId) {
         return self::with('position_family:id,name')
-            ->where('user_id', '=', $userId)
+            ->where('user_id', $userId)
             ->orderBy('name')
             ->get(['id', 'name', 'position_family_id']);
     }

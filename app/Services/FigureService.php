@@ -4,9 +4,9 @@ namespace App\Services;
 use App\Models\Figure;
 use App\Models\FigureFamily;
 use App\Models\CompoundFigure;
-use App\Exceptions\FigureUpdateCorruptsCompoundFigureException;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
 
 class FigureService
 {
@@ -30,7 +30,7 @@ class FigureService
                 $figure = Figure::create([
                     'name' => $data['name'],
                     'description' => $data['description'],
-                    'weight' => $data['weight'] ? $data['weight'] : config('misc.default_figure_weight'),
+                    'weight' => isset($data['weight']) ? $data['weight'] : config('misc.default_figure_weight'),
                     'figure_family_id' => $figureFamilyId,
                     'from_position_id' => $data['from_position_id'],
                     'to_position_id' => $data['to_position_id'],
@@ -66,7 +66,7 @@ class FigureService
                 $figure->update([
                     'name' => $data['name'],
                     'description' => $data['description'],
-                    'weight' => $data['weight'] ? $data['weight'] : config('misc.default_figure_weight'),
+                    'weight' => isset($data['weight']) ? $data['weight'] : config('misc.default_figure_weight'),
                     'figure_family_id' => $figureFamilyId,
                     'from_position_id' => $data['from_position_id'],
                     'to_position_id' => $data['to_position_id'],

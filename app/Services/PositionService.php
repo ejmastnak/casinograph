@@ -5,6 +5,7 @@ use App\Models\Position;
 use App\Models\PositionFamily;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
 
 class PositionService
 {
