@@ -29,6 +29,7 @@ Route::get('/', function () {
     RegenerateCasinoGraph::dispatch();
     return Inertia::render('Home', [
         'graph_path' => casinographPathForUser(Auth::id()),
+        'graph_is_nonempty' => Figure::where('user_id', Auth::id())->count() > 0,
     ]);
 })->name('home');
 

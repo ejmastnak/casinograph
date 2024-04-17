@@ -7,7 +7,7 @@ import SecondaryButton from '@/Components/SecondaryButton.vue'
 import PrimaryButton from '@/Components/PrimaryButton.vue'
 import DangerButton from '@/Components/DangerButton.vue'
 import PlainButton from '@/Components/PlainButton.vue'
-import { QuestionMarkCircleIcon, InformationCircleIcon, ArrowsUpDownIcon, ArrowsPointingOutIcon, XMarkIcon } from '@heroicons/vue/24/outline'
+import { QuestionMarkCircleIcon, InformationCircleIcon, ExclamationCircleIcon, ArrowsUpDownIcon, ArrowsPointingOutIcon, XMarkIcon } from '@heroicons/vue/24/outline'
 import {
   Dialog, DialogPanel, DialogTitle, DialogDescription,
   Popover, PopoverButton, PopoverPanel, PopoverOverlay
@@ -15,6 +15,7 @@ import {
 
 const props = defineProps({
   graph_path: String,
+  graph_is_nonempty: Boolean,
 })
 
 const graphIsFullscreen = ref(false)
@@ -115,7 +116,7 @@ export default {
     </div>
 
     <!-- Graph -->
-    <div class="relative mt-8 -mx-2">
+    <div v-if="graph_is_nonempty" class="relative mt-8 -mx-2">
       <div class="border overflow-auto border-gray-200 shadow rounded-lg h-96 sm:h-[36rem]">
 
         <!-- Enter full screen -->
@@ -137,8 +138,14 @@ export default {
       </div>
     </div>
 
+    <!-- Notify user instead of showing an empty graph -->
+    <p v-else class="mt-8 text-md max-w-md">
+      You have not created any positions or figures yet.
+      First <MyLink :colored="true" :href="route('positions.create')">create some positions</MyLink>,then connect the positions to <MyLink :colored="true" :href="route('figures.create')">create figures</MyLink>.
+    </p>
+
     <!-- About the graph -->
-    <section class="mt-8">
+    <section v-if="graph_is_nonempty" class="mt-8">
       <h2 class="text-xl text-gray-700" id="more-info">About the graph</h2>
       <ul class="mt-2 list-disc space-y-1">
         <li>
@@ -169,7 +176,8 @@ export default {
       </ul>
     </section>
 
-    <div class="mt-8">
+    <!-- Questions and answers -->
+    <div v-if="$page.props.auth.user === null" class="mt-8">
       <h2 class="text-xl text-gray-700" id="qa">Questions and answers</h2>
       <ul class="mt-3 space-y-5">
         <li>
@@ -230,7 +238,8 @@ export default {
       </ul>
     </div>
 
-    <div class="mt-8">
+    <!-- For nerds -->
+    <div v-if="$page.props.auth.user === null" class="mt-8">
       <h2 class="text-xl text-gray-700" id="nerds">For nerds</h2>
       <p class="mt-0.5 text-gray-600 text-sm">
         (Read: I want to geek out about the tech stack to anyone who will listen.)
