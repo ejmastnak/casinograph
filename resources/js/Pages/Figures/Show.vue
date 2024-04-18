@@ -97,7 +97,7 @@ export default {
     <div v-if="can_update || can_delete" class="flex items-center mt-6">
       <SecondaryLink v-if="can_update" :href="route('figures.edit', figure.id)" class="flex items-center">
         <PencilSquareIcon class="text-gray-600 h-5 w-5 -ml-1" />
-        <p class="ml-1">Edit</p>
+        <p class="ml-1">Update</p>
       </SecondaryLink>
 
       <DangerButton v-if="can_delete" @click="idToDelete = figure.id; deleteDialog.open()" class="ml-2 flex items-center">
