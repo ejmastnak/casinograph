@@ -3,11 +3,12 @@ import { ref } from 'vue'
 import { Head } from '@inertiajs/vue3'
 import MyLink from '@/Components/MyLink.vue'
 import QuestionAndAnswer from '@/Components/QuestionAndAnswer.vue'
+import Warning from '@/Components/Warning.vue'
 import SecondaryButton from '@/Components/SecondaryButton.vue'
 import PrimaryButton from '@/Components/PrimaryButton.vue'
 import DangerButton from '@/Components/DangerButton.vue'
 import PlainButton from '@/Components/PlainButton.vue'
-import { QuestionMarkCircleIcon, InformationCircleIcon, ExclamationCircleIcon, ArrowsUpDownIcon, ArrowsPointingOutIcon, XMarkIcon } from '@heroicons/vue/24/outline'
+import { QuestionMarkCircleIcon, InformationCircleIcon, ExclamationTriangleIcon, ArrowsUpDownIcon, ArrowsPointingOutIcon, XMarkIcon } from '@heroicons/vue/24/outline'
 import {
   Dialog, DialogPanel, DialogTitle, DialogDescription,
   Popover, PopoverButton, PopoverPanel, PopoverOverlay
@@ -139,10 +140,10 @@ export default {
     </div>
 
     <!-- Notify user instead of showing an empty graph -->
-    <p v-else class="mt-8 text-md max-w-md">
-      You have not created any positions or figures yet.
-      First <MyLink :colored="true" :href="route('positions.create')">create some positions</MyLink>,then connect the positions to <MyLink :colored="true" :href="route('figures.create')">create figures</MyLink>.
-    </p>
+    <Warning class="mt-8 max-w-lg">
+        You have not created any positions or figures yet.
+        First <MyLink :colored="true" :href="route('positions.create')">create some positions</MyLink>, then connect the positions to <MyLink :colored="true" :href="route('figures.create')">create figures</MyLink>.
+    </Warning>
 
     <!-- About the graph -->
     <section v-if="graph_is_nonempty" class="mt-8">
