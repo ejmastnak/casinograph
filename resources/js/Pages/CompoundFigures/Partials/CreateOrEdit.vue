@@ -106,6 +106,7 @@ const submit = () => {
         type="text"
         class="block w-80"
         v-model="form.name"
+        :autofocus="action === 'create'"
         required
       />
       <InputError class="mt-2" :message="form.errors.name" />
