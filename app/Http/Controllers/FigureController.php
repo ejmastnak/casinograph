@@ -26,7 +26,6 @@ class FigureController extends Controller
         return Inertia::render('Figures/Index', [
             'figures' => Figure::getCombinedFiguresAndCompoundFiguresForUser(Auth::id()),
             'figure_families' => FigureFamily::getForUser(Auth::id()),
-            'show_edit_delete_icons' => Auth::user() && Auth::user()->is_admin === 1,
         ]);
     }
 

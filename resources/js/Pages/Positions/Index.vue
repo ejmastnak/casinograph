@@ -15,7 +15,6 @@ import { PencilSquareIcon, TrashIcon, PlusCircleIcon, MagnifyingGlassIcon, XMark
 const props = defineProps({
   positions: Array,
   position_families: Array,
-  show_edit_delete_icons: Boolean,
 })
 
 // For filtering Positions by PositionFamily
@@ -207,7 +206,7 @@ export default {
             <th
               scope="col"
               class="px-6 py-2 bg-blue-100"
-              :class="show_edit_delete_icons ? 'w-8/12' : 'w-9/12'"
+              :class="$page.props.auth.user ? 'w-8/12' : 'w-9/12'"
             >
               Name
             </th>
@@ -218,7 +217,7 @@ export default {
               Family
             </th>
             <!-- For trash and edit icons -->
-            <th v-if="show_edit_delete_icons" scope="col" class="bg-blue-100 w-1/12" />
+            <th v-if="$page.props.auth.user" scope="col" class="bg-blue-100 w-1/12" />
           </tr>
         </thead>
         <tbody>
@@ -244,7 +243,7 @@ export default {
               </MyLink>
             </td>
             <!-- Delete/Edit -->
-            <td v-if="show_edit_delete_icons">
+            <td v-if="$page.props.auth.user">
               <div class="flex items-center">
                 <MyLink :href="route('positions.edit', position.obj.id)">
                   <PencilSquareIcon class="text-gray-500 h-5 w-5"/>

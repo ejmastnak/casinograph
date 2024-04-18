@@ -16,7 +16,6 @@ import NewFigureDialog from './Partials/NewFigureDialog.vue'
 const props = defineProps({
   figures: Array,
   figure_families: Array,
-  show_edit_delete_icons: Boolean,
 })
 
 // For filtering Figures by FigureFamily
@@ -283,7 +282,7 @@ export default {
             <th
               scope="col"
               class="px-5 py-2 bg-blue-100"
-              :class="show_edit_delete_icons ? 'w-7/12' : 'w-8/12'"
+              :class="$page.props.auth.user ? 'w-7/12' : 'w-8/12'"
             >
               Name
             </th>
@@ -294,7 +293,7 @@ export default {
               Family
             </th>
             <!-- For trash and edit icons -->
-            <th v-if="show_edit_delete_icons" scope="col" class="bg-blue-200 w-1/12" />
+            <th v-if="$page.props.auth.user" scope="col" class="bg-blue-200 w-1/12" />
           </tr>
         </thead>
         <tbody>
@@ -329,7 +328,7 @@ export default {
               </MyLink>
             </td>
             <!-- Delete/Edit -->
-            <td v-if="show_edit_delete_icons" class="px-2">
+            <td v-if="$page.props.auth.user" class="px-2">
               <div class="flex items-center">
                 <MyLink :href="route(figure.obj.compound ? 'compound_figures.edit' : 'figures.edit', figure.obj.id)">
                   <PencilSquareIcon class="text-gray-500 h-5 w-5"/>
