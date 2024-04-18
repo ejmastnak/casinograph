@@ -1,6 +1,8 @@
 <script setup>
 import { Head } from '@inertiajs/vue3'
 import CreateOrEdit from './Partials/CreateOrEdit.vue';
+import Warning from '@/Components/Warning.vue'
+import MyLink from '@/Components/MyLink.vue'
 
 const props = defineProps({
   figure_families: Array,
@@ -21,6 +23,11 @@ export default {
   <div class="">
     <Head title="New Figure" />
     <h1 class="text-xl">New Figure</h1>
+
+    <Warning v-if="positions.length === 0" class="mt-5 max-w-xl">
+      You have not created any positions yet!
+      You create figures by connecting positions, so you will need to <MyLink :colored="true" :href="route('positions.create')">create some positions</MyLink> before you can create figures.
+    </Warning>
 
     <CreateOrEdit
       action="create"
