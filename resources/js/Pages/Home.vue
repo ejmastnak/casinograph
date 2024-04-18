@@ -60,7 +60,7 @@ export default {
               </p>
 
               <p class="mt-2">
-                It has a loyal following and tends to produce fans who become quite obsessed, and end up spending their free time dancing, nerding out about <MyLink :colored="true" href="https://en.wikipedia.org/wiki/Timba"> timba music</MyLink> and Cuban ethnomusicology, and succumbing to eccentric acts of dedication like building websites that model Casino with directed cyclic graphs ;)
+                It has a loyal following, especially in Europe, and tends to produce fans who become quite obsessed, and end up spending their free time dancing, nerding out about <MyLink :colored="true" href="https://en.wikipedia.org/wiki/Timba"> timba music</MyLink> and Cuban ethnomusicology, and succumbing to eccentric acts of dedication like building websites that model Casino with directed cyclic graphs ;)
               </p>
 
               <p class="mt-2">
@@ -198,27 +198,17 @@ export default {
             <template #answer>
               I know.
               There definitely <span class="italic">should</span> be be videos—dance is inherently visual and you can only get so far with plain-text descriptions.
-              But filming and/or procuring videos is a project beyond the scope of what I can currently commit to.
+              But filming and/or procuring videos is a project beyond the scope of what I could commit to here.
             </template>
           </QuestionAndAnswer>
         </li>
         <li>
           <QuestionAndAnswer>
-            <template #question>Can I add new positions and figures?</template>
+            <template #question>Can I create new positions and figures?</template>
             <template #answer>
-              That would be cool, please do!
-              You'll need an account for that (sorry for the hassle). If you aren't already logged in, you can create one <MyLink :colored="true" :href="route('register')">here</MyLink>.
-              You can then add to the positions and figures already on this page.
-            </template>
-          </QuestionAndAnswer>
-        </li>
-        <li>
-          <QuestionAndAnswer>
-            <template #question>That's nice, but I'd prefer to have <span class="italic">only</span> my positions/figures and none of the pre-existing ones.</template>
-            <template #answer>
-              Contact me.
-              If you're interested enough in this project to want your own version, I could set up a private account where you have complete control over the positions, figures, names, descriptions, etc.
-              You can reach me at <MyLink :colored="true" href="mailto:admin@ejmastnak.com">admin@ejmastnak.com</MyLink> in English, Slovene, or Spanish.
+              Sure!
+              You'll need an account for that—if you aren't already logged in, you can create one <MyLink :colored="true" :href="route('register')">here</MyLink>.
+              You can then create your own set of positions and figures with complete control over names, descriptions, etc.
             </template>
           </QuestionAndAnswer>
         </li>
@@ -267,7 +257,7 @@ export default {
         </li>
         <li>
           <QuestionAndAnswer>
-            <template #question>What, you're storing a graph in a relational database?!</template>
+            <template #question>Yuck, you're storing a graph in a relational database?!</template>
             <template #answer>
               I entertained the idea of using a graph-oriented database... but this app generally queries only one level of adjacent vertices per web request,
               and doesn't actually traverse the graph or require any of the classic graph algorithms (finding shortest paths, etc.) that a graph database efficiently supports.
