@@ -139,12 +139,6 @@ export default {
       </div>
     </div>
 
-    <!-- Notify user instead of showing an empty graph -->
-    <Warning class="mt-8 max-w-lg">
-        You have not created any positions or figures yet.
-        First <MyLink :colored="true" :href="route('positions.create')">create some positions</MyLink>, then connect the positions to <MyLink :colored="true" :href="route('figures.create')">create figures</MyLink>.
-    </Warning>
-
     <!-- About the graph -->
     <section v-if="graph_is_nonempty" class="mt-8">
       <h2 class="text-xl text-gray-700" id="more-info">About the graph</h2>
@@ -152,7 +146,7 @@ export default {
         <li>
           <span class="font-medium">It's clickable!</span>
           Click on any figure or position to learn more.
-          (Disclaimer: descriptions are currently minimal.)
+          <span v-if="!$page.props.auth.user">(Disclaimer: descriptions are currently minimal.)</span>
         </li>
         <li>
           <span class="font-medium">One figure per position pair:</span>
@@ -176,6 +170,13 @@ export default {
         </li>
       </ul>
     </section>
+
+    <!-- Notify user instead of showing an empty graph -->
+    <Warning v-if="$page.props.auth.user && !graph_is_nonempty" class="mt-8 max-w-lg">
+        You have not created any positions or figures yet.
+        First <MyLink :colored="true" :href="route('positions.create')">create some positions</MyLink>, then connect the positions to <MyLink :colored="true" :href="route('figures.create')">create figures</MyLink>.
+    </Warning>
+
 
     <!-- Questions and answers -->
     <div v-if="$page.props.auth.user === null" class="mt-8">
