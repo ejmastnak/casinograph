@@ -190,10 +190,10 @@ export default {
     </div>
 
     <!-- Main panel for table and search -->
-    <div class="mt-6 pt-3 border border-gray-100 shadow-md rounded-lg overflow-auto">
+    <div class="mt-6">
 
       <!-- Search and filter components -->
-      <div class="px-3 flex flex-wrap items-end space-y-2 gap-x-4">
+      <div class="flex flex-wrap items-end space-y-2 gap-x-4">
 
         <!-- Fuzzy search by name -->
         <div>
@@ -276,71 +276,74 @@ export default {
 
       </div>
 
-      <table class="mt-6 md:table-fixed w-full text-sm sm:text-base text-left">
-        <thead class="text-xs text-gray-700 uppercase bg-gray-50">
-          <tr>
-            <th
-              scope="col"
-              class="px-5 py-2 bg-blue-100"
-              :class="$page.props.auth.user ? 'w-7/12' : 'w-8/12'"
-            >
-              Name
-            </th>
-            <th scope="col" class="px-5 py-2 bg-blue-200" >
-              Simple?
-            </th>
-            <th scope="col" class="px-5 py-2 bg-blue-100" >
-              Family
-            </th>
-            <!-- For trash and edit icons -->
-            <th v-if="$page.props.auth.user" scope="col" class="bg-blue-200 w-1/12" />
-          </tr>
-        </thead>
-        <tbody>
-          <tr
-            v-for="figure in filteredFigures"
-            :key="figure.obj.id.toString() + figure.obj.compound.toString()"
-            v-show="shouldDisplay(figure.obj)"
-            class="bg-white border-b"
+      <!-- Listing of Figures -->
+      <!-- Layouts: -->
+      <!-- pre-sm: (name, simple, family) (7, 2, 3) -->
+      <!-- sm, !$user: (name, simple, family) (7, 2, 3) -->
+      <!-- sm, $user: (name, simple, family, edit/delete) (7, 2, 2, 1) -->
+      <div class="mt-6  min-w-[400px]">
+        <!-- Table header -->
+        <div class="grid grid-cols-12 text-xs uppercase text-gray-700 font-semibold">
+          <p class="col-span-7 px-3 sm:px-5 py-3 bg-blue-50">Name</p>
+          <p class="col-span-2 px-3 sm:px-5 py-3 bg-blue-100">Simple?</p>
+          <p 
+            class="px-3 sm:px-5 py-3 bg-blue-50"
+            :class="$page.props.auth.user ? 'col-span-3 sm:col-span-2' : 'col-span-3 sm:col-span-3'"
           >
-            <!-- Name -->
-            <td scope="row" class="px-5 py-2">
-              <MyLink class="inline-block" :href="route(figure.obj.compound ? 'compound_figures.show' : 'figures.show', figure.obj.id)">
-                {{figure.obj.name}}
-              </MyLink>
-              <p class="text-sm text-gray-500">
-                <MyLink class="font-medium" :href="route('positions.show', figure.obj.from_position_id)" >{{figure.obj.from_position.name}}</MyLink>
-                to
-                <MyLink class="font-medium" :href="route('positions.show', figure.obj.to_position_id)" >{{figure.obj.to_position.name}}</MyLink>
-              </p>
-            </td>
-            <!-- Compound figure? -->
-            <td class="px-4 py-2 text-gray-600">
-              {{figure.obj.compound ? "Compound" : "Simple"}}
-            </td>
-            <!-- FigureFamily -->
-            <td class="px-5 py-2 text-gray-600">
-              <MyLink
-                v-if="figure.obj.figure_family"
-                :href="route('figure_families.show', figure.obj.figure_family.id)"
-              >
-                {{figure.obj.figure_family.name}}
-              </MyLink>
-            </td>
-            <!-- Delete/Edit -->
-            <td v-if="$page.props.auth.user" class="px-2">
-              <div class="flex items-center">
-                <MyLink :href="route(figure.obj.compound ? 'compound_figures.edit' : 'figures.edit', figure.obj.id)">
-                  <PencilSquareIcon class="text-gray-500 h-5 w-5"/>
-                </MyLink>
-                <button class="ml-0.5" type="button" @click="idToDelete = figure.obj.id; deleteCompound = figure.obj.compound; deleteDialog.open()">
-                  <TrashIcon class="text-gray-500 h-5 w-5"/>
-                </button>
-              </div>
-            </td>
-          </tr>
-        </tbody>
-      </table>
+            Family
+          </p>
+          <p v-if="$page.props.auth.user" class="hidden sm:block col-span-1 py-3 bg-blue-100" />
+        </div>
+
+        <div
+          v-for="(figure, idx) in filteredFigures"
+          :key="figure.obj.id"
+          v-show="shouldDisplay(figure.obj)"
+          class="grid grid-cols-12 text-gray-800 text-sm sm:text-base border-b py-1.5"
+        >
+          <!-- Name -->
+          <div class="col-span-7 px-3 sm:px-4">
+            <MyLink class="inline-block" :href="route(figure.obj.compound ? 'compound_figures.show' : 'figures.show', figure.obj.id)">
+              {{figure.obj.name}}
+            </MyLink>
+            <p class="text-sm text-gray-500">
+              <MyLink class="font-medium" :href="route('positions.show', figure.obj.from_position_id)" >{{figure.obj.from_position.name}}</MyLink>
+              to
+              <MyLink class="font-medium" :href="route('positions.show', figure.obj.to_position_id)" >{{figure.obj.to_position.name}}</MyLink>
+            </p>
+          </div>
+          <!-- Simple/Compound -->
+          <div class="col-span-2 px-3 sm:px-4 text-gray-600 flex items-center">
+            <p class="sm:hidden">{{figure.obj.compound ? "Comp." : "Simple"}}</p>
+            <p class="hidden sm:block">{{figure.obj.compound ? "Compound" : "Simple"}}</p>
+          </div>
+          <!-- Figure family -->
+          <div
+            class="px-4 text-gray-600  flex items-center"
+            :class="$page.props.auth.user ? 'col-span-3 sm:col-span-2' : 'col-span-3 sm:col-span-3'"
+          >
+            <MyLink
+              v-if="figure.obj.figure_family"
+              :href="route('figure_families.show', figure.obj.figure_family.id)"
+            >
+              {{figure.obj.figure_family.name}}
+            </MyLink>
+          </div>
+          <!-- Edit/Delete -->
+          <div v-if="$page.props.auth.user" class="hidden sm:flex sm:col-span-1 px-1 items-center">
+            <MyLink :href="route(figure.obj.compound ? 'compound_figures.edit' : 'figures.edit', figure.obj.id)" class="text-gray-500 hover:text-blue-600">
+              <PencilSquareIcon class="h-5 w-5"/>
+            </MyLink>
+            <button
+              type="button"
+              class="ml-0.5 text-gray-500 hover:text-red-600"
+              @click="idToDelete = figure.obj.id; deleteCompound = figure.obj.compound; deleteDialog.open()"
+            >
+              <TrashIcon class="h-5 w-5"/>
+            </button>
+          </div>
+        </div>
+      </div>
 
       <p v-show="numDisplayedFigures === 0" class="px-5 py-4" >
         No results found. Try a less restrictive filter or search?

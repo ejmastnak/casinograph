@@ -1,6 +1,6 @@
 <script setup>
 import { ref, watch, computed, onBeforeUnmount, onMounted } from 'vue'
-import { router } from '@inertiajs/vue3'
+import { router, usePage } from '@inertiajs/vue3'
 import fuzzysort from 'fuzzysort'
 import throttle from "lodash/throttle";
 import { Head } from '@inertiajs/vue3'
@@ -11,6 +11,8 @@ import PlainButton from '@/Components/PlainButton.vue'
 import TextInput from '@/Components/TextInput.vue'
 import MultiSelect from '@/Components/MultiSelect.vue'
 import { PencilSquareIcon, TrashIcon, PlusCircleIcon, MagnifyingGlassIcon, XMarkIcon } from '@heroicons/vue/24/outline'
+
+const page = usePage()
 
 const props = defineProps({
   positions: Array,
@@ -84,7 +86,6 @@ function deletePosition() {
   idToDelete.value = null
 }
 
-
 // Preserve scroll position and search queries when leaving page.
 onBeforeUnmount(() => {
   sessionStorage.setItem('positionsIndexScrollX', window.scrollX)
@@ -150,10 +151,10 @@ export default {
     </div>
 
     <!-- Main panel for table and search -->
-    <div class="mt-6 pt-3 border border-gray-100 shadow-md rounded-lg overflow-auto">
+    <div class="mt-6">
 
       <!-- Search and filter components -->
-      <div class="px-3 flex flex-wrap items-end space-y-2 gap-x-4">
+      <div class="flex flex-wrap items-end space-y-2 gap-x-4">
 
         <!-- Fuzzy search by name -->
         <div class="w-80 sm:w-fit">
@@ -200,66 +201,62 @@ export default {
 
       </div>
 
-      <table class="mt-6 md:table-fixed w-full text-sm sm:text-base text-left">
-        <thead class="text-xs text-gray-700 uppercase bg-gray-50">
-          <tr>
-            <th
-              scope="col"
-              class="px-6 py-2 bg-blue-100"
-              :class="$page.props.auth.user ? 'w-8/12' : 'w-9/12'"
-            >
-              Name
-            </th>
-            <th
-              scope="col"
-              class="px-6 py-2 bg-blue-200 w-3/12"
-            >
-              Family
-            </th>
-            <!-- For trash and edit icons -->
-            <th v-if="$page.props.auth.user" scope="col" class="bg-blue-100 w-1/12" />
-          </tr>
-        </thead>
-        <tbody>
-          <tr
-            v-for="position in filteredPositions"
-            :key="position.obj.id"
-            v-show="shouldDisplay(position.obj)"
-            class="bg-white border-b"
+      <!-- Listing of Positions -->
+      <!-- Layouts: -->
+      <!-- pre-sm: (name, family) (7, 5) -->
+      <!-- sm, !$user: (name, family) (8, 4) -->
+      <!-- sm, $user: (name, family, edit/delete) (8, 3, 1) -->
+      <div class="mt-6 min-w-[380px]">
+
+        <!-- Header -->
+        <div class="grid grid-cols-12 text-xs uppercase text-gray-700 font-semibold">
+          <p class="col-span-7 sm:col-span-8 px-3 sm:px-5 py-3 bg-blue-50">Name</p>
+          <p 
+            class="px-3 sm:px-5 py-3 bg-blue-100"
+            :class="$page.props.auth.user ? 'col-span-5 sm:col-span-3' : 'col-span-5 sm:col-span-4'"
           >
-            <!-- Name -->
-            <td scope="row" class="px-5 py-2">
-              <MyLink :href="route('positions.show', position.obj.id)">
-                {{position.obj.name}}
-              </MyLink>
-            </td>
-            <!-- PositionFamily -->
-            <td class="px-6 py-2 text-gray-600">
+            Family
+          </p>
+          <p v-if="$page.props.auth.user" class="hidden sm:block sm:col-span-1 py-3 bg-blue-50" />
+        </div>
+
+        <div
+          v-for="(position, idx) in filteredPositions"
+          :key="position.obj.id"
+          v-show="shouldDisplay(position.obj)"
+          class="grid grid-cols-12 text-gray-800 text-sm sm:text-base border-b py-1.5"
+        >
+          <!-- Name -->
+          <div class="col-span-7 sm:col-span-8 px-3 sm:px-4">
+            {{position.obj.name}}
+          </div>
+          <!-- Position family -->
+          <div
+            class="px-3 sm:px-4 text-gray-600"
+            :class="$page.props.auth.user ? 'col-span-5 sm:col-span-3' : 'col-span-5 sm:col-span-4'"
+          >
               <MyLink
                 v-if="position.obj.position_family"
                 :href="route('position_families.show', position.obj.position_family.id)"
               >
                 {{position.obj.position_family.name}}
               </MyLink>
-            </td>
-            <!-- Delete/Edit -->
-            <td v-if="$page.props.auth.user">
-              <div class="flex items-center">
-                <MyLink :href="route('positions.edit', position.obj.id)">
-                  <PencilSquareIcon class="text-gray-500 h-5 w-5"/>
-                </MyLink>
-                <button
-                  type="button"
-                  class="ml-0.5"
-                  @click="idToDelete = position.obj.id; deleteDialog.open()"
-                >
-                  <TrashIcon class="text-gray-500 h-5 w-5"/>
-                </button>
-              </div>
-            </td>
-          </tr>
-        </tbody>
-      </table>
+          </div>
+          <!-- Edit/Delete -->
+          <div v-if="$page.props.auth.user" class="hidden sm:flex sm:items-center col-span-1 px-1 ">
+            <MyLink :href="route('positions.edit', position.obj.id)" class="text-gray-500 hover:text-blue-600">
+              <PencilSquareIcon class="h-5 w-5"/>
+            </MyLink>
+            <button
+              type="button"
+              class="ml-0.5 text-gray-500 hover:text-red-600"
+              @click="idToDelete = position.obj.id; deleteDialog.open()"
+            >
+              <TrashIcon class="h-5 w-5"/>
+            </button>
+          </div>
+        </div>
+      </div>
 
       <p v-show="numDisplayedPositions === 0" class="px-6 py-4" >
         No results found. Try a less restrictive filter or search?
