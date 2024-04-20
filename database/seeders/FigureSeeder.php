@@ -13,7 +13,7 @@ class FigureSeeder extends Seeder
      */
     public function run(): void
     {
-        $path = storage_path('app/seeders/sql/figures.sql');
+        $path = database_path('seeders/data/sql/figures.sql');
         DB::unprepared(file_get_contents($path));
     }
 }

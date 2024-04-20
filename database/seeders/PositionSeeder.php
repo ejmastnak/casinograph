@@ -13,7 +13,7 @@ class PositionSeeder extends Seeder
      */
     public function run(): void
     {
-        $path = storage_path('app/seeders/sql/positions.sql');
+        $path = database_path('seeders/data/sql/positions.sql');
         DB::unprepared(file_get_contents($path));
     }
 }

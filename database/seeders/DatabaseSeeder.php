@@ -16,8 +16,7 @@ class DatabaseSeeder extends Seeder
     {
         if (\App::environment('local')) {
 
-            // Generate SQL statements for seeding tables
-            $result = Process::path(storage_path('app/seeders'))->run('bash ' . storage_path('app/seeders/prepare.bash'));
+            $result = Process::path(database_path('seeders/data'))->run('bash ' . database_path('seeders/data/prepare.bash'));
             if ($result->failed()) {
                 $this->command->info('Error: failed to prepare SQL statements for seeding database; seeding aborted.');
             }
