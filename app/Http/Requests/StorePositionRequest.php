@@ -30,13 +30,13 @@ class StorePositionRequest extends FormRequest
                 'required',
                 'string',
                 'min:1',
-                config('validation.max_name_length'),
+                config('constants.validation.max_name_length'),
                 Rule::unique('positions')->where(fn (Builder $query) => $query->where('user_id', Auth::id())),
             ],
-            'description' => ['nullable', 'string', 'min:0', config('validation.max_description_length')],
+            'description' => ['nullable', 'string', 'min:0', config('constants.validation.max_description_length')],
             'position_family' => ['nullable', 'array', 'required_array_keys:id,name'],
             'position_family.id' => ['nullable', 'integer', 'exists:position_families,id'],
-            'position_family.name' => ['required_with:position_family', 'string', 'min:1', config('validation.max_name_length')],
+            'position_family.name' => ['required_with:position_family', 'string', 'min:1', config('constants.validation.max_name_length')],
         ];
     }
 

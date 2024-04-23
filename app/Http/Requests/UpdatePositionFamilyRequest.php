@@ -24,7 +24,7 @@ class UpdatePositionFamilyRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'name' => ['required', 'string', 'min:1', config('validation.max_name_length')],
+            'name' => ['required', 'string', 'min:1', config('constants.validation.max_name_length')],
         ];
     }
 }
