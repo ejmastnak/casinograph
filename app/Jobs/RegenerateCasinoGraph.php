@@ -138,13 +138,10 @@ class RegenerateCasinoGraph implements ShouldQueue
         on figures.from_position_id
         = positions.id
         or figures.to_position_id
-        = positions.id "
-        . ($userId ? " where positions.user_id = :user_id " : " where positions.user_id is null ")
-        . " group by positions.id; ";
-
-        $params = $userId ? ['user_id' => $userId] : [];
-        $positions = DB::select($positionQuery, $params);
-
+        = positions.id 
+        where positions.user_id = :user_id
+        group by positions.id; ";
+        $positions = DB::select($positionQuery, ['user_id' => ($userId ?? config('constants.user_ids.casino'))]);
         return $positions;
     }
 
@@ -158,16 +155,13 @@ class RegenerateCasinoGraph implements ShouldQueue
         from_position_id,
         to_position_id,
         name
-        from figures "
-        . ($userId ? " where figures.user_id = :user_id " : " where figures.user_id is null ") .
-        " order by random()
+        from figures
+        where figures.user_id = :user_id
+        order by random()
         )
         group by from_position_id, to_position_id;
         ";
-
-        $params = $userId ? ['user_id' => $userId] : [];
-        $figures = DB::select($figuresQuery, $params);
-
+        $figures = DB::select($figuresQuery, ['user_id' => ($userId ?? config('constants.user_ids.casino'))]);
         return $figures;
     }
 

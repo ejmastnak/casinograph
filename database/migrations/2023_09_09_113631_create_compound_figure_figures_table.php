@@ -16,7 +16,7 @@ return new class extends Migration {
             $table->foreignId('compound_figure_id')->references('id')->on('compound_figures');
             $table->integer('seq_num');
             $table->boolean('is_final');
-            $table->foreignId('user_id')->nullable()->references('id')->on('users');
+            $table->foreignId('user_id')->references('id')->on('users');
             $table->timestamps();
         });
     }

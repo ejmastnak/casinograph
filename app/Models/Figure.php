@@ -20,7 +20,7 @@ class Figure extends Model
     ];
 
     public static function getWithPositionsForUser(?int $userId) {
-        return self::where('user_id', $userId)
+        return self::where('user_id', ($userId ?? config('constants.user_ids.casino')))
         ->orderBy('name')
         ->with([
             'from_position:id,name',
@@ -40,7 +40,7 @@ class Figure extends Model
             'from_position:id,name',
             'to_position:id,name'
         ])
-        ->where('user_id', $userId)
+        ->where('user_id', ($userId ?? config('constants.user_ids.casino')))
         ->get()
         ->mapWithKeys(function ($figure, $key) {
             return [
@@ -64,7 +64,7 @@ class Figure extends Model
             'from_position:id,name',
             'to_position:id,name'
         ])
-        ->where('user_id', $userId)
+        ->where('user_id', ($userId ?? config('constants.user_ids.casino')))
         ->get()
         ->mapWithKeys(function ($figure, $key) {
             return [

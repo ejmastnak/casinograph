@@ -177,7 +177,6 @@ export default {
         First <MyLink :colored="true" :href="route('positions.create')">create some positions</MyLink>, then connect the positions to <MyLink :colored="true" :href="route('figures.create')">create figures</MyLink>.
     </Warning>
 
-
     <!-- Questions and answers -->
     <div v-if="$page.props.auth.user === null" class="mt-8">
       <h2 class="text-xl text-gray-700" id="qa">Questions and answers</h2>

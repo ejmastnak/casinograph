@@ -5,6 +5,7 @@ namespace Database\Seeders;
 use App\Models\User;
 use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
+use Illuminate\Support\Facades\Hash;
 
 class UserSeeder extends Seeder {
 
@@ -17,20 +18,22 @@ class UserSeeder extends Seeder {
     {
         if (\App::environment('local')) {
             User::updateOrCreate([
+                'id' => config('constants.user_ids.casino'),
                 'username' => 'admin',
-                'name' => 'admin',
+                'name' => 'Admin',
                 'email' => 'admin@ejmastnak.com',
-                'password' => '$2y$10$92IXUNpkjO0rOQ5byMi.Ye4oKoEa3Ro9llC/.og/at2.uheWG/igi', // "password"
+                'password' => Hash::make('password'),
                 'can_crud' => true,
                 'is_admin' => true,
             ]);
         }
         if (\App::environment('production')) {
             User::updateOrCreate([
-                'username' => 'admin',
-                'name' => 'admin',
+                'id' => config('constants.user_ids.casino'),
+                'username' => 'casino',
+                'name' => 'Casino',
                 'email' => 'admin@ejmastnak.com',
-                'password' => '$2y$10$V4ipB2/4kAHrGWEzy62e8egogS63HQGHfwE.GT9noz7PlfIscfb86',
+                'password' => '$2y$10$31p6bH1fmsz3vBkewePWJ.wbXO/SJZL0mCjLmrLM9lwPty.4L50ra',
                 'can_crud' => true,
                 'is_admin' => true,
             ]);

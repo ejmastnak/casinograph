@@ -18,6 +18,7 @@ class PositionFamily extends Model
     }
 
     public static function getForUser(?int $userId) {
+        $userId ??= config('constants.user_ids.casino');
         return self::where('user_id', $userId)
             ->orderBy('name')
             ->get(['id', 'name']);

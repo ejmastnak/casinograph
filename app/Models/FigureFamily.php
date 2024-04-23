@@ -22,7 +22,7 @@ class FigureFamily extends Model
     }
 
     public static function getForUser(?int $userId) {
-        return self::where('user_id', $userId)
+        return self::where('user_id', ($userId ?? config('constants.user_ids.casino')))
             ->orderBy('name')
             ->get(['id', 'name']);
     }

@@ -15,7 +15,7 @@ return new class extends Migration {
             $table->string('name');
             $table->string('description')->nullable();
             $table->foreignId('position_family_id')->nullable()->references('id')->on('position_families');
-            $table->foreignId('user_id')->nullable()->references('id')->on('users');
+            $table->foreignId('user_id')->references('id')->on('users');
             $table->timestamps();
         });
     }
