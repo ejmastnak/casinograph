@@ -228,19 +228,21 @@ export default {
         >
           <!-- Name -->
           <div class="col-span-7 sm:col-span-8 px-3 sm:px-4">
-            {{position.obj.name}}
+            <MyLink class="inline-block" :href="route('positions.show', position.obj.id)">
+              {{position.obj.name}}
+            </MyLink>
           </div>
           <!-- Position family -->
           <div
             class="px-3 sm:px-4 text-gray-600"
             :class="$page.props.auth.user ? 'col-span-5 sm:col-span-3' : 'col-span-5 sm:col-span-4'"
           >
-              <MyLink
-                v-if="position.obj.position_family"
-                :href="route('position_families.show', position.obj.position_family.id)"
-              >
-                {{position.obj.position_family.name}}
-              </MyLink>
+            <MyLink
+              v-if="position.obj.position_family"
+              :href="route('position_families.show', position.obj.position_family.id)"
+            >
+              {{position.obj.position_family.name}}
+            </MyLink>
           </div>
           <!-- Edit/Delete -->
           <div v-if="$page.props.auth.user" class="hidden sm:flex sm:items-center col-span-1 px-1 ">
