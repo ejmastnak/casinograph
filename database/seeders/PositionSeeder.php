@@ -13,7 +13,12 @@ class PositionSeeder extends Seeder
      */
     public function run(): void
     {
-        $path = database_path('seeders/data/sql/positions.sql');
-        DB::unprepared(file_get_contents($path));
+        $seedScript = config('constants.seeding.sqldir') . DIRECTORY_SEPARATOR . config('constants.seeding.sqlscripts.positions');
+        if (file_exists($seedScript) && is_file($seedScript)) {
+            DB::unprepared(file_get_contents($seedScript));
+        } else {
+            $this->command->warn("Warning: Position seed script does not exist at " . $seedScript . ". Aborting seeding Positions.");
+
+        }
     }
 }

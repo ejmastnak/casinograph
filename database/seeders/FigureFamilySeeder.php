@@ -13,7 +13,11 @@ class FigureFamilySeeder extends Seeder
      */
     public function run(): void
     {
-        $path = database_path('seeders/data/sql/figure_families.sql');
-        DB::unprepared(file_get_contents($path));
+        $seedScript = config('constants.seeding.sqldir') . DIRECTORY_SEPARATOR . config('constants.seeding.sqlscripts.figure_families');
+        if (file_exists($seedScript) && is_file($seedScript)) {
+            DB::unprepared(file_get_contents($seedScript));
+        } else {
+            $this->command->warn("Warning: FigureFamily seed script does not exist at " . $seedScript . ". Aborting seeding FigureFamilies.");
+        }
     }
 }

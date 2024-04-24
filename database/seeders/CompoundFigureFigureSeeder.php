@@ -13,7 +13,11 @@ class CompoundFigureFigureSeeder extends Seeder
      */
     public function run(): void
     {
-        $path = database_path('seeders/data/sql/compound_figure_figures.sql');
-        DB::unprepared(file_get_contents($path));
+        $seedScript = config('constants.seeding.sqldir') . DIRECTORY_SEPARATOR . config('constants.seeding.sqlscripts.compound_figure_figures');
+        if (file_exists($seedScript) && is_file($seedScript)) {
+            DB::unprepared(file_get_contents($seedScript));
+        } else {
+            $this->command->warn("Warning: CompoundFigureFigure seed script does not exist at " . $seedScript . ". Aborting seeding CompoundFigureFigures.");
+        }
     }
 }

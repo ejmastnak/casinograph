@@ -14,4 +14,17 @@ return [
         'max_weight' => "max:1000",
         'max_compound_figure_figures' => "max:1000",
     ],
+    'seeding' => [
+        'db' => storage_path('app/seeding/seed.sqlite'),
+        'sqldir' => storage_path('app/seeding/sql'),
+        // Array keys should be SQLite table names in seed database
+        'sqlscripts' => [
+            'position_families' => 'position_families.sql',
+            'figure_families' => 'figure_families.sql',
+            'positions' => 'positions.sql',
+            'figures' => 'figures.sql',
+            'compound_figures' => 'compound_figures.sql',
+            'compound_figure_figures' => 'compound_figure_figures.sql',
+        ],
+    ],
 ];
