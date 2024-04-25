@@ -49,7 +49,7 @@ const emit = defineEmits([
       </ListboxLabel>
       <ListboxButton :class="width + ' ' + inputClasses" class="flex text-left bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:outline-none focus:ring-1 focus:ring-blue-500 focus:border-blue-500 px-4 py-2" >
         <span class="mr-2 truncate whitespace-nowrap">
-          {{ modelValue.length === 0 ? "All" : options.find(option => option.id == modelValue[0].id)[displayKey] }}{{ modelValue.length > 1 ? "..." : ""}}
+          {{ modelValue.length === 0 ? "All" : options.find(option => option.id == modelValue[0].id)[displayKey] }}{{ modelValue.length > 1 ? ", ..." : ""}}
         </span>
         <ChevronDownIcon class="ml-auto w-5 h-5 text-gray-500 shrink-0" />
       </ListboxButton>
