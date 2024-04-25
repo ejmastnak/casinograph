@@ -303,9 +303,10 @@ export default {
           <p v-if="$page.props.auth.user" class="hidden sm:block col-span-1 py-3 bg-blue-100" />
         </div>
 
+        <!-- Note use of compound true/false flag in forming iteration key -->
         <div
           v-for="(figure, idx) in filteredFigures"
-          :key="figure.obj.id"
+          :key="(+figure.obj.compound).toString() + '-' + (figure.obj.id).toString()"
           v-show="shouldDisplay(figure.obj)"
           class="grid grid-cols-12 text-gray-800 text-sm sm:text-base border-b py-1.5"
         >
