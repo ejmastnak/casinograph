@@ -93,7 +93,16 @@ function deleteFigure() {
   if (idToDelete.value !== null && deleteCompound.value !== null) {
     router.delete(route((deleteCompound.value ? 'compound_figures.destroy' : 'figures.destroy'), idToDelete.value), {
       onSuccess: () => {
-        search(figureSearchQuery.value)
+        // Set selectedFigureFamilies to only those previously selected
+        // figure families still present in props.figure_families after
+        // deleting the last figure. This handles the edge case where a user
+        // filters by figure family and deletes last figure in a family
+        // (causing figure family itself to be deleted in backend). Stored
+        // selectedFigureFamilies then includes a figure family that no
+        // longer exists in props.figure_families.
+        const figureFamilyIds = props.figure_families.map(p => p.id);
+        selectedFigureFamilies.value = selectedFigureFamilies.value.filter(f => figureFamilyIds.includes(f.id));
+        search(figureSearchQuery.value)  // remove deleted item from display
       }
     });
   }
@@ -143,7 +152,6 @@ onMounted(() => {
   if (storedSearchQuery) {
     figureSearchQuery.value = storedSearchQuery
     search(figureSearchQuery.value)
-
   }
 
   const storedShowSimpleFigures = sessionStorage.getItem('figuresIndexShowSimpleFigures');
@@ -158,7 +166,7 @@ onMounted(() => {
 
   const storedSelectedFamilies = sessionStorage.getItem('figuresIndexSelectedFamilies');
   if (storedSelectedFamilies) {
-    selectedFigureFamilies.value = JSON.parse(storedSelectedFamilies);
+    selectedFigureFamilies.value = JSON.parse(storedSelectedFamilies)
   }
 
 })

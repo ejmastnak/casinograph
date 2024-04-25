@@ -79,6 +79,15 @@ function deletePosition() {
   if (idToDelete.value) {
     router.delete(route('positions.destroy', idToDelete.value), {
       onSuccess: () => {
+        // Set selectedPositionFamilies to only those previously selected
+        // position families still present in props.position_families after
+        // deleting the last position. This handles the edge case where a user
+        // filters by position family and deletes last position in a family
+        // (causing position family itself to be deleted in backend). Stored
+        // selectedPositionFamilies then includes a position family that no
+        // longer exists in props.position_families.
+        const positionFamilyIds = props.position_families.map(p => p.id);
+        selectedPositionFamilies.value = selectedPositionFamilies.value.filter(f => positionFamilyIds.includes(f.id));
         search(positionSearchQuery.value)  // remove deleted item from display
       }
     });
