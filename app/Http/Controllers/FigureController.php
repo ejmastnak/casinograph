@@ -24,7 +24,8 @@ class FigureController extends Controller
     public function index()
     {
         return Inertia::render('Figures/Index', [
-            'figures' => Figure::getCombinedFiguresAndCompoundFiguresForUser(Auth::id()),
+            'figures' => Figure::getForUser(Auth::id()),
+            'compound_figures' => CompoundFigure::getForUser(Auth::id()),
             'figure_families' => FigureFamily::getForUser(Auth::id()),
         ]);
     }
@@ -34,7 +35,7 @@ class FigureController extends Controller
      */
     public function create()
     {
-        return Inertia::render('Figures/Create', [
+        return Inertia::render('Figures/Foundational/Create', [
             'figure_families' => FigureFamily::getForUser(Auth::id()),
             'positions' => Position::getForUser(Auth::id()),
         ]);
@@ -46,7 +47,7 @@ class FigureController extends Controller
     public function createFromPosition(Position $position)
     {
         $this->authorize('createFromPosition', [Figure::class, $position]);
-        return Inertia::render('Figures/Create', [
+        return Inertia::render('Figures/Foundational/Create', [
             'from_position' => $position->withName(),
             'figure_families' => FigureFamily::getForUser(Auth::id()),
             'positions' => Position::getForUser(Auth::id()),
@@ -59,7 +60,7 @@ class FigureController extends Controller
     public function createToPosition(Position $position)
     {
         $this->authorize('createToPosition', [Figure::class, $position]);
-        return Inertia::render('Figures/Create', [
+        return Inertia::render('Figures/Foundational/Create', [
             'to_position' => $position->withName(),
             'figure_families' => FigureFamily::getForUser(Auth::id()),
             'positions' => Position::getForUser(Auth::id()),
@@ -82,7 +83,7 @@ class FigureController extends Controller
      */
     public function show(Figure $figure)
     {
-        return Inertia::render('Figures/Show', [
+        return Inertia::render('Figures/Foundational/Show', [
             'figure' => $figure->withFamilyAndPositions(),
             'can_create' => Auth::user() && Auth::user()->can('create', Figure::class),
             'can_update' => Auth::user() && Auth::user()->can('update', $figure),
@@ -95,7 +96,7 @@ class FigureController extends Controller
      */
     public function edit(Figure $figure)
     {
-        return Inertia::render('Figures/Edit', [
+        return Inertia::render('Figures/Foundational/Edit', [
             'figure' => $figure->withFamilyAndPositions(),
             'figure_families' => FigureFamily::getForUser(Auth::id()),
             'positions' => Position::getForUser(Auth::id()),

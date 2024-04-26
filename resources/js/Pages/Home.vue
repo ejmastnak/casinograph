@@ -158,10 +158,10 @@ export default {
           To keep things interesting, you can refresh the page to display a new (randomly chosen) figure from each group of parallel figures.
         </li>
         <li>
-          <span class="font-medium">Simple figures:</span>
-          Only simple figures (one dancer's eight-count) are shown.
-          Want to see compound figures?
-          Visit the <MyLink :colored="true" :href="route('figures.index')">figures page</MyLink> and use the filter to show only compound figures.
+          <span class="font-medium">Foundational figures:</span>
+          The graph only shows what I call "foundational" figures, which take one dancer's eight-count.
+          The website also supports "compound figures", which are composed of multiple foundational figures and span multiple eight-counts.
+          You can see both foundational and compound figures on the <MyLink :colored="true" :href="route('figures.index')">main figures page</MyLink>.
         </li>
         <li>
           <span class="font-medium">No orphaned positions:</span>
@@ -282,12 +282,12 @@ export default {
 
               <ul class="ml-10 mt-2 list-disc space-y-1">
                 <li>
-                  I've made a distinction between "simple figures" (which take a single dancer's eight-count) and "compound figures" (which take two or more eight-counts).
-                  This then leads to a natural representation of compound figures like Setenta and Ochenta as a sequence of simple figures (assuming, of course, that successive figures have compatible starting and ending positions).
+                  I've made a distinction between "foundational figures" (which take a single dancer's eight-count) and "compound figures" (which take two or more eight-counts).
+                  This then leads to a natural representation of compound figures like Setenta and Ochenta as a sequence of foundational figures (assuming, of course, that successive figures have compatible starting and ending positions).
                 </li>
 
                 <li>
-                  I've chosen to uniquely identify a simple figure by the <span class="italic">combination of</span> its name, starting position, and ending position. This leads to overloaded figures names (e.g. this app has over ten figures called Enchufa), but I see this more as a feature than a bug—it shows the underlying simplicity of Casino figures (it's all just variations and combinations of a handful of foundational figures),
+                  I've chosen to uniquely identify a foundational figure by the <span class="italic">combination of</span> its name, starting position, and ending position. This leads to overloaded figures names (e.g. this app has over ten figures called Enchufa), but I see this more as a feature than a bug—it shows the underlying simplicity of Casino figures (it's all just variations and combinations of a handful of foundational figures),
                   and we avoid all the awkward figure names that would result from requiring unique figure names (imagine "Enchufa from Open to Caida", "Enchufa from Uno to Sombrero", "Right-handed enchufa from Open to Caida", "Double-handed enchufa from Open to Caida", etc.).
                 </li>
 

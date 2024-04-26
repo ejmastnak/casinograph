@@ -23,8 +23,8 @@ export default {
     <h1 class="text-xl">New Compound Figure</h1>
 
     <Warning v-if="figures.length === 0" class="mt-5 max-w-xl">
-      You have not created any simple figures yet!
-      You create compound figures by connecting simple figures, so you will need to <MyLink :colored="true" :href="route('figures.create')">create some simple figures</MyLink> before you can create compound figures.
+      You have not created any foundational figures yet!
+      You create compound figures by connecting foundational figures, so you will need to <MyLink :colored="true" :href="route('figures.create')">create some foundational figures</MyLink> before you can create compound figures.
     </Warning>
 
     <CreateOrEdit

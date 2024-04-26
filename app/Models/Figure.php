@@ -19,71 +19,37 @@ class Figure extends Model
         "user_id",
     ];
 
-    public static function getWithPositionsForUser(?int $userId) {
+    public static function getForUser(?int $userId) {
         return self::where('user_id', ($userId ?? config('constants.user_ids.casino')))
-        ->orderBy('name')
-        ->with([
-            'from_position:id,name',
-            'to_position:id,name',
-        ])
-        ->get([
-            'id',
-            'name',
-            'from_position_id',
-            'to_position_id',
-        ]);
+            ->orderBy('name')
+            ->with([
+                'figure_family:id,name',
+                'from_position:id,name',
+                'to_position:id,name',
+            ])
+            ->get([
+                'id',
+                'name',
+                'weight',
+                'figure_family_id',
+                'from_position_id',
+                'to_position_id',
+            ]);
     }
 
-    public static function getCombinedFiguresAndCompoundFiguresForUser(?int $userId) {
-        $figures = Figure::with([
-            'figure_family:id,name',
-            'from_position:id,name',
-            'to_position:id,name'
-        ])
-        ->where('user_id', ($userId ?? config('constants.user_ids.casino')))
-        ->get()
-        ->mapWithKeys(function ($figure, $key) {
-            return [
-                $key => [
-                    'id' => $figure['id'],
-                    'name' => $figure['name'],
-                    'weight' => $figure['weight'],
-                    'figure_family_id' => $figure['figure_family_id'],
-                    'figure_family' => $figure['figure_family'],
-                    'from_position_id' => $figure['from_position_id'],
-                    'from_position' => $figure['from_position'],
-                    'to_position_id' => $figure['to_position_id'],
-                    'to_position' => $figure['to_position'],
-                    'compound' => false,
-                ]
-            ];
-        });
-
-        $compoundFigures = CompoundFigure::with([
-            'figure_family:id,name',
-            'from_position:id,name',
-            'to_position:id,name'
-        ])
-        ->where('user_id', ($userId ?? config('constants.user_ids.casino')))
-        ->get()
-        ->mapWithKeys(function ($figure, $key) {
-            return [
-                $key => [
-                    'id' => $figure['id'],
-                    'name' => $figure['name'],
-                    'weight' => $figure['weight'],
-                    'figure_family_id' => $figure['figure_family_id'],
-                    'figure_family' => $figure['figure_family'],
-                    'from_position_id' => $figure['from_position_id'],
-                    'from_position' => $figure['from_position'],
-                    'to_position_id' => $figure['to_position_id'],
-                    'to_position' => $figure['to_position'],
-                    'compound' => true,
-                ]
-            ];
-        });
-
-        return $figures->concat($compoundFigures)->sortBy('name')->values()->all();
+    public static function getWithOnlyPositionsForUser(?int $userId) {
+        return self::where('user_id', ($userId ?? config('constants.user_ids.casino')))
+            ->orderBy('name')
+            ->with([
+                'from_position:id,name',
+                'to_position:id,name',
+            ])
+            ->get([
+                'id',
+                'name',
+                'from_position_id',
+                'to_position_id',
+            ]);
     }
 
     public function withFamilyAndPositions() {

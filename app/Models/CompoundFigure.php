@@ -19,6 +19,24 @@ class CompoundFigure extends Model
         "user_id",
     ];
 
+    public static function getForUser(?int $userId) {
+        return self::where('user_id', ($userId ?? config('constants.user_ids.casino')))
+            ->orderBy('name')
+            ->with([
+                'figure_family:id,name',
+                'from_position:id,name',
+                'to_position:id,name',
+            ])
+            ->get([
+                'id',
+                'name',
+                'weight',
+                'figure_family_id',
+                'from_position_id',
+                'to_position_id',
+            ]);
+    }
+
     public function withFamilyAndFigures() {
         $this->load([
             'figure_family:id,name',
@@ -37,7 +55,6 @@ class CompoundFigure extends Model
             'compound_figure_figures',
         ]);
     }
-
 
     public function compound_figure_figures() {
         return $this->hasMany(CompoundFigureFigure::class, 'compound_figure_id', 'id')->orderBy('seq_num');
