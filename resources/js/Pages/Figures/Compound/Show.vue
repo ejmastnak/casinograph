@@ -9,7 +9,6 @@ import DangerButton from '@/Components/DangerButton.vue'
 import SecondaryLink from '@/Components/SecondaryLink.vue'
 import SecondaryButton from '@/Components/SecondaryButton.vue'
 import FamilyPillbox from '@/Components/FamilyPillbox.vue'
-import NewFigureDialog from '../Figures/Partials/NewFigureDialog.vue'
 import { PencilSquareIcon, TrashIcon, PlusCircleIcon } from '@heroicons/vue/24/outline'
 
 const props = defineProps({
@@ -22,19 +21,11 @@ const props = defineProps({
 let idToDelete = ref(null)
 const deleteDialog = ref(null)
 
-function deletePosition() {
+function deleteFigure() {
   if (idToDelete.value) {
     router.delete(route('compound_figures.destroy', idToDelete.value));
   }
   idToDelete.value = null
-}
-
-const newFigureDialog = ref(null)
-function newSimpleFigure() {
-  router.get(route('figures.create'));
-}
-function newCompoundFigure() {
-  router.get(route('compound_figures.create'));
 }
 
 </script>
@@ -57,10 +48,12 @@ export default {
       </div>
 
       <!-- New Figure button -->
-      <SecondaryButton v-if="can_create" class="ml-auto h-fit" @click="newFigureDialog.open()" >
+      <SecondaryLink v-if="can_create" class="ml-auto h-fit" :href="route('compound_figures.create')" >
         <PlusCircleIcon class="-ml-1 text-gray-600 h-6 w-6 shrink-0" />
-        <p class="ml-1 whitespace-nowrap">New <span class="hidden sm:inline">figure</span></p>
-      </SecondaryButton>
+        <p class="ml-1 whitespace-nowrap">New figure</p>
+      </SecondaryLink>
+
+
     </div>
 
     <!-- From position / to position -->
@@ -122,14 +115,8 @@ export default {
     <DeleteDialog
       ref="deleteDialog"
       description="figure"
-      @delete="deletePosition"
+      @delete="deleteFigure"
       @cancel="idToDelete = null"
-    />
-
-    <NewFigureDialog
-      ref="newFigureDialog"
-      @simple="newSimpleFigure"
-      @compound="newCompoundFigure"
     />
 
   </div>

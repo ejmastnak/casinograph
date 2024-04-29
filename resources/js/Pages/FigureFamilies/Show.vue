@@ -185,7 +185,7 @@ export default {
               Name
             </th>
             <th scope="col" class="px-5 py-2 bg-blue-200" >
-              Simple?
+              Type
             </th>
           </tr>
         </thead>
@@ -194,10 +194,8 @@ export default {
             v-for="figure in filteredFigures"
             :key="figure.obj.id"
             class="bg-white border-b"
-          >
-            <td scope="row" class="px-5 py-2">
-              <MyLink class="inline-block" :href="route('figures.show', figure.obj.id)">
-                {{figure.obj.name}}
+          > <td scope="row" class="px-5 py-2">
+          <MyLink class="inline-block" :href="route('figures.show', figure.obj.id)"> {{figure.obj.name}}
               </MyLink>
               <p class="text-sm text-gray-500">
                 <MyLink class="font-medium" :href="route('positions.show', figure.obj.from_position_id)" >{{figure.obj.from_position.name}}</MyLink>
@@ -206,7 +204,7 @@ export default {
               </p>
             </td>
             <td class="px-4 py-2 text-gray-600">
-              Simple
+              Foundational
             </td>
           </tr>
           <tr
@@ -228,6 +226,7 @@ export default {
               Compound
             </td>
           </tr>
+
         </tbody>
       </table>
 
