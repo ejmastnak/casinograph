@@ -27,7 +27,7 @@ class PositionFamilyController extends Controller
      */
     public function update(UpdatePositionFamilyRequest $request, PositionFamily $positionFamily, PositionFamilyService $positionFamilyService)
     {
-        $positionFamilyId = $positionFamilyService->updatePositionFamily($request->validated, $positionFamily);
+        $positionFamilyId = $positionFamilyService->updatePositionFamily($request->validated(), $positionFamily);
         return $positionFamilyId
             ? back()->with('message', 'Success! Position family updated successfully.')
             : back()->with('error', 'Error. Failed to update position family.');

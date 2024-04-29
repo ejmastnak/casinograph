@@ -27,7 +27,7 @@ class FigureFamilyController extends Controller
      */
     public function update(UpdateFigureFamilyRequest $request, FigureFamily $figureFamily, FigureFamilyService $figureFamilyService)
     {
-        $figureFamilyId = $figureFamilyService->updateFigureFamily($request->validated, $figureFamily);
+        $figureFamilyId = $figureFamilyService->updateFigureFamily($request->validated(), $figureFamily);
         return $figureFamilyId
             ? back()->with('message', 'Success! Figure family updated successfully.')
             : back()->with('error', 'Error. Failed to update figure family.');
