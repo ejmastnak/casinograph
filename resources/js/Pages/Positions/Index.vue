@@ -248,7 +248,7 @@ export default {
           >
             <MyLink
               v-if="position.obj.position_family"
-              :href="route('position_families.show', position.obj.position_family.id)"
+              :href="route('position-families.show', position.obj.position_family.id)"
             >
               {{position.obj.position_family.name}}
             </MyLink>

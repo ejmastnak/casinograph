@@ -80,7 +80,7 @@ export default {
           <PlusCircleIcon class="-ml-1 text-gray-600 h-6 w-6 shrink-0" />
           <p class="ml-1 whitespace-nowrap">New figure</p>
         </SecondaryLink>
-        <SecondaryLink :href="route('compound_figures.create')" >
+        <SecondaryLink :href="route('compound-figures.create')" >
           <PlusCircleIcon class="-ml-1 text-gray-600 h-6 w-6 shrink-0" />
           <p class="ml-1 whitespace-nowrap">New compound figure</p>
         </SecondaryLink>
@@ -99,7 +99,7 @@ export default {
               <SecondaryLink class="w-fit" :href="route('figures.create')" >
                 New figure
               </SecondaryLink>
-              <SecondaryLink class="w-fit" :href="route('compound_figures.create')" >
+              <SecondaryLink class="w-fit" :href="route('compound-figures.create')" >
                 New compound figure
               </SecondaryLink>
             </div>

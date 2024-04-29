@@ -64,7 +64,7 @@ function cancelRename() {
   renameDialogOpen.value = false
 }
 function confirmRename() {
-  form.put(route('position_families.update', props.position_family.id), {
+  form.put(route('position-families.update', props.position_family.id), {
       onSuccess: (() => {renameDialogOpen.value = false}),
   });
 }

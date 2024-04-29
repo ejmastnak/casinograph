@@ -86,7 +86,7 @@ function cancelRename() {
   renameDialogOpen.value = false
 }
 function confirmRename() {
-  form.put(route('figure_families.update', props.figure_family.id), {
+  form.put(route('figure-families.update', props.figure_family.id), {
       onSuccess: (() => {renameDialogOpen.value = false}),
   });
 }
@@ -213,7 +213,7 @@ export default {
             class="bg-white border-b"
           >
             <td scope="row" class="px-5 py-2">
-              <MyLink class="inline-block" :href="route('compound_figures.show', figure.obj.id)">
+              <MyLink class="inline-block" :href="route('compound-figures.show', figure.obj.id)">
                 {{figure.obj.name}}
               </MyLink>
               <p class="text-sm text-gray-500">

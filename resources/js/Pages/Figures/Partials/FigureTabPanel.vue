@@ -80,7 +80,7 @@ let idToDelete = ref(null)
 const deleteDialog = ref(null)
 function deleteFigure() {
   if (idToDelete.value) {
-    router.delete(route((props.compound ? 'compound_figures.destroy' : 'figures.destroy'), idToDelete.value), {
+    router.delete(route((props.compound ? 'compound-figures.destroy' : 'figures.destroy'), idToDelete.value), {
       onSuccess: () => {
         // Set selectedFigureFamilies to only those previously selected
         // figure families still present in props.figure_families after
@@ -209,7 +209,7 @@ onMounted(() => {
       >
         <!-- Name -->
         <div class="col-span-7 sm:col-span-8 px-3 sm:px-4">
-          <MyLink class="inline-block" :href="route(compound ? 'compound_figures.show' : 'figures.show', figure.obj.id)">
+          <MyLink class="inline-block" :href="route(compound ? 'compound-figures.show' : 'figures.show', figure.obj.id)">
             {{figure.obj.name}}
           </MyLink>
           <p class="text-sm text-gray-500">
@@ -225,14 +225,14 @@ onMounted(() => {
         >
           <MyLink
             v-if="figure.obj.figure_family"
-            :href="route('figure_families.show', figure.obj.figure_family.id)"
+            :href="route('figure-families.show', figure.obj.figure_family.id)"
           >
             {{figure.obj.figure_family.name}}
           </MyLink>
         </div>
         <!-- Edit/Delete -->
         <div v-if="$page.props.auth.user" class="hidden sm:flex sm:items-center col-span-1 px-1 ">
-          <MyLink :href="route(compound ? 'compound_figures.edit' : 'figures.edit', figure.obj.id)" class="text-gray-500 hover:text-blue-600">
+          <MyLink :href="route(compound ? 'compound-figures.edit' : 'figures.edit', figure.obj.id)" class="text-gray-500 hover:text-blue-600">
             <PencilSquareIcon class="h-5 w-5"/>
           </MyLink>
           <button

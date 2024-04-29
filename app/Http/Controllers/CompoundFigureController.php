@@ -35,7 +35,7 @@ class CompoundFigureController extends Controller
     {
         $compoundFigureId = $compoundFigureService->storeCompoundFigure($request->validated());
         return $compoundFigureId
-            ? Redirect::route('compound_figures.show', $compoundFigureId)->with('message', 'Success! Compound Figure created successfully.')
+            ? Redirect::route('compound-figures.show', $compoundFigureId)->with('message', 'Success! Compound Figure created successfully.')
             : back()->with('error', 'Error. Failed to create figure.');
     }
 
@@ -71,7 +71,7 @@ class CompoundFigureController extends Controller
     {
         $compoundFigureId = $compoundFigureService->updateCompoundFigure($request->validated(), $compoundFigure);
         return $compoundFigureId
-            ? Redirect::route('compound_figures.show', $compoundFigureId)->with('message', 'Success! Figure updated successfully.')
+            ? Redirect::route('compound-figures.show', $compoundFigureId)->with('message', 'Success! Figure updated successfully.')
             : back()->with('error', 'Error. Failed to update figure.');
     }
 

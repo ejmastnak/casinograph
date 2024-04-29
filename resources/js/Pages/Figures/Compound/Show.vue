@@ -23,7 +23,7 @@ const deleteDialog = ref(null)
 
 function deleteFigure() {
   if (idToDelete.value) {
-    router.delete(route('compound_figures.destroy', idToDelete.value));
+    router.delete(route('compound-figures.destroy', idToDelete.value));
   }
   idToDelete.value = null
 }
@@ -48,7 +48,7 @@ export default {
       </div>
 
       <!-- New Figure button -->
-      <SecondaryLink v-if="can_create" class="ml-auto h-fit" :href="route('compound_figures.create')" >
+      <SecondaryLink v-if="can_create" class="ml-auto h-fit" :href="route('compound-figures.create')" >
         <PlusCircleIcon class="-ml-1 text-gray-600 h-6 w-6 shrink-0" />
         <p class="ml-1 whitespace-nowrap">New figure</p>
       </SecondaryLink>
@@ -101,7 +101,7 @@ export default {
 
     <!-- Edit and Delete buttons -->
     <div v-if="can_update || can_delete" class="flex items-center mt-6">
-      <SecondaryLink v-if="can_update" :href="route('compound_figures.edit', compound_figure.id)" class="flex items-center">
+      <SecondaryLink v-if="can_update" :href="route('compound-figures.edit', compound_figure.id)" class="flex items-center">
         <PencilSquareIcon class="text-gray-600 h-5 w-5 -ml-1" />
         <p class="ml-1">Update</p>
       </SecondaryLink>

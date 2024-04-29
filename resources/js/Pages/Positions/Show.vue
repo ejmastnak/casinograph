@@ -54,7 +54,7 @@ export default {
     <div v-if="position.position_family" class="mt-0">
       <div class="text-gray-600">
           Position family:
-          <MyLink class="font-semibold" :href="route('position_families.show', position.position_family_id)">
+          <MyLink class="font-semibold" :href="route('position-families.show', position.position_family_id)">
             {{position.position_family.name}}
           </MyLink>
       </div>
@@ -112,7 +112,7 @@ export default {
 
       <MyLink
         v-if="can_create"
-        :href="route('figures.create_to_position', position.id)"
+        :href="route('figures.create-to-position', position.id)"
         class="!ml-0 mt-4 w-fit h-fit inline-flex items-center rounded border border-gray-300 px-3 py-1 text-sm text-gray-800"
       >
         <PlusCircleIcon class="-ml-1 text-gray-600 h-5 w-5 shrink-0" />
@@ -121,7 +121,7 @@ export default {
 
       <MyLink
         v-if="can_create"
-        :href="route('figures.create_from_position', position.id)"
+        :href="route('figures.create-from-position', position.id)"
         class="mt-4 w-fit h-fit inline-flex items-center rounded border border-gray-300 px-3 py-1 text-sm text-gray-800"
       >
         <PlusCircleIcon class="-ml-1 text-gray-600 h-5 w-5 shrink-0" />

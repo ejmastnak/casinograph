@@ -87,9 +87,9 @@ const submit = () => {
   if (incompatibleCompoundFigureFigures.value) { return }
   form.figure_ids = compoundFigureFigures.value.map(cff => cff.compound_figure_figure.figure_id);
   if (props.action === "create") {
-    form.post(route('compound_figures.store'));
+    form.post(route('compound-figures.store'));
   } else if (props.action === "edit") {
-    form.put(route('compound_figures.update', props.compound_figure.id));
+    form.put(route('compound-figures.update', props.compound_figure.id));
   }
 };
 
