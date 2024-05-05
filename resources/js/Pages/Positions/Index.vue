@@ -99,7 +99,7 @@ onBeforeUnmount(() => {
   sessionStorage.setItem('positionsIndexScrollX', window.scrollX)
   sessionStorage.setItem('positionsIndexScrollY', window.scrollY)
   sessionStorage.setItem('positionsIndexSearchQuery', positionSearchQuery.value)
-  sessionStorage.setItem('positionsIndexSelectedFamilies', JSON.stringify(selectedPositionFamilies.value))
+  sessionStorage.setItem('positionsIndexSelectedFamilyIds', JSON.stringify(selectedPositionFamilies.value.map(family => family.id)))
 })
 
 // Preserve scroll position and search queries on manual page reload.
@@ -107,7 +107,7 @@ window.onbeforeunload = function() {
   sessionStorage.setItem('positionsIndexScrollX', window.scrollX)
   sessionStorage.setItem('positionsIndexScrollY', window.scrollY)
   sessionStorage.setItem('positionsIndexSearchQuery', positionSearchQuery.value)
-  sessionStorage.setItem('positionsIndexSelectedFamilies', JSON.stringify(selectedPositionFamilies.value))
+  sessionStorage.setItem('positionsIndexSelectedFamilyIds', JSON.stringify(selectedPositionFamilies.value.map(family => family.id)))
 }
 
 // Restore scroll position and search queries when loading page
@@ -126,9 +126,13 @@ onMounted(() => {
     search(positionSearchQuery.value)
   }
 
-  const storedSelectedFamilies = sessionStorage.getItem('positionsIndexSelectedFamilies');
-  if (storedSelectedFamilies) {
-    selectedPositionFamilies.value = JSON.parse(storedSelectedFamilies);
+  if (sessionStorage.getItem('positionsIndexSelectedFamilyIds')) {
+    const storedSelectedPositionFamilyIds = JSON.parse(sessionStorage.getItem('positionsIndexSelectedFamilyIds'))
+    props.position_families.forEach((positionFamily) => {
+      if (storedSelectedPositionFamilyIds.includes(positionFamily.id)) {
+        selectedPositionFamilies.value.push(positionFamily)
+      }
+    })
   }
 
 })

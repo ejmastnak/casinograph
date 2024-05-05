@@ -103,13 +103,13 @@ function deleteFigure() {
 // Preserve search queries when leaving page.
 onBeforeUnmount(() => {
   sessionStorage.setItem((props.compound ? 'compoundFigures' : 'figures') + 'IndexSearchQuery', figureSearchQuery.value)
-  sessionStorage.setItem((props.compound ? 'compoundFigures' : 'figures') + 'IndexSelectedFamilies', JSON.stringify(selectedFigureFamilies.value))
+  sessionStorage.setItem((props.compound ? 'compoundFigures' : 'figures') + 'IndexSelectedFamilyIds', JSON.stringify(selectedFigureFamilies.value.map(family => family.id)))
 })
 
 // Preserve search queries on manual page reload.
 window.onbeforeunload = function() {
   sessionStorage.setItem((props.compound ? 'compoundFigures' : 'figures') + 'IndexSearchQuery', figureSearchQuery.value)
-  sessionStorage.setItem((props.compound ? 'compoundFigures' : 'figures') + 'IndexSelectedFamilies', JSON.stringify(selectedFigureFamilies.value))
+  sessionStorage.setItem((props.compound ? 'compoundFigures' : 'figures') + 'IndexSelectedFamilyIds', JSON.stringify(selectedFigureFamilies.value.map(family => family.id)))
 }
 
 // Restore search queries when loading page
@@ -120,9 +120,13 @@ onMounted(() => {
     search(figureSearchQuery.value)
   }
 
-  const storedSelectedFamilies = sessionStorage.getItem((props.compound ? 'compoundFigures' : 'figures') + 'IndexSelectedFamilies');
-  if (storedSelectedFamilies) {
-    selectedFigureFamilies.value = JSON.parse(storedSelectedFamilies)
+  if (sessionStorage.getItem((props.compound ? 'compoundFigures' : 'figures') + 'IndexSelectedFamilyIds')) {
+    const storedSelectedFigureFamilyIds = JSON.parse(sessionStorage.getItem((props.compound ? 'compoundFigures' : 'figures') + 'IndexSelectedFamilyIds'))
+    props.figure_families.forEach((figureFamily) => {
+      if (storedSelectedFigureFamilyIds.includes(figureFamily.id)) {
+        selectedFigureFamilies.value.push(figureFamily)
+      }
+    })
   }
 })
 
@@ -186,9 +190,9 @@ onMounted(() => {
 
     <!-- Listing of Figures -->
     <!-- Layouts: -->
-      <!-- pre-sm: (name, family) (7, 5) -->
-      <!-- sm, !$user: (name, family) (8, 4) -->
-      <!-- sm, $user: (name, family, edit/delete) (8, 3, 1) -->
+    <!-- pre-sm: (name, family) (7, 5) -->
+    <!-- sm, !$user: (name, family) (8, 4) -->
+    <!-- sm, $user: (name, family, edit/delete) (8, 3, 1) -->
     <div class="mt-6  min-w-[400px]">
       <!-- Table header -->
       <div class="grid grid-cols-12 text-xs uppercase text-gray-700 font-semibold">
@@ -231,8 +235,8 @@ onMounted(() => {
             {{figure.obj.figure_family.name}}
           </MyLink>
         </div>
-          <!-- Delete button -->
-          <div v-if="can_delete" class="hidden sm:block sm:col-span-1 px-1">
+        <!-- Delete button -->
+        <div v-if="can_delete" class="hidden sm:block sm:col-span-1 px-1">
           <PlainButton
             class="text-gray-500 hover:text-red-600"
             @click="idToDelete = figure.obj.id; deleteDialog.open()"
