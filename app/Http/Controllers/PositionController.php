@@ -7,7 +7,6 @@ use App\Models\PositionFamily;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Redirect;
 use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Process;
 use App\Http\Requests\StorePositionRequest;
 use App\Http\Requests\UpdatePositionRequest;
@@ -21,9 +20,11 @@ class PositionController extends Controller
      */
     public function index()
     {
+        $user = Auth::user();
         return Inertia::render('Positions/Index', [
             'positions' => Position::getForUserWithPositionFamilies(Auth::id()),
             'position_families' => PositionFamily::getForUser(Auth::id()),
+            'can_delete' => $user ? $user->can('delete', Position::class) : false,
         ]);
     }
 

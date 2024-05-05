@@ -10,7 +10,6 @@ use App\Exceptions\FigureUpdateCorruptsCompoundFigureException;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Redirect;
 use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\DB;
 use App\Http\Requests\StoreFigureRequest;
 use App\Http\Requests\UpdateFigureRequest;
 use App\Services\FigureService;
@@ -23,10 +22,13 @@ class FigureController extends Controller
      */
     public function index()
     {
+        $user = Auth::user();
         return Inertia::render('Figures/Index', [
             'figures' => Figure::getForUser(Auth::id()),
             'compound_figures' => CompoundFigure::getForUser(Auth::id()),
             'figure_families' => FigureFamily::getForUser(Auth::id()),
+            'can_delete_figures' => $user ? $user->can('delete', Figure::class) : false,
+            'can_delete_compound_figures' => $user ? $user->can('delete', CompoundFigure::class) : false,
         ]);
     }
 
