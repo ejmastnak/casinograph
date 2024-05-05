@@ -10,7 +10,7 @@ import SecondaryLink from '@/Components/SecondaryLink.vue'
 import PlainButton from '@/Components/PlainButton.vue'
 import TextInput from '@/Components/TextInput.vue'
 import MultiSelect from '@/Components/MultiSelect.vue'
-import { PencilSquareIcon, TrashIcon, PlusCircleIcon, MagnifyingGlassIcon, XMarkIcon } from '@heroicons/vue/24/outline'
+import { TrashIcon, PlusCircleIcon, MagnifyingGlassIcon, XMarkIcon } from '@heroicons/vue/24/outline'
 
 const page = usePage()
 
@@ -253,18 +253,14 @@ export default {
               {{position.obj.position_family.name}}
             </MyLink>
           </div>
-          <!-- Edit/Delete -->
-          <div v-if="$page.props.auth.user" class="hidden sm:flex sm:items-center col-span-1 px-1 ">
-            <MyLink :href="route('positions.edit', position.obj.id)" class="text-gray-500 hover:text-blue-600">
-              <PencilSquareIcon class="h-5 w-5"/>
-            </MyLink>
-            <button
-              type="button"
-              class="ml-0.5 text-gray-500 hover:text-red-600"
+          <!-- Delete button -->
+          <div v-if="$page.props.auth.user" class="hidden sm:block sm:col-span-1 px-1">
+            <PlainButton
+              class="text-gray-500 hover:text-red-600"
               @click="idToDelete = position.obj.id; deleteDialog.open()"
             >
               <TrashIcon class="h-5 w-5"/>
-            </button>
+            </PlainButton>
           </div>
         </div>
       </div>

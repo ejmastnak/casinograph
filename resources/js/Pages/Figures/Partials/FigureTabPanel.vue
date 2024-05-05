@@ -3,7 +3,7 @@ import { ref, watch, computed, onBeforeUnmount, onMounted} from 'vue'
 import { router } from '@inertiajs/vue3'
 import fuzzysort from 'fuzzysort'
 import throttle from "lodash/throttle";
-import { MagnifyingGlassIcon, XMarkIcon, PencilSquareIcon, TrashIcon } from '@heroicons/vue/24/outline'
+import { MagnifyingGlassIcon, XMarkIcon, TrashIcon } from '@heroicons/vue/24/outline'
 import DeleteDialog from "@/Components/DeleteDialog.vue";
 import TextInput from '@/Components/TextInput.vue'
 import MultiSelect from '@/Components/MultiSelect.vue'
@@ -230,18 +230,14 @@ onMounted(() => {
             {{figure.obj.figure_family.name}}
           </MyLink>
         </div>
-        <!-- Edit/Delete -->
-        <div v-if="$page.props.auth.user" class="hidden sm:flex sm:items-center col-span-1 px-1 ">
-          <MyLink :href="route(compound ? 'compound-figures.edit' : 'figures.edit', figure.obj.id)" class="text-gray-500 hover:text-blue-600">
-            <PencilSquareIcon class="h-5 w-5"/>
-          </MyLink>
-          <button
-            type="button"
-            class="ml-0.5 text-gray-500 hover:text-red-600"
+          <!-- Delete button -->
+          <div v-if="$page.props.auth.user" class="hidden sm:block sm:col-span-1 px-1">
+          <PlainButton
+            class="text-gray-500 hover:text-red-600"
             @click="idToDelete = figure.obj.id; deleteDialog.open()"
           >
             <TrashIcon class="h-5 w-5"/>
-          </button>
+          </PlainButton>
         </div>
       </div>
     </div>
