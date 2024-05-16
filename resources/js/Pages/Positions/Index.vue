@@ -9,7 +9,7 @@ import MyLink from '@/Components/MyLink.vue'
 import SecondaryLink from '@/Components/SecondaryLink.vue'
 import PlainButton from '@/Components/PlainButton.vue'
 import TextInput from '@/Components/TextInput.vue'
-import MultiSelect from '@/Components/MultiSelect.vue'
+import MultiCombobox from '@/Components/MultiCombobox.vue'
 import { TrashIcon, PlusCircleIcon, MagnifyingGlassIcon, XMarkIcon } from '@heroicons/vue/24/outline'
 
 const props = defineProps({
@@ -178,7 +178,7 @@ export default {
               <MagnifyingGlassIcon class="w-5 h-5 text-gray-500" />
             </div>
             <TextInput
-              class="w-80 max-w-full py-1.5 pl-10 text-gray-700 bg-gray-50"
+              class="w-80 max-w-full py-2 pl-10 text-gray-700 bg-gray-50"
               type="text"
               id="position-search-query"
               v-model="positionSearchQuery"
@@ -188,12 +188,14 @@ export default {
         </div>
 
         <!-- PositionFamily Filter -->
-        <MultiSelect
+        <MultiCombobox
           :options="position_families"
-          width="w-40"
+          class="w-48"
           labelText="Filter by family"
+          labelClasses="ml-1 !text-sm !font-normal !text-gray-500"
+          inputClasses="py-2 text-gray-700 bg-gray-50"
           :modelValue="selectedPositionFamilies"
-          @update:modelValue="newValue => selectedPositionFamilies = newValue"
+          @update:modelValue="newValues => selectedPositionFamilies = newValues"
         />
 
         <!-- Clear filters buttom -->
@@ -206,8 +208,10 @@ export default {
             class="!bg-gray-50"
             @click="clearFilters"
           >
-            <XMarkIcon class="-ml-1 w-5 h-5 text-gray-600 shrink-0" />
-            <span class="ml-1 text-gray-600 whitespace-nowrap">Clear filters</span>
+          <XMarkIcon class="-ml-2 w-6 h-6 text-gray-500 shrink-0" />
+          <p class="ml-0.5 text-gray-600 whitespace-nowrap">
+            Clear filters
+          </p>
           </PlainButton>
         </div>
 

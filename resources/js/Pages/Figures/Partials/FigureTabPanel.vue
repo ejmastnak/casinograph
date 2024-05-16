@@ -6,7 +6,7 @@ import throttle from "lodash/throttle";
 import { MagnifyingGlassIcon, XMarkIcon, TrashIcon } from '@heroicons/vue/24/outline'
 import DeleteDialog from "@/Components/DeleteDialog.vue";
 import TextInput from '@/Components/TextInput.vue'
-import MultiSelect from '@/Components/MultiSelect.vue'
+import MultiCombobox from '@/Components/MultiCombobox.vue'
 import PlainButton from '@/Components/PlainButton.vue'
 import MyLink from '@/Components/MyLink.vue'
 
@@ -18,6 +18,7 @@ const props = defineProps({
 })
 
 // For filtering Figures by FigureFamily
+const figureFamilyFilterRef = ref(null)
 const selectedFigureFamilies = ref([])
 const selectedFigureFamilyIDs = computed(() => {
   return selectedFigureFamilies.value.map(figureFamily => figureFamily.id)
@@ -66,6 +67,7 @@ watch(figureSearchQuery, throttle(function (value) {
 }, 400))
 
 function clearFilters() {
+  figureFamilyFilterRef.value.clear()
   figureSearchQuery.value = ""
   selectedFigureFamilies.value = []
   search(figureSearchQuery.value)
@@ -160,13 +162,15 @@ onMounted(() => {
       </div>
 
       <!-- FigureFamily Filter -->
-      <MultiSelect
+      <MultiCombobox
+        ref="figureFamilyFilterRef"
         :options="figure_families"
-        width="w-44"
+        class="w-48"
         labelText="Filter by family"
-        inputClasses="!py-2.5"
+        labelClasses="ml-1 !text-sm !font-normal !text-gray-500"
+        inputClasses="py-2.0 text-gray-700 bg-gray-50"
         :modelValue="selectedFigureFamilies"
-        @update:modelValue="newValue => selectedFigureFamilies = newValue"
+        @update:modelValue="newValues => selectedFigureFamilies = newValues"
       />
 
       <!-- Clear filters buttom -->
@@ -180,9 +184,9 @@ onMounted(() => {
           @click="clearFilters"
         >
           <XMarkIcon class="-ml-2 w-6 h-6 text-gray-500 shrink-0" />
-          <div class="ml-0.5 text-gray-600 whitespace-nowrap">
+          <p class="ml-0.5 text-gray-600 whitespace-nowrap">
             Clear filters
-          </div>
+          </p>
         </PlainButton>
       </div>
 
