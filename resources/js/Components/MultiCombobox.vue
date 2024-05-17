@@ -77,7 +77,7 @@ watch(query, throttle(function (value) {
         <div class="relative">
           <ComboboxInput
             class="w-full text-left border-gray-300 rounded-md shadow-sm focus:border focus:border-blue-500 truncate pr-10"
-            :class="inputClasses"
+            :class="inputClasses + (modelValue.length == 0 ? ' !text-gray-500' : '')"
             @change="query = $event.target.value"
             :displayValue="(options) => (options && options.length) 
             ? (options.map(option => option[props.searchKey]).join(', '))
