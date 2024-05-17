@@ -4,6 +4,7 @@ import { router } from '@inertiajs/vue3'
 import fuzzysort from 'fuzzysort'
 import throttle from "lodash/throttle";
 import { MagnifyingGlassIcon, XMarkIcon, TrashIcon } from '@heroicons/vue/24/outline'
+import { Disclosure, DisclosureButton, DisclosurePanel } from '@headlessui/vue'
 import DeleteDialog from "@/Components/DeleteDialog.vue";
 import TextInput from '@/Components/TextInput.vue'
 import MultiCombobox from '@/Components/MultiCombobox.vue'
@@ -13,6 +14,7 @@ import MyLink from '@/Components/MyLink.vue'
 const props = defineProps({
   figures: Array,
   figure_families: Array,
+  positions: Array,
   compound: Boolean,  // is this panel for base or compound figures?
   can_delete: Boolean,
 })
@@ -20,12 +22,34 @@ const props = defineProps({
 // For filtering Figures by FigureFamily
 const figureFamilyFilterRef = ref(null)
 const selectedFigureFamilies = ref([])
-const selectedFigureFamilyIDs = computed(() => {
+const selectedFigureFamilyIds = computed(() => {
   return selectedFigureFamilies.value.map(figureFamily => figureFamily.id)
 })
 
+// For filtering Figures by from position
+const fromPositionFilterRef = ref(null)
+const selectedFromPositions = ref([])
+const selectedFromPositionIds = computed(() => {
+  return selectedFromPositions.value.map(fromPosition => fromPosition.id)
+})
+
+// For filtering Figures by to position
+const toPositionFilterRef = ref(null)
+const selectedToPositions = ref([])
+const selectedToPositionIds = computed(() => {
+  return selectedToPositions.value.map(toPosition => toPosition.id)
+})
+
+// Updated in onMounted based on stored filter parameters
+const showMoreFiltersDisclosureIsOpen = ref(false)
+const filtersActive = computed(() => {
+  return (selectedFigureFamilies.value.length > 0) || (selectedFromPositions.value.length > 0) || (selectedToPositions.value.length > 0)
+})
+
 function shouldDisplay(figure) {
-  return (selectedFigureFamilies.value.length === 0) || selectedFigureFamilyIDs.value.includes(figure.figure_family_id)
+  return ((selectedFigureFamilies.value.length === 0) || selectedFigureFamilyIds.value.includes(figure.figure_family_id))
+    && ((selectedFromPositions.value.length === 0) || selectedFromPositionIds.value.includes(figure.from_position_id))
+    && ((selectedToPositions.value.length === 0) || selectedToPositionIds.value.includes(figure.to_position_id))
 }
 
 function removeAccents(str) {
@@ -67,9 +91,13 @@ watch(figureSearchQuery, throttle(function (value) {
 }, 400))
 
 function clearFilters() {
-  figureFamilyFilterRef.value.clear()
+  if (figureFamilyFilterRef.value) figureFamilyFilterRef.value.clear();
+  if (fromPositionFilterRef.value) fromPositionFilterRef.value.clear();
+  if (toPositionFilterRef.value) toPositionFilterRef.value.clear();
   figureSearchQuery.value = ""
   selectedFigureFamilies.value = []
+  selectedFromPositions.value = []
+  selectedToPositions.value = []
   search(figureSearchQuery.value)
   figureSearchInput.value.focus()
 }
@@ -105,13 +133,17 @@ function deleteFigure() {
 // Preserve search queries when leaving page.
 onBeforeUnmount(() => {
   sessionStorage.setItem((props.compound ? 'compoundFigures' : 'figures') + 'IndexSearchQuery', figureSearchQuery.value)
-  sessionStorage.setItem((props.compound ? 'compoundFigures' : 'figures') + 'IndexSelectedFamilyIds', JSON.stringify(selectedFigureFamilies.value.map(family => family.id)))
+  sessionStorage.setItem((props.compound ? 'compoundFigures' : 'figures') + 'IndexSelectedFamilyIds', JSON.stringify(selectedFigureFamilyIds.value))
+  sessionStorage.setItem((props.compound ? 'compoundFigures' : 'figures') + 'IndexSelectedFromPositionIds', JSON.stringify(selectedFromPositionIds.value))
+  sessionStorage.setItem((props.compound ? 'compoundFigures' : 'figures') + 'IndexSelectedToPositionIds', JSON.stringify(selectedToPositionIds.value))
 })
 
 // Preserve search queries on manual page reload.
 window.onbeforeunload = function() {
   sessionStorage.setItem((props.compound ? 'compoundFigures' : 'figures') + 'IndexSearchQuery', figureSearchQuery.value)
-  sessionStorage.setItem((props.compound ? 'compoundFigures' : 'figures') + 'IndexSelectedFamilyIds', JSON.stringify(selectedFigureFamilies.value.map(family => family.id)))
+  sessionStorage.setItem((props.compound ? 'compoundFigures' : 'figures') + 'IndexSelectedFamilyIds', JSON.stringify(selectedFigureFamilyIds.value))
+  sessionStorage.setItem((props.compound ? 'compoundFigures' : 'figures') + 'IndexSelectedFromPositionIds', JSON.stringify(selectedFromPositionIds.value))
+  sessionStorage.setItem((props.compound ? 'compoundFigures' : 'figures') + 'IndexSelectedToPositionIds', JSON.stringify(selectedToPositionIds.value))
 }
 
 // Restore search queries when loading page
@@ -122,6 +154,7 @@ onMounted(() => {
     search(figureSearchQuery.value)
   }
 
+  // Restore selected figure families
   if (sessionStorage.getItem((props.compound ? 'compoundFigures' : 'figures') + 'IndexSelectedFamilyIds')) {
     const storedSelectedFigureFamilyIds = JSON.parse(sessionStorage.getItem((props.compound ? 'compoundFigures' : 'figures') + 'IndexSelectedFamilyIds'))
     props.figure_families.forEach((figureFamily) => {
@@ -130,6 +163,30 @@ onMounted(() => {
       }
     })
   }
+
+  // Restore selected from positions
+  if (sessionStorage.getItem((props.compound ? 'compoundFigures' : 'figures') + 'IndexSelectedFromPositionIds')) {
+    const storedSelectedFromPositionIds = JSON.parse(sessionStorage.getItem((props.compound ? 'compoundFigures' : 'figures') + 'IndexSelectedFromPositionIds'))
+    props.positions.forEach((position) => {
+      if (storedSelectedFromPositionIds.includes(position.id)) {
+        selectedFromPositions.value.push(position)
+      }
+    })
+  }
+
+  // Restore selected to positions
+  if (sessionStorage.getItem((props.compound ? 'compoundFigures' : 'figures') + 'IndexSelectedToPositionIds')) {
+    const storedSelectedToPositionIds = JSON.parse(sessionStorage.getItem((props.compound ? 'compoundFigures' : 'figures') + 'IndexSelectedToPositionIds'))
+    props.positions.forEach((position) => {
+      if (storedSelectedToPositionIds.includes(position.id)) {
+        selectedToPositions.value.push(position)
+      }
+    })
+  }
+
+  // Show filters when rendering page if queries were stored in history
+  showMoreFiltersDisclosureIsOpen.value = (selectedFigureFamilies.value.length > 0) || (selectedFromPositions.value.length > 0) || (selectedToPositions.value.length > 0)
+
 })
 
 
@@ -161,34 +218,79 @@ onMounted(() => {
         </div>
       </div>
 
-      <!-- FigureFamily Filter -->
-      <MultiCombobox
-        ref="figureFamilyFilterRef"
-        :options="figure_families"
-        class="w-48"
-        labelText="Filter by family"
-        labelClasses="ml-1 !text-sm !font-normal !text-gray-500"
-        inputClasses="py-2.0 text-gray-700 bg-gray-50"
-        :modelValue="selectedFigureFamilies"
-        @update:modelValue="newValues => selectedFigureFamilies = newValues"
-      />
-
-      <!-- Clear filters buttom -->
-      <div class="flex items-center h-fit">
-        <label :for="(compound ? 'compound-' : '') + 'clear-filters'" class="sr-only">
-          Clear filters
-        </label>
-        <PlainButton
-          :id="(compound ? 'compound-' : '') + 'clear-filters'"
-          class="!bg-gray-50"
-          @click="clearFilters"
+      <Disclosure v-slot="{ open }" >
+        <DisclosureButton
+          @click="showMoreFiltersDisclosureIsOpen = !showMoreFiltersDisclosureIsOpen"
+          class="w-[7rem] inline-flex items-center px-4 py-2.5 bg-gray-50 border border-gray-300 rounded-md text-sm text-gray-700 shadow-sm hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 disabled:opacity-25 transition ease-in-out duration-150"
+          :class="{
+            '!font-semibold': (!showMoreFiltersDisclosureIsOpen && filtersActive)
+          }"
         >
-          <XMarkIcon class="-ml-2 w-6 h-6 text-gray-500 shrink-0" />
-          <p class="ml-0.5 text-gray-600 whitespace-nowrap">
+          {{showMoreFiltersDisclosureIsOpen ? 'Hide filters' : 'More filters'}}
+        </DisclosureButton>
+
+        <!-- Clear filters button (located so as to appear after -->
+        <!-- More Filters button but before extra filter elements) -->
+        <div class="flex items-center h-fit">
+          <label :for="(compound ? 'compound-' : '') + 'clear-filters'" class="sr-only">
             Clear filters
-          </p>
-        </PlainButton>
-      </div>
+          </label>
+          <PlainButton
+            :id="(compound ? 'compound-' : '') + 'clear-filters'"
+            class="!bg-gray-50"
+            @click="clearFilters"
+          >
+            <XMarkIcon class="-ml-2 w-6 h-6 text-gray-500 shrink-0" />
+            <p class="ml-0.5 text-gray-700 whitespace-nowrap">
+              Clear filters
+            </p>
+          </PlainButton>
+        </div>
+
+        <div v-show="showMoreFiltersDisclosureIsOpen">
+          <DisclosurePanel static class="flex flex-wrap items-end space-y-2 gap-x-4">
+
+            <!-- FigureFamily Filter -->
+            <MultiCombobox
+              ref="figureFamilyFilterRef"
+              :options="figure_families"
+              class="w-48"
+              labelText="Figure family"
+              labelClasses="ml-1 !text-sm !font-normal !text-gray-500"
+              inputClasses="text-gray-700 bg-gray-50"
+              :modelValue="selectedFigureFamilies"
+              @update:modelValue="newValues => selectedFigureFamilies = newValues"
+            />
+
+            <!-- From Position filter -->
+            <MultiCombobox
+              ref="fromPositionFilterRef"
+              :options="positions"
+              class="w-48"
+              labelText="From position"
+              labelClasses="ml-1 !text-sm !font-normal !text-gray-500"
+              inputClasses="py-2.0 text-gray-700 bg-gray-50"
+              :modelValue="selectedFromPositions"
+              @update:modelValue="newValues => selectedFromPositions = newValues"
+            />
+
+            <!-- To Position filter -->
+            <MultiCombobox
+              ref="toPositionFilterRef"
+              :options="positions"
+              class="w-48"
+              labelText="To position"
+              labelClasses="ml-1 !text-sm !font-normal !text-gray-500"
+              inputClasses="py-2.0 text-gray-700 bg-gray-50"
+              :modelValue="selectedToPositions"
+              @update:modelValue="newValues => selectedToPositions = newValues"
+            />
+
+          </DisclosurePanel>
+        </div>
+
+      </Disclosure>
+
 
     </div>
 

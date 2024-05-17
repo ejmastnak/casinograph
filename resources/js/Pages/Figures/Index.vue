@@ -13,6 +13,7 @@ const props = defineProps({
   figures: Array,
   compound_figures: Array,
   figure_families: Array,
+  positions: Array,
   can_delete_figures: Boolean,
   can_delete_compound_figures: Boolean,
 })
@@ -148,6 +149,7 @@ export default {
           <FigureTabPanel
             :figures="figures"
             :figure_families="figure_families.filter(f => baseFigureFamilyIds.has(f.id))"
+            :positions="positions"
             :compound="false"
             :can_delete="can_delete_figures"
           />
@@ -158,6 +160,7 @@ export default {
           <FigureTabPanel
             :figures="compound_figures"
             :figure_families="figure_families.filter(f => compoundFigureFamilyIds.has(f.id))"
+            :positions="positions"
             :compound="true"
             :can_delete="can_delete_compound_figures"
           />
