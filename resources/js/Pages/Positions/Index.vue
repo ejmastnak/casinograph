@@ -99,7 +99,7 @@ onBeforeUnmount(() => {
   sessionStorage.setItem('positionsIndexScrollX', window.scrollX)
   sessionStorage.setItem('positionsIndexScrollY', window.scrollY)
   sessionStorage.setItem('positionsIndexSearchQuery', positionSearchQuery.value)
-  sessionStorage.setItem('positionsIndexSelectedFamilyIds', JSON.stringify(selectedPositionFamilies.value.map(family => family.id)))
+  sessionStorage.setItem('positionsIndexSelectedFamilyIds', JSON.stringify(selectedPositionFamilyIds.value))
 })
 
 // Preserve scroll position and search queries on manual page reload.
@@ -107,7 +107,7 @@ window.onbeforeunload = function() {
   sessionStorage.setItem('positionsIndexScrollX', window.scrollX)
   sessionStorage.setItem('positionsIndexScrollY', window.scrollY)
   sessionStorage.setItem('positionsIndexSearchQuery', positionSearchQuery.value)
-  sessionStorage.setItem('positionsIndexSelectedFamilyIds', JSON.stringify(selectedPositionFamilies.value.map(family => family.id)))
+  sessionStorage.setItem('positionsIndexSelectedFamilyIds', JSON.stringify(selectedPositionFamilyIds.value))
 }
 
 // Restore scroll position and search queries when loading page
