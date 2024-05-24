@@ -29,11 +29,10 @@ Route::get('/', function () {
     RegenerateCasinoGraph::dispatch();
     $userId = Auth::id();
     return Inertia::render('Home', [
-        'graph_path' => casinographPathForUser($userId),
+        'graph_path' => casinoGraphLocalPathForUser($userId),
         'graph_is_nonempty' => Figure::where('user_id', ($userId ?? config('constants.user_ids.casino')))->count() > 0,
     ]);
 })->name('home');
-
 
 Route::get('positions', [PositionController::class, 'index'])->name('positions.index');
 Route::get('figures', [FigureController::class, 'index'])->name('figures.index');

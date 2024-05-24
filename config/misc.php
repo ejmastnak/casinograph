@@ -7,9 +7,12 @@
 return [
     'default_figure_weight' => 1,
     'restrict_on_delete_message_limit' => 1,
-    'casinograph' => [
-        // Relative to app root directory// Relative to app root
-        'parent_dir' => "img" . DIRECTORY_SEPARATOR . "casinograph",
+    'graphs' => [
+      'casinograph' => [
+        'public_file' => 'img/casinograph/public.svg',
+        'user_basedir' => 'img/casinograph/users',
+      ],
+      'position_graph' => [],  // for position graphs
+      'config' => [],  // styles for Graphviz
     ],
-    'casinograph_public_path' => 'img/casinograph.svg',
 ];
