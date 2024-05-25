@@ -71,30 +71,10 @@ class RegenerateCasinoGraph implements ShouldQueue
         $file = fopen($tmpDotFile, "w");
         $INDENT = "  ";
 
-        $config = [
-            'graph' => [
-                'ratio' => 1.0,
-            ],
-            'node' => [
-                'fontname' => "Figtree",
-                'fontcolor' => "#172554",
-                'color' => "#172554",
-                'style' => "filled",
-                'fillcolor' => "#eff6ff",
-                'target' => "_top",
-            ],
-            'edge' => [
-                'fontname' => "Figtree",
-                'fontcolor' => "#172554",
-                'color' => "#172554",
-                'target' => "_top",
-            ],
-        ];
-
         $digraphOpen = 'digraph CasinoGraph {';
-        $graphSettings = "graph [{$this->prepareStringFromConfigArray($config['graph'])}];";
-        $nodeSettings = "node [{$this->prepareStringFromConfigArray($config['node'])}];";
-        $edgeSettings = "edge [{$this->prepareStringFromConfigArray($config['edge'])}];";
+        $graphSettings = "graph [{$this->prepareStringFromConfigArray(config('misc.graphs.config.graph'))}];";
+        $nodeSettings = "node [{$this->prepareStringFromConfigArray(config('misc.graphs.config.node'))}];";
+        $edgeSettings = "edge [{$this->prepareStringFromConfigArray(config('misc.graphs.config.edge'))}];";
         $digraphClose = '}';
 
         if ($file) {
