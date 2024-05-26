@@ -88,14 +88,14 @@ class RegenerateCasinoGraph implements ShouldQueue
             # Write positions
             fwrite($file, PHP_EOL);
             foreach ($positions as $position) {
-                $line = "{$INDENT}{$position->id} [label=\"{$position->name}\", URL=\"positions/{$position->id}\"];";
+                $line = "{$INDENT}{$position->id} [label=\"{$position->name}\", URL=\"/positions/{$position->id}\"];";
                 fwrite($file, $line . PHP_EOL);
             }
 
             # Write figures
             fwrite($file, PHP_EOL);
             foreach ($figures as $figure) {
-                $line = "{$INDENT}{$figure->from_position_id} -> {$figure->to_position_id} [label=\"{$figure->name} \", URL=\"figures/{$figure->id}\"];";
+                $line = "{$INDENT}{$figure->from_position_id} -> {$figure->to_position_id} [label=\"{$figure->name} \", URL=\"/figures/{$figure->id}\"];";
                 fwrite($file, $line . PHP_EOL);
             }
 
