@@ -160,7 +160,7 @@ export default {
         <li>
           <span class="font-medium">Foundational figures:</span>
           The graph only shows what I call "foundational" figures, which take one dancer's eight-count.
-          The website also supports "compound figures", which are composed of multiple foundational figures and span multiple eight-counts.
+          The website also includes "compound figures", which are composed of multiple sequential foundational figures and span more than one eight-count.
           You can see both foundational and compound figures on the <MyLink :colored="true" :href="route('figures.index')">main figures page</MyLink>.
         </li>
         <li>
