@@ -132,7 +132,7 @@ export default {
           <p class="ml-1 -mt-0.5 text-sm text-gray-600">Scroll to explore</p>
         </div>
 
-        <!-- Graph -->
+        <!-- SVG -->
         <Transition name="zoom" appear>
           <object class="p-1 mx-auto max-w-xl md:max-w-3xl lg:max-w-4xl" type="image/svg+xml" :data="graph_path"></object>
         </Transition>
@@ -322,7 +322,7 @@ export default {
 
         <!-- Graph -->
         <Transition name="zoom" appear>
-          <object class="mx-auto max-w-2xl sm:max-w-3xl md:max-w-5xl lg:max-w-7xl xl:max-w-none" type="image/svg+xml" data="img/casinograph.svg"></object>
+          <object class="mx-auto max-w-2xl sm:max-w-3xl md:max-w-5xl lg:max-w-7xl xl:max-w-none" type="image/svg+xml" :data="graph_path"></object>
         </Transition>
 
         <!-- Close button -->
