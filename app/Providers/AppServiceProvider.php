@@ -5,6 +5,7 @@ namespace App\Providers;
 use Illuminate\Support\ServiceProvider;
 use Illuminate\Cache\RateLimiting\Limit;
 use Illuminate\Support\Facades\RateLimiter;
+use Illuminate\Support\Facades\Auth;
 
 class AppServiceProvider extends ServiceProvider
 {
@@ -23,6 +24,9 @@ class AppServiceProvider extends ServiceProvider
     {
         RateLimiter::for('casinograph', function (object $job) {
             return Limit::perMinute(60);
+        });
+        RateLimiter::for('positiongraph', function (object $job) {
+            return Limit::perMinute(60)->by(Auth::id());
         });
     }
 }

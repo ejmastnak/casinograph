@@ -65,6 +65,13 @@ class Position extends Model
         ]);
     }
 
+    /**
+     *  Returns true if a position has at least one incoming or outgoing figure
+     */
+    public function hasFigures() {
+        return $this->incoming_figures()->count() > 0 || $this->outgoing_figures()->count() > 0;
+    }
+
     public function position_family() {
         return $this->belongsTo(PositionFamily::class, 'position_family_id', 'id');
     }

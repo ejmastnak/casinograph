@@ -10,6 +10,7 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Process;
 use App\Http\Requests\StorePositionRequest;
 use App\Http\Requests\UpdatePositionRequest;
+use App\Jobs\RegeneratePositionGraph;
 use App\Services\PositionService;
 use Inertia\Inertia;
 
@@ -54,11 +55,14 @@ class PositionController extends Controller
      */
     public function show(Position $position)
     {
+        RegeneratePositionGraph::dispatch($position->id);
         return Inertia::render('Positions/Show', [
             'position' => $position->withPositionFamilyAndFigures(),
             'can_create' => Auth::user() && Auth::user()->can('create', Position::class),
             'can_update' => Auth::user() && Auth::user()->can('update', $position),
             'can_delete' => Auth::user() && Auth::user()->can('delete', $position),
+            'graph_path' => positionGraphLocalPathForUser($position->id, Auth::id()),
+            'graph_is_nonempty' => $position->hasFigures(),
         ]);
     }
 
