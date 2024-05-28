@@ -6,6 +6,7 @@ use Illuminate\Filesystem\Filesystem;
 use Illuminate\Support\Carbon;
 use SessionHandlerInterface;
 use Symfony\Component\Finder\Finder;
+use Illuminate\Support\Facades\Log;
 
 /**
  *  A custom file-based Session driver based on Laravel's built-in
@@ -104,8 +105,12 @@ class MyFileSessionHandler implements \SessionHandlerInterface
      */
     public function destroy($sessionId): bool
     {
+        $userId = $this->extractUserIdFromSessionFile($this->path.'/'.$sessionId);
+        if ($userId) {
+            Log::info("Cleaning position graph SVG files for user {$userId} from MyFileSessionHandle destroy method.");
+            $this->cleanupPositionGraphSvgsForUser($userId);       
+        }
         $this->files->delete($this->path.'/'.$sessionId);
-
         return true;
     }
 
@@ -125,10 +130,45 @@ class MyFileSessionHandler implements \SessionHandlerInterface
         $deletedSessions = 0;
 
         foreach ($files as $file) {
+            $userId = $this->extractUserIdFromSessionFile($file->getRealPath());
+            if ($userId) {
+                Log::info("Cleaning position graph SVG files for user {$userId} from MyFileSessionHandle gc method.");
+                $this->cleanupPositionGraphSvgsForUser($userId);       
+            }
             $this->files->delete($file->getRealPath());
             $deletedSessions++;
         }
 
         return $deletedSessions;
     }
+
+    /**
+     *  Input contents of a session file. Returns the session's user id if
+     *  present, and null otherwise.
+     */
+    private function extractUserIdFromSessionFile($filePath) {
+        $fileContents = file_get_contents($filePath);
+        $sessionData = unserialize(trim($fileContents));
+        $userIdPrefix = "login_web";
+        foreach ($sessionData as $key => $value) {
+            if (strpos($key, $userIdPrefix) === 0) return $value;
+        }
+        return null;
+    }
+
+    /**
+     * Delete a user's position graph SVGs from file system when the user's
+     * session ends, to avoid taking up too much memory with SVGs, which are
+     * meant to be generated on the fly anyway.
+     */
+    private function cleanupPositionGraphSvgsForUser($userId) {
+        $svgDir = public_path(config('misc.graphs.position_graph.user_basedir') . DIRECTORY_SEPARATOR . strval($userId));
+        if (is_dir($svgDir)) {
+            $svgFiles = glob($svgDir . '/*.svg');
+            foreach ($svgFiles as $file) {
+                if (is_file($file)) unlink($file);
+            }
+        }
+    }
+
 }
