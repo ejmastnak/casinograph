@@ -193,7 +193,7 @@ export default {
 
     <!-- Full screen graph dialog -->
     <Dialog :open="graphIsFullscreen" @close="setGraphIsFullScreen">
-      <DialogPanel class="fixed inset-0 bg-white overflow-auto">
+      <DialogPanel class="fixed inset-0 bg-white overflow-auto z-30">
 
         <!-- Graph -->
         <Transition name="quickzoom" appear>
