@@ -54,7 +54,7 @@ export default {
 
     <div class="flex items-center">
       <div class="mr-4">
-        <h1 class="text-2xl">{{position.name}}</h1>
+        <h1 class="text-3xl text-gray-800">{{position.name}}</h1>
       </div>
 
       <SecondaryLink v-if="can_create" class="ml-auto h-fit" :href="route('positions.create')" >
@@ -77,23 +77,28 @@ export default {
         <p class="text-gray-600">Description</p>
         <p class="max-w-xl">{{position.description}}</p>
       </div>
-      <PlaceholderParagraph v-else>
-        This position does not have a description yet.
-      </PlaceholderParagraph>
+      <!-- <PlaceholderParagraph v-else> -->
+      <!--   This position does not have a description yet. -->
+      <!-- </PlaceholderParagraph> -->
     </div>
 
     <!-- Graph -->
-    <div v-if="graph_is_nonempty" class="relative mt-8 -mx-2">
-      <div class="border overflow-auto border-gray-200 shadow rounded-lg h-96 sm:h-[30rem] grid place-items-center">
+    <div v-if="graph_is_nonempty" class="mt-6">
+      <div class="mt-1 relative border overflow-auto border-gray-200 shadow rounded-lg h-96 sm:h-[30rem] grid place-items-center">
+
+        <!-- Figure title -->
+        <h2 class="absolute top-2 text-lg sm:text-xl md:text-2xl text-gray-700 px-2 py-1 bg-white/95 rounded-xl text-center z-20">
+          Incoming and outgoing figures
+        </h2>
 
         <!-- Enter full screen -->
-        <PlainButton class="absolute left-2 top-2" @click="setGraphIsFullScreen(true)">
+        <PlainButton class="absolute left-2 bottom-2 sm:bottom-auto sm:top-2" @click="setGraphIsFullScreen(true)">
           <ArrowsPointingOutIcon class="-ml-1 w-6 h-6 text-gray-500 shrink-0" />
           <p class="ml-1">Full screen</p>
         </PlainButton>
 
         <!-- Scroll to explore -->
-        <div class="absolute left-2 top-14 px-2 py-1 bg-white/95 flex items-center rounded">
+        <div class="absolute left-2 bottom-14 sm:bottom-auto sm:top-14 px-2 py-1 bg-white/95 flex items-center rounded">
           <ArrowsUpDownIcon class="-ml-1 w-6 h-6 text-gray-500 shrink-0" />
           <p class="ml-1 -mt-0.5 text-sm text-gray-600">Scroll to explore</p>
         </div>
