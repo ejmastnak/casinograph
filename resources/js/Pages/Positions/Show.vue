@@ -118,7 +118,9 @@ export default {
               {{figure.name}}
             </MyLink>
             <p class="-mt-1 text-sm text-gray-600">
-              From <MyLink class="font-medium" :href="route('positions.show', figure.from_position_id)" >{{figure.from_position.name}}</MyLink>
+              <MyLink class="font-medium" :href="route('positions.show', figure.from_position_id)" >{{figure.from_position.name}}</MyLink>
+              to
+              <MyLink class="font-medium" :href="route('positions.show', position.id)" >{{position.name}}</MyLink>
             </p>
           </li>
         </ul>
@@ -147,7 +149,9 @@ export default {
               {{figure.name}}
             </MyLink>
             <p class="-mt-1 text-sm text-gray-600">
-              To <MyLink class="font-medium" :href="route('positions.show', figure.to_position_id)" >{{figure.to_position.name}}</MyLink>
+              <MyLink class="font-medium" :href="route('positions.show', position.id)" >{{position.name}}</MyLink>
+              to 
+              <MyLink class="font-medium" :href="route('positions.show', figure.to_position_id)" >{{figure.to_position.name}}</MyLink>
             </p>
           </li>
         </ul>
