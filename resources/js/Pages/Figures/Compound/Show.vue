@@ -91,12 +91,8 @@ export default {
     </div>
 
     <!-- Description -->
-    <div class="mt-4">
-      <div v-if="compound_figure.description">
-        <p class="text-gray-600">Description</p>
-        <p class="">{{compound_figure.description}}</p>
-      </div>
-      <PlaceholderParagraph v-else class="">This figure does not have a description yet.</PlaceholderParagraph>
+    <div v-if="compound_figure.description" class="mt-3">
+      <p class="max-w-xl">{{compound_figure.description}}</p>
     </div>
 
     <!-- Edit and Delete buttons -->

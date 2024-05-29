@@ -72,14 +72,9 @@ export default {
       </div>
     </div>
 
-    <div class="mt-4">
-      <div v-if="position.description">
-        <p class="text-gray-600">Description</p>
-        <p class="max-w-xl">{{position.description}}</p>
-      </div>
-      <!-- <PlaceholderParagraph v-else> -->
-      <!--   This position does not have a description yet. -->
-      <!-- </PlaceholderParagraph> -->
+    <!-- Description -->
+    <div v-if="position.description" class="mt-3">
+      <p class="max-w-xl">{{position.description}}</p>
     </div>
 
     <!-- Graph -->
