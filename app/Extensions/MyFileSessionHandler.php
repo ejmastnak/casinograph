@@ -107,8 +107,9 @@ class MyFileSessionHandler implements \SessionHandlerInterface
     {
         $userId = $this->extractUserIdFromSessionFile($this->path.'/'.$sessionId);
         if ($userId) {
-            Log::info("Cleaning position graph SVG files for user {$userId} from MyFileSessionHandle destroy method.");
+            Log::info("Cleaning position and figure graph SVG files for user {$userId} from MyFileSessionHandle destroy method.");
             $this->cleanupPositionGraphSvgsForUser($userId);       
+            $this->cleanupFigureGraphSvgsForUser($userId);       
         }
         $this->files->delete($this->path.'/'.$sessionId);
         return true;
@@ -132,8 +133,9 @@ class MyFileSessionHandler implements \SessionHandlerInterface
         foreach ($files as $file) {
             $userId = $this->extractUserIdFromSessionFile($file->getRealPath());
             if ($userId) {
-                Log::info("Cleaning position graph SVG files for user {$userId} from MyFileSessionHandle gc method.");
+                Log::info("Cleaning position and figure graph SVG files for user {$userId} from MyFileSessionHandle gc method.");
                 $this->cleanupPositionGraphSvgsForUser($userId);       
+                $this->cleanupFigureGraphSvgsForUser($userId);       
             }
             $this->files->delete($file->getRealPath());
             $deletedSessions++;
@@ -163,6 +165,21 @@ class MyFileSessionHandler implements \SessionHandlerInterface
      */
     private function cleanupPositionGraphSvgsForUser($userId) {
         $svgDir = public_path(config('misc.graphs.position_graph.user_basedir') . DIRECTORY_SEPARATOR . strval($userId));
+        if (is_dir($svgDir)) {
+            $svgFiles = glob($svgDir . '/*.svg');
+            foreach ($svgFiles as $file) {
+                if (is_file($file)) unlink($file);
+            }
+        }
+    }
+
+    /**
+     * Delete a user's figure graph SVGs from file system when the user's
+     * session ends, to avoid taking up too much memory with SVGs, which are
+     * meant to be generated on the fly anyway.
+     */
+    private function cleanupFigureGraphSvgsForUser($userId) {
+        $svgDir = public_path(config('misc.graphs.figure_graph.user_basedir') . DIRECTORY_SEPARATOR . strval($userId));
         if (is_dir($svgDir)) {
             $svgFiles = glob($svgDir . '/*.svg');
             foreach ($svgFiles as $file) {

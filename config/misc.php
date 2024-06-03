@@ -16,6 +16,10 @@ return [
             'public_basedir' => 'img/positiongraph/public',
             'user_basedir' => 'img/positiongraph/users',
         ],
+        'figure_graph' => [
+            'public_basedir' => 'img/figuregraph/public',
+            'user_basedir' => 'img/figuregraph/users',
+        ],
         'config' => [
             'graph' => [
                 'ratio' => 1.0,

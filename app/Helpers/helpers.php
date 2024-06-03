@@ -61,3 +61,36 @@ if (!function_exists('positionGraphFullPathForUser')) {
         );
     }
 }
+
+/**
+ *  Returns path to Figure SVG file for inputted figure and current user
+ *  relative to app's public directory.
+ */
+if (!function_exists('figureGraphLocalPathForUser')) {
+    function figureGraphLocalPathForUser($figureId, $userId) {
+        // Create directory, if needed, to store user's figures
+        if (!is_dir(public_path(config('misc.graphs.figure_graph.user_basedir') . DIRECTORY_SEPARATOR . strval($userId)))) {
+            mkdir(public_path(config('misc.graphs.figure_graph.user_basedir') . DIRECTORY_SEPARATOR . strval($userId)));
+        }
+        return $userId
+            ? DIRECTORY_SEPARATOR . config('misc.graphs.figure_graph.user_basedir') . DIRECTORY_SEPARATOR . strval($userId) . DIRECTORY_SEPARATOR . strval($figureId) . ".svg"
+            : DIRECTORY_SEPARATOR . config('misc.graphs.figure_graph.public_basedir') . DIRECTORY_SEPARATOR . strval($figureId) . ".svg";
+    }
+}
+
+/**
+ *  Returns path to Figure SVG file for inputted figure and current user
+ *  relative to server's root directory.
+ */
+if (!function_exists('figureGraphFullPathForUser')) {
+    function figureGraphFullPathForUser($figureId, $userId) {
+        // Create directory, if needed, to store user's figures
+        if (!is_dir(public_path(config('misc.graphs.figure_graph.user_basedir') . DIRECTORY_SEPARATOR . strval($userId)))) {
+            mkdir(public_path(config('misc.graphs.figure_graph.user_basedir') . DIRECTORY_SEPARATOR . strval($userId)));
+        }
+        return public_path($userId
+            ? config('misc.graphs.figure_graph.user_basedir') . DIRECTORY_SEPARATOR . strval($userId) . DIRECTORY_SEPARATOR . strval($figureId) . ".svg"
+            : config('misc.graphs.figure_graph.public_basedir') . DIRECTORY_SEPARATOR . strval($figureId) . ".svg"
+        );
+    }
+}

@@ -75,7 +75,7 @@ class RegeneratePositionGraph implements ShouldQueue
         $file = fopen($tmpDotFile, "w");
         $INDENT = "  ";
 
-        $digraphOpen = 'digraph CasinoGraph {';
+        $digraphOpen = 'digraph PositionGraph {';
         $graphSettings = "graph [{$this->prepareStringFromConfigArray(config('misc.graphs.config.graph'))}];";
         $nodeSettings = "node [{$this->prepareStringFromConfigArray(config('misc.graphs.config.node'))}];";
         $edgeSettings = "edge [{$this->prepareStringFromConfigArray(config('misc.graphs.config.edge'))}];";

@@ -12,6 +12,7 @@ use Illuminate\Support\Facades\Redirect;
 use Illuminate\Support\Facades\Auth;
 use App\Http\Requests\StoreFigureRequest;
 use App\Http\Requests\UpdateFigureRequest;
+use App\Jobs\RegenerateFigureGraph;
 use App\Services\FigureService;
 use Inertia\Inertia;
 
@@ -86,11 +87,13 @@ class FigureController extends Controller
      */
     public function show(Figure $figure)
     {
+        RegenerateFigureGraph::dispatch($figure->id);
         return Inertia::render('Figures/Foundational/Show', [
             'figure' => $figure->withFamilyAndPositions(),
             'can_create' => Auth::user() && Auth::user()->can('create', Figure::class),
             'can_update' => Auth::user() && Auth::user()->can('update', $figure),
             'can_delete' => Auth::user() && Auth::user()->can('delete', $figure),
+            'graph_path' => figureGraphLocalPathForUser($figure->id, Auth::id()),
         ]);
     }
 
