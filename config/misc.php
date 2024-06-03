@@ -20,6 +20,10 @@ return [
             'public_basedir' => 'img/figuregraph/public',
             'user_basedir' => 'img/figuregraph/users',
         ],
+        'compound_figure_graph' => [
+            'public_basedir' => 'img/compoundfiguregraph/public',
+            'user_basedir' => 'img/compoundfiguregraph/users',
+        ],
         'config' => [
             'graph' => [
                 'ratio' => 1.0,

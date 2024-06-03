@@ -133,7 +133,7 @@ class RegeneratePositionGraph implements ShouldQueue
             fclose($file);
 
         } else {
-            echo "Error opening file $tmpDotFile.";
+            Log::error("Error opening file {$tmpDotFile}.");
         }
     }
 

@@ -11,9 +11,7 @@ import PlainButton from '@/Components/PlainButton.vue'
 import DangerButton from '@/Components/DangerButton.vue'
 import FamilyPillbox from '@/Components/FamilyPillbox.vue'
 import { PencilSquareIcon, TrashIcon, PlusCircleIcon, ArrowsPointingOutIcon, ArrowsUpDownIcon, XMarkIcon } from '@heroicons/vue/24/outline'
-import {
-  Dialog, DialogPanel, DialogTitle, DialogDescription,
-} from '@headlessui/vue'
+import { Dialog, DialogPanel, DialogTitle, DialogDescription } from '@headlessui/vue'
 
 const props = defineProps({
   figure: Object,
@@ -140,6 +138,7 @@ export default {
         </Transition>
       </DialogPanel>
     </Dialog>
+
   </div>
 </template>
 

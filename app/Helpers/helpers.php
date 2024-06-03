@@ -94,3 +94,36 @@ if (!function_exists('figureGraphFullPathForUser')) {
         );
     }
 }
+
+/**
+ *  Returns path to Figure SVG file for inputted compound figure and current
+ *  user relative to app's public directory.
+ */
+if (!function_exists('compoundFigureGraphLocalPathForUser')) {
+    function compoundFigureGraphLocalPathForUser($compoundFigureId, $userId) {
+        // Create directory, if needed, to store user's compound figures
+        if (!is_dir(public_path(config('misc.graphs.compound_figure_graph.user_basedir') . DIRECTORY_SEPARATOR . strval($userId)))) {
+            mkdir(public_path(config('misc.graphs.compound_figure_graph.user_basedir') . DIRECTORY_SEPARATOR . strval($userId)));
+        }
+        return $userId
+            ? DIRECTORY_SEPARATOR . config('misc.graphs.compound_figure_graph.user_basedir') . DIRECTORY_SEPARATOR . strval($userId) . DIRECTORY_SEPARATOR . strval($compoundFigureId) . ".svg"
+            : DIRECTORY_SEPARATOR . config('misc.graphs.compound_figure_graph.public_basedir') . DIRECTORY_SEPARATOR . strval($compoundFigureId) . ".svg";
+    }
+}
+
+/**
+ *  Returns path to Figure SVG file for inputted compound figure and current
+ *  user relative to server's root directory.
+ */
+if (!function_exists('compoundFigureGraphFullPathForUser')) {
+    function compoundFigureGraphFullPathForUser($compoundFigureId, $userId) {
+        // Create directory, if needed, to store user's compound figures
+        if (!is_dir(public_path(config('misc.graphs.compound_figure_graph.user_basedir') . DIRECTORY_SEPARATOR . strval($userId)))) {
+            mkdir(public_path(config('misc.graphs.compound_figure_graph.user_basedir') . DIRECTORY_SEPARATOR . strval($userId)));
+        }
+        return public_path($userId
+            ? config('misc.graphs.compound_figure_graph.user_basedir') . DIRECTORY_SEPARATOR . strval($userId) . DIRECTORY_SEPARATOR . strval($compoundFigureId) . ".svg"
+            : config('misc.graphs.compound_figure_graph.public_basedir') . DIRECTORY_SEPARATOR . strval($compoundFigureId) . ".svg"
+        );
+    }
+}

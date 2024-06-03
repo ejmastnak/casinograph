@@ -13,9 +13,10 @@ use Illuminate\Support\Facades\Process;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
-use App\Models\Figure;
+use App\Models\CompoundFigure;
+use App\Models\Position;
 
-class RegenerateFigureGraph implements ShouldQueue
+class RegenerateCompoundFigureGraph implements ShouldQueue
 {
     use Dispatchable, InteractsWithQueue, Queueable, SerializesModels;
 
@@ -26,14 +27,14 @@ class RegenerateFigureGraph implements ShouldQueue
     public $timeout = 5;
     public $failOnTimeout = true;
 
-    protected $figureId = null;
+    protected $compoundFigureId = null;
 
     /**
      * Create a new job instance.
      */
-    public function __construct(int $figureId)
+    public function __construct(int $compoundFigureId)
     {
-        $this->figureId = $figureId;
+        $this->compoundFigureId = $compoundFigureId;
     }
 
     /**
@@ -43,20 +44,19 @@ class RegenerateFigureGraph implements ShouldQueue
     {
         $userId = Auth::id();
 
-        $figure = Figure::find($this->figureId);
-        $fromPosition = $figure->from_position;
-        $toPosition = $figure->to_position;
+        $compoundFigure = CompoundFigure::find($this->compoundFigureId);
+        $numPositions = Position::where('user_id', ($userId ?? config('constants.user_ids.casino')))->count();
 
         $timestamp = str_replace(".", "-", microtime(true));
-        $tmpDotFile = "/tmp/figuregraph-{$this->figureId}-{$timestamp}.dot";
-        $this->writeDotFile($tmpDotFile, $figure, $fromPosition, $toPosition);
+        $tmpDotFile = "/tmp/compoundfiguregraph-{$this->compoundFigureId}-{$timestamp}.dot";
+        $this->writeDotFile($tmpDotFile, $compoundFigure, $numPositions);
 
         $dotCommandWithParams = [
             '/usr/bin/dot',
             '-Tsvg',
             $tmpDotFile,
             '-o',
-            figureGraphFullPathForUser($this->figureId, $userId),
+            compoundFigureGraphFullPathForUser($this->compoundFigureId, $userId),
         ];
         $cleanupCommandWithParams = [ 'rm', '-f', $tmpDotFile ];
 
@@ -64,7 +64,7 @@ class RegenerateFigureGraph implements ShouldQueue
         $cleanup = Process::run(implode(' ', $cleanupCommandWithParams));
 
         if ($result->failed()) {
-            Log::error("RegenerateFigureGraph failed.\n");
+            Log::error("RegenerateCompoundFigureGraph failed.\n");
             Log::error($result->errorOutput());
             if (\App::environment('local')) {
                 dd($result->errorOutput());
@@ -72,7 +72,7 @@ class RegenerateFigureGraph implements ShouldQueue
         }
     }
 
-    private function writeDotFile($tmpDotFile, $figure, $fromPosition, $toPosition) {
+    private function writeDotFile($tmpDotFile, $compoundFigure, $numPositions) {
         $file = fopen($tmpDotFile, "w");
         $INDENT = "  ";
 
@@ -90,22 +90,32 @@ class RegenerateFigureGraph implements ShouldQueue
             fwrite($file, $INDENT . $nodeSettings . PHP_EOL);
             fwrite($file, $INDENT . $edgeSettings . PHP_EOL);
 
-            # Node for from position. Negative is intentional to force
-            # Graphviz to draw separate nodes for from and to positions for
-            # self-referencing figures.
-            fwrite($file, PHP_EOL);
-            $line = "{$INDENT}-{$fromPosition->id} [label=\"{$fromPosition->name}\", URL=\"/positions/{$fromPosition->id}\"];";
-            fwrite($file, $line . PHP_EOL);
+            // Graphviz node ids are intentionally padded in multiples of
+            // numPositions to force Graphviz to draw a separate set of
+            // position nodes for every figure in the compound figure's figure
+            // sequence, even when the same position occurs multiple times in
+            // the figure sequence. The offset of `$i` vs. `$i + 1` for from/to
+            // positions ensures the from_position_id of $cff N agrees with
+            // Graphviz to_position_id of $cff N - 1.
+            foreach ($compoundFigure->compound_figure_figures as $i => $cff) {
+                fwrite($file, PHP_EOL);
 
-            # Node for to position
-            fwrite($file, PHP_EOL);
-            $line = "{$INDENT}{$toPosition->id} [label=\"{$toPosition->name}\", URL=\"/positions/{$toPosition->id}\"];";
-            fwrite($file, $line . PHP_EOL);
+                # Node for $cff from position
+                $graphvizFromPositionId = $cff->figure->from_position->id + $i*$numPositions;
+                $line = "{$INDENT}{$graphvizFromPositionId} [label=\"{$cff->figure->from_position->name}\", URL=\"/positions/{$cff->figure->from_position->id}\"];";
+                fwrite($file, $line . PHP_EOL);
 
-            # Edge for figure
-            fwrite($file, PHP_EOL);
-            $line = "{$INDENT}-{$fromPosition->id} -> {$toPosition->id} [label=\"{$figure->name} \", URL=\"/figures/{$figure->id}\"];";
-            fwrite($file, $line . PHP_EOL);
+                # Node for $cff from position
+                $graphvizToPositionId = $cff->figure->to_position->id + ($i + 1)*$numPositions;
+                $line = "{$INDENT}{$graphvizToPositionId} [label=\"{$cff->figure->to_position->name}\", URL=\"/positions/{$cff->figure->to_position->id}\"];";
+                fwrite($file, $line . PHP_EOL);
+
+                # Edge for figure
+                fwrite($file, PHP_EOL);
+                $line = "{$INDENT}{$graphvizFromPositionId} -> {$graphvizToPositionId} [label=\"{$cff->figure->name} \", URL=\"/figures/{$cff->figure->id}\"];";
+                fwrite($file, $line . PHP_EOL);
+                
+            }
 
             fwrite($file, PHP_EOL);
             fwrite($file, $digraphClose . PHP_EOL);
@@ -151,7 +161,7 @@ class RegenerateFigureGraph implements ShouldQueue
      */
     public function middleware(): array
     {
-        return [(new RateLimited('figuregraph'))->dontRelease()];
+        return [(new RateLimited('compoundfiguregraph'))->dontRelease()];
     }
 
 }

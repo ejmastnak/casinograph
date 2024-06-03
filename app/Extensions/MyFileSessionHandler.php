@@ -108,8 +108,9 @@ class MyFileSessionHandler implements \SessionHandlerInterface
         $userId = $this->extractUserIdFromSessionFile($this->path.'/'.$sessionId);
         if ($userId) {
             Log::info("Cleaning position and figure graph SVG files for user {$userId} from MyFileSessionHandle destroy method.");
-            $this->cleanupPositionGraphSvgsForUser($userId);       
-            $this->cleanupFigureGraphSvgsForUser($userId);       
+            $this->cleanupResourceGraphSvgsForUser($userId, config('misc.graphs.position_graph.user_basedir'));       
+            $this->cleanupResourceGraphSvgsForUser($userId, config('misc.graphs.figure_graph.user_basedir'));       
+            $this->cleanupResourceGraphSvgsForUser($userId, config('misc.graphs.compound_figure_graph.user_basedir'));       
         }
         $this->files->delete($this->path.'/'.$sessionId);
         return true;
@@ -123,10 +124,10 @@ class MyFileSessionHandler implements \SessionHandlerInterface
     public function gc($lifetime): int
     {
         $files = Finder::create()
-                    ->in($this->path)
-                    ->files()
-                    ->ignoreDotFiles(true)
-                    ->date('<= now - '.$lifetime.' seconds');
+            ->in($this->path)
+            ->files()
+            ->ignoreDotFiles(true)
+            ->date('<= now - '.$lifetime.' seconds');
 
         $deletedSessions = 0;
 
@@ -134,8 +135,9 @@ class MyFileSessionHandler implements \SessionHandlerInterface
             $userId = $this->extractUserIdFromSessionFile($file->getRealPath());
             if ($userId) {
                 Log::info("Cleaning position and figure graph SVG files for user {$userId} from MyFileSessionHandle gc method.");
-                $this->cleanupPositionGraphSvgsForUser($userId);       
-                $this->cleanupFigureGraphSvgsForUser($userId);       
+                $this->cleanupResourceGraphSvgsForUser($userId, config('misc.graphs.position_graph.user_basedir'));       
+                $this->cleanupResourceGraphSvgsForUser($userId, config('misc.graphs.figure_graph.user_basedir'));       
+                $this->cleanupResourceGraphSvgsForUser($userId, config('misc.graphs.compound_figure_graph.user_basedir'));       
             }
             $this->files->delete($file->getRealPath());
             $deletedSessions++;
@@ -159,27 +161,12 @@ class MyFileSessionHandler implements \SessionHandlerInterface
     }
 
     /**
-     * Delete a user's position graph SVGs from file system when the user's
-     * session ends, to avoid taking up too much memory with SVGs, which are
-     * meant to be generated on the fly anyway.
+     * Delete a user's position, figure, or compound figure graph SVGs from
+     * file system when the user's session ends, to avoid taking up too much
+     * memory with SVGs, which are meant to be generated on the fly anyway.
      */
-    private function cleanupPositionGraphSvgsForUser($userId) {
-        $svgDir = public_path(config('misc.graphs.position_graph.user_basedir') . DIRECTORY_SEPARATOR . strval($userId));
-        if (is_dir($svgDir)) {
-            $svgFiles = glob($svgDir . '/*.svg');
-            foreach ($svgFiles as $file) {
-                if (is_file($file)) unlink($file);
-            }
-        }
-    }
-
-    /**
-     * Delete a user's figure graph SVGs from file system when the user's
-     * session ends, to avoid taking up too much memory with SVGs, which are
-     * meant to be generated on the fly anyway.
-     */
-    private function cleanupFigureGraphSvgsForUser($userId) {
-        $svgDir = public_path(config('misc.graphs.figure_graph.user_basedir') . DIRECTORY_SEPARATOR . strval($userId));
+    private function cleanupResourceGraphSvgsForUser($userId, $svgBaseDir) {
+        $svgDir = public_path($svgBaseDir . DIRECTORY_SEPARATOR . strval($userId));
         if (is_dir($svgDir)) {
             $svgFiles = glob($svgDir . '/*.svg');
             foreach ($svgFiles as $file) {

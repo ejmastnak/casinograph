@@ -8,14 +8,17 @@ import DeleteDialog from "@/Components/DeleteDialog.vue";
 import DangerButton from '@/Components/DangerButton.vue'
 import SecondaryLink from '@/Components/SecondaryLink.vue'
 import SecondaryButton from '@/Components/SecondaryButton.vue'
+import PlainButton from '@/Components/PlainButton.vue'
 import FamilyPillbox from '@/Components/FamilyPillbox.vue'
-import { PencilSquareIcon, TrashIcon, PlusCircleIcon } from '@heroicons/vue/24/outline'
+import { PencilSquareIcon, TrashIcon, PlusCircleIcon, ArrowsPointingOutIcon, ArrowsUpDownIcon, XMarkIcon } from '@heroicons/vue/24/outline'
+import { Dialog, DialogPanel, DialogTitle, DialogDescription } from '@headlessui/vue'
 
 const props = defineProps({
   compound_figure: Object,
   can_create: Boolean,
   can_update: Boolean,
   can_delete: Boolean,
+  graph_path: String,
 })
 
 let idToDelete = ref(null)
@@ -26,6 +29,11 @@ function deleteFigure() {
     router.delete(route('compound-figures.destroy', idToDelete.value));
   }
   idToDelete.value = null
+}
+
+const graphIsFullscreen = ref(false)
+function setGraphIsFullScreen(value) {
+  graphIsFullscreen.value = value
 }
 
 </script>
@@ -95,6 +103,28 @@ export default {
       <p class="max-w-xl">{{compound_figure.description}}</p>
     </div>
 
+    <!-- Graph -->
+    <div class="mt-6">
+      <div class="mt-1 relative border overflow-auto border-gray-200 shadow rounded-lg h-96 sm:h-[18rem] grid place-items-center">
+
+        <!-- Enter full screen -->
+        <PlainButton class="absolute left-2 top-2" @click="setGraphIsFullScreen(true)">
+          <ArrowsPointingOutIcon class="-ml-1 w-6 h-6 text-gray-500 shrink-0" />
+          <p class="ml-1">Full screen</p>
+        </PlainButton>
+
+        <!-- Scroll to explore -->
+        <div class="absolute left-2 top-14 px-2 py-1 bg-white/95 flex items-center rounded">
+          <ArrowsUpDownIcon class="-ml-1 w-6 h-6 text-gray-500 shrink-0" />
+          <p class="ml-1 -mt-0.5 text-sm text-gray-600">Scroll to explore</p>
+        </div>
+
+        <!-- SVG -->
+        <Transition name="quickzoom" appear>
+          <object class="p-1 mx-auto max-w-xl md:max-w-3xl lg:max-w-4xl" type="image/svg+xml" :data="graph_path"></object>
+        </Transition>
+      </div>
+    </div>
     <!-- Edit and Delete buttons -->
     <div v-if="can_update || can_delete" class="flex items-center mt-6">
       <SecondaryLink v-if="can_update" :href="route('compound-figures.edit', compound_figure.id)" class="flex items-center">
@@ -115,5 +145,39 @@ export default {
       @cancel="idToDelete = null"
     />
 
+    <!-- Full screen graph dialog -->
+    <Dialog :open="graphIsFullscreen" @close="setGraphIsFullScreen">
+      <DialogPanel class="fixed inset-0 bg-white overflow-auto z-30">
+
+        <!-- Graph -->
+        <Transition name="quickzoom" appear>
+          <object class="p-1 mx-auto max-w-xl md:max-w-3xl lg:max-w-4xl" type="image/svg+xml" :data="graph_path"></object>
+        </Transition>
+
+        <!-- Close button -->
+        <Transition name="quickzoom" appear>
+          <DangerButton class="fixed top-4 right-4" @click="setGraphIsFullScreen(false)" >
+            <XMarkIcon class="-ml-1 w-6 h-6 text-white shrink-0"/>
+            <p class="ml-1">Close</p>
+          </DangerButton>
+        </Transition>
+      </DialogPanel>
+    </Dialog>
+
   </div>
 </template>
+
+<style>
+.zoom-enter-active {animation: zoom-in 0.5s ease-in-out;}
+.zoom-leave-active {animation: zoom-out 0.5s ease-in-out;}
+.quickzoom-enter-active {animation: zoom-in 0.25s ease-in-out;}
+.quickzoom-leave-active {animation: zoom-out 0.25s ease-in-out;}
+@keyframes zoom-in {
+from {transform: scale(0,0);}
+to {transform: scale(1,1);}
+}
+@keyframes zoom-out {
+from {transform: scale(1,1);}
+to {transform: scale(0,0);}
+}
+</style>

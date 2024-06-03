@@ -31,5 +31,8 @@ class AppServiceProvider extends ServiceProvider
         RateLimiter::for('figuregraph', function (object $job) {
             return Limit::perMinute(60)->by(Auth::id());
         });
+        RateLimiter::for('compoundfiguregraph', function (object $job) {
+            return Limit::perMinute(60)->by(Auth::id());
+        });
     }
 }
