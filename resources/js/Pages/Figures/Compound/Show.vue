@@ -104,20 +104,26 @@ export default {
     </div>
 
     <!-- Graph -->
-    <div class="mt-6">
-      <div class="mt-1 relative border overflow-auto border-gray-200 shadow rounded-lg h-96 sm:h-[18rem] grid place-items-center">
+    <div class="mt-6 relative">
 
         <!-- Enter full screen -->
-        <PlainButton class="absolute left-2 top-2" @click="setGraphIsFullScreen(true)">
+        <PlainButton class="absolute left-2 bottom-2 sm:bottom-auto sm:top-2 z-10" @click="setGraphIsFullScreen(true)">
           <ArrowsPointingOutIcon class="-ml-1 w-6 h-6 text-gray-500 shrink-0" />
           <p class="ml-1">Full screen</p>
         </PlainButton>
 
         <!-- Scroll to explore -->
-        <div class="absolute left-2 top-14 px-2 py-1 bg-white/95 flex items-center rounded">
+        <div class="absolute left-2 bottom-14 sm:bottom-auto sm:top-14 px-2 py-1 bg-white/95 flex items-center rounded z-10">
           <ArrowsUpDownIcon class="-ml-1 w-6 h-6 text-gray-500 shrink-0" />
           <p class="ml-1 -mt-0.5 text-sm text-gray-600">Scroll to explore</p>
         </div>
+
+      <div class="mt-1 relative border overflow-auto border-gray-200 shadow rounded-lg h-[14rem] grid place-items-center">
+
+        <!-- Figure title -->
+        <h2 class="absolute top-2 text-xl sm:text-2xl text-gray-700 px-2 py-1 bg-white/95 rounded-xl text-center z-20">
+          Figure sequence
+        </h2>
 
         <!-- SVG -->
         <Transition name="quickzoom" appear>
