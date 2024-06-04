@@ -10,7 +10,7 @@ import SecondaryLink from '@/Components/SecondaryLink.vue'
 import SecondaryButton from '@/Components/SecondaryButton.vue'
 import PlainButton from '@/Components/PlainButton.vue'
 import FamilyPillbox from '@/Components/FamilyPillbox.vue'
-import { PencilSquareIcon, TrashIcon, PlusCircleIcon, ArrowsPointingOutIcon, ArrowsUpDownIcon, XMarkIcon } from '@heroicons/vue/24/outline'
+import { PencilSquareIcon, TrashIcon, PlusCircleIcon, ArrowsPointingOutIcon, ArrowsRightLeftIcon, XMarkIcon } from '@heroicons/vue/24/outline'
 import { Dialog, DialogPanel, DialogTitle, DialogDescription } from '@headlessui/vue'
 
 const props = defineProps({
@@ -92,11 +92,11 @@ export default {
 
         <!-- Scroll to explore -->
         <div class="absolute left-2 bottom-14 sm:bottom-auto sm:top-14 px-2 py-1 bg-white/95 flex items-center rounded z-10">
-          <ArrowsUpDownIcon class="-ml-1 w-6 h-6 text-gray-500 shrink-0" />
+          <ArrowsRightLeftIcon class="-ml-1 w-6 h-6 text-gray-500 shrink-0" />
           <p class="ml-1 -mt-0.5 text-sm text-gray-600">Scroll to explore</p>
         </div>
 
-      <div class="mt-1 relative border overflow-auto border-gray-200 shadow rounded-lg h-[14rem] grid place-items-center">
+      <div class="mt-1 relative border overflow-auto border-gray-200 shadow rounded-lg h-[15rem] grid place-items-center">
 
         <!-- Figure title -->
         <h2 class="absolute top-2 text-xl sm:text-2xl text-gray-700 px-2 py-1 bg-white/95 rounded-xl text-center z-20">
