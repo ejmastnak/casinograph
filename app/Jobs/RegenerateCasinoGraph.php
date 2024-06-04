@@ -72,18 +72,18 @@ class RegenerateCasinoGraph implements ShouldQueue
         $INDENT = "  ";
 
         $digraphOpen = 'digraph CasinoGraph {';
-        $graphSettings = "graph [{$this->prepareStringFromConfigArray(config('misc.graphs.config.graph'))}];";
-        $nodeSettings = "node [{$this->prepareStringFromConfigArray(config('misc.graphs.config.node'))}];";
-        $edgeSettings = "edge [{$this->prepareStringFromConfigArray(config('misc.graphs.config.edge'))}];";
+        $graphConfig = "graph [{$this->prepareStringFromConfigArray(config('misc.graphs.casinograph.config.graph'))}];";
+        $nodeConfig = "node [{$this->prepareStringFromConfigArray(config('misc.graphs.config.node'))}];";
+        $edgeConfig = "edge [{$this->prepareStringFromConfigArray(config('misc.graphs.config.edge'))}];";
         $digraphClose = '}';
 
         if ($file) {
             fwrite($file, $digraphOpen . PHP_EOL);
 
             fwrite($file, PHP_EOL);
-            fwrite($file, $INDENT . $graphSettings . PHP_EOL);
-            fwrite($file, $INDENT . $nodeSettings . PHP_EOL);
-            fwrite($file, $INDENT . $edgeSettings . PHP_EOL);
+            fwrite($file, $INDENT . $graphConfig . PHP_EOL);
+            fwrite($file, $INDENT . $nodeConfig . PHP_EOL);
+            fwrite($file, $INDENT . $edgeConfig . PHP_EOL);
 
             # Write positions
             fwrite($file, PHP_EOL);

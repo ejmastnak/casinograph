@@ -77,18 +77,18 @@ class RegenerateCompoundFigureGraph implements ShouldQueue
         $INDENT = "  ";
 
         $digraphOpen = 'digraph FigureGraph {';
-        $graphSettings = "graph [{$this->prepareStringFromConfigArray(config('misc.graphs.config.graph'))}];";
-        $nodeSettings = "node [{$this->prepareStringFromConfigArray(config('misc.graphs.config.node'))}];";
-        $edgeSettings = "edge [{$this->prepareStringFromConfigArray(config('misc.graphs.config.edge'))}];";
+        $graphConfig = "graph [{$this->prepareStringFromConfigArray(config('misc.graphs.compound_figure_graph.config.graph'))}];";
+        $nodeConfig = "node [{$this->prepareStringFromConfigArray(config('misc.graphs.config.node'))}];";
+        $edgeConfig = "edge [{$this->prepareStringFromConfigArray(config('misc.graphs.config.edge'))}];";
         $digraphClose = '}';
 
         if ($file) {
             fwrite($file, $digraphOpen . PHP_EOL);
 
             fwrite($file, PHP_EOL);
-            fwrite($file, $INDENT . $graphSettings . PHP_EOL);
-            fwrite($file, $INDENT . $nodeSettings . PHP_EOL);
-            fwrite($file, $INDENT . $edgeSettings . PHP_EOL);
+            fwrite($file, $INDENT . $graphConfig . PHP_EOL);
+            fwrite($file, $INDENT . $nodeConfig . PHP_EOL);
+            fwrite($file, $INDENT . $edgeConfig . PHP_EOL);
 
             // Graphviz node ids are intentionally padded in multiples of
             // numPositions to force Graphviz to draw a separate set of
