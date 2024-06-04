@@ -76,28 +76,6 @@ export default {
       </MyLink>
     </div>
 
-    <!-- Figure sequence -->
-    <div class="mt-2">
-      <h2 class="text-lg text-gray-700">Figure sequence</h2>
-      <ol class="mt-1 list-decimal ml-5 space-y-1">
-        <li v-for="compound_figure_figure in compound_figure.compound_figure_figures" :key="compound_figure_figure.id">
-          <MyLink class="inline-block" :href="route('figures.show', compound_figure_figure.figure_id)" >
-            {{compound_figure_figure.figure.name}}
-          </MyLink>
-          <p class="-mt-1 text-sm text-gray-600">
-            From
-            <MyLink class="font-medium" :href="route('positions.show', compound_figure_figure.figure.from_position_id)" >
-              {{compound_figure_figure.figure.from_position.name}}
-            </MyLink>
-            to
-            <MyLink class="font-medium" :href="route('positions.show', compound_figure_figure.figure.to_position_id)" >
-              {{compound_figure_figure.figure.to_position.name}}
-            </MyLink>
-          </p>
-        </li>
-      </ol>
-    </div>
-
     <!-- Description -->
     <div v-if="compound_figure.description" class="mt-3">
       <p class="max-w-xl">{{compound_figure.description}}</p>
@@ -131,6 +109,29 @@ export default {
         </Transition>
       </div>
     </div>
+
+    <!-- Figure sequence -->
+    <div class="mt-2">
+      <h2 class="text-lg text-gray-700">Figure sequence</h2>
+      <ol class="mt-1 list-decimal ml-5 space-y-1">
+        <li v-for="compound_figure_figure in compound_figure.compound_figure_figures" :key="compound_figure_figure.id">
+          <MyLink class="inline-block" :href="route('figures.show', compound_figure_figure.figure_id)" >
+            {{compound_figure_figure.figure.name}}
+          </MyLink>
+          <p class="-mt-1 text-sm text-gray-600">
+            From
+            <MyLink class="font-medium" :href="route('positions.show', compound_figure_figure.figure.from_position_id)" >
+              {{compound_figure_figure.figure.from_position.name}}
+            </MyLink>
+            to
+            <MyLink class="font-medium" :href="route('positions.show', compound_figure_figure.figure.to_position_id)" >
+              {{compound_figure_figure.figure.to_position.name}}
+            </MyLink>
+          </p>
+        </li>
+      </ol>
+    </div>
+
     <!-- Edit and Delete buttons -->
     <div v-if="can_update || can_delete" class="flex items-center mt-6">
       <SecondaryLink v-if="can_update" :href="route('compound-figures.edit', compound_figure.id)" class="flex items-center">
