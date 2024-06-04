@@ -24,6 +24,13 @@ return [
                 'graph' => [
                     'ratio' => 1.0,
                 ],
+                'root_node' => [
+                    'fontsize' => "22pt",
+                    'style' => "filled",
+                    'fillcolor' => "#bfdbfe",
+                    'labelloc' => "t",
+                    'target' => "_top",
+                ],
             ],
         ],
         'figure_graph' => [

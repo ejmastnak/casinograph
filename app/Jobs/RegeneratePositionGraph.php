@@ -95,7 +95,7 @@ class RegeneratePositionGraph implements ShouldQueue
             $rootNodeId = 0;
             $rootPosition = Position::find($rootPositionId);
             fwrite($file, PHP_EOL);
-            $line = "{$INDENT}{$rootNodeId} [label=\"{$rootPosition->name}\", URL=\"/positions/{$rootPosition->id}\"];";
+            $line = "{$INDENT}{$rootNodeId} [label=\"{$rootPosition->name}\", URL=\"/positions/{$rootPosition->id}\", " . $this->prepareStringFromConfigArray(config('misc.graphs.position_graph.config.root_node')) . "];";
             fwrite($file, $line . PHP_EOL);
 
             # Nodes for from positions of incoming figures. Intentionally given
