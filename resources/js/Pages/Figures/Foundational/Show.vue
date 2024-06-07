@@ -10,7 +10,8 @@ import SecondaryButton from '@/Components/SecondaryButton.vue'
 import PlainButton from '@/Components/PlainButton.vue'
 import DangerButton from '@/Components/DangerButton.vue'
 import FamilyPillbox from '@/Components/FamilyPillbox.vue'
-import { PencilSquareIcon, TrashIcon, PlusCircleIcon, ArrowsPointingOutIcon, XMarkIcon } from '@heroicons/vue/24/outline'
+import VideoDialog from '@/Components/VideoDialog.vue'
+import { PencilSquareIcon, TrashIcon, PlusCircleIcon, ArrowsPointingOutIcon, XMarkIcon, PlayIcon } from '@heroicons/vue/24/outline'
 import { Dialog, DialogPanel, DialogTitle, DialogDescription } from '@headlessui/vue'
 
 const props = defineProps({
@@ -22,7 +23,8 @@ const props = defineProps({
 })
 
 let idToDelete = ref(null)
-const deleteDialog = ref(null)
+const deleteDialogRef = ref(null)
+const videoDialogRef = ref(null)
 
 function deleteFigure() {
   if (idToDelete.value) {
@@ -95,6 +97,12 @@ export default {
       </div>
     </div>
 
+    <!-- Videos -->
+    <SecondaryButton @click="videoDialogRef.open()" class="mt-2 flex items-center">
+      <PlayIcon class="h-5 w-5 -ml-1" />
+      <p class="ml-1">Show videos</p>
+    </SecondaryButton>
+
     <!-- Edit and Delete buttons -->
     <div v-if="can_update || can_delete" class="flex items-center mt-6">
       <SecondaryLink v-if="can_update" :href="route('figures.edit', figure.id)" class="flex items-center">
@@ -102,18 +110,20 @@ export default {
         <p class="ml-1">Update</p>
       </SecondaryLink>
 
-      <DangerButton v-if="can_delete" @click="idToDelete = figure.id; deleteDialog.open()" class="ml-2 flex items-center">
+      <DangerButton v-if="can_delete" @click="idToDelete = figure.id; deleteDialogRef.open()" class="ml-2 flex items-center">
         <TrashIcon class="text-white h-5 w-5 -ml-1" />
         <p class="ml-1">Delete</p>
       </DangerButton>
     </div>
 
     <DeleteDialog
-      ref="deleteDialog"
-      description="figure"
-      @delete="deleteFigure"
-      @cancel="idToDelete = null"
-    />
+    ref="deleteDialogRef"
+    description="figure"
+    @delete="deleteFigure"
+    @cancel="idToDelete = null"
+  />
+
+    <VideoDialog ref="videoDialogRef" />
 
     <!-- Full screen graph dialog -->
     <Dialog :open="graphIsFullscreen" @close="setGraphIsFullScreen">

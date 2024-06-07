@@ -10,7 +10,8 @@ import SecondaryLink from '@/Components/SecondaryLink.vue'
 import SecondaryButton from '@/Components/SecondaryButton.vue'
 import PlainButton from '@/Components/PlainButton.vue'
 import FamilyPillbox from '@/Components/FamilyPillbox.vue'
-import { PencilSquareIcon, TrashIcon, PlusCircleIcon, ArrowsPointingOutIcon, ArrowsRightLeftIcon, XMarkIcon } from '@heroicons/vue/24/outline'
+import VideoDialog from '@/Components/VideoDialog.vue'
+import { PencilSquareIcon, TrashIcon, PlayIcon, ListBulletIcon, PlusCircleIcon, ArrowsPointingOutIcon, ArrowsRightLeftIcon, XMarkIcon } from '@heroicons/vue/24/outline'
 import { Dialog, DialogPanel, DialogTitle, DialogDescription } from '@headlessui/vue'
 
 const props = defineProps({
@@ -22,7 +23,9 @@ const props = defineProps({
 })
 
 let idToDelete = ref(null)
-const deleteDialog = ref(null)
+const deleteDialogRef = ref(null)
+const videoDialogRef = ref(null)
+const showingFigureSequence = ref(false)
 
 function deleteFigure() {
   if (idToDelete.value) {
@@ -110,8 +113,24 @@ export default {
       </div>
     </div>
 
-    <!-- Figure sequence -->
-    <div class="mt-2">
+    <div class="mt-4 space-x-2">
+
+      <!-- Videos -->
+      <SecondaryButton @click="videoDialogRef.open()" class="flex items-center">
+        <PlayIcon class="h-5 w-5 -ml-1" />
+        <p class="ml-1">Show videos</p>
+      </SecondaryButton>
+
+      <!-- Show/hide text description -->
+      <SecondaryButton @click="showingFigureSequence = !showingFigureSequence" class="flex items-center">
+        <ListBulletIcon class="h-5 w-5 -ml-1" />
+        <p class="ml-1">{{showingFigureSequence ? 'Hide' : 'Show'}} text</p>
+      </SecondaryButton>
+
+    </div>
+
+    <!-- Figure sequence text -->
+    <div v-if="showingFigureSequence" class="mt-3">
       <h2 class="text-lg text-gray-700">Figure sequence</h2>
       <ol class="mt-1 list-decimal ml-5 space-y-1">
         <li v-for="compound_figure_figure in compound_figure.compound_figure_figures" :key="compound_figure_figure.id">
@@ -132,6 +151,7 @@ export default {
       </ol>
     </div>
 
+
     <!-- Edit and Delete buttons -->
     <div v-if="can_update || can_delete" class="flex items-center mt-6">
       <SecondaryLink v-if="can_update" :href="route('compound-figures.edit', compound_figure.id)" class="flex items-center">
@@ -139,18 +159,20 @@ export default {
         <p class="ml-1">Update</p>
       </SecondaryLink>
 
-      <DangerButton v-if="can_delete" @click="idToDelete = compound_figure.id; deleteDialog.open()" class="ml-2 flex items-center">
+      <DangerButton v-if="can_delete" @click="idToDelete = compound_figure.id; deleteDialogRef.open()" class="ml-2 flex items-center">
         <TrashIcon class="text-white h-5 w-5 -ml-1" />
         <p class="ml-1">Delete</p>
       </DangerButton>
     </div>
 
     <DeleteDialog
-      ref="deleteDialog"
-      description="figure"
-      @delete="deleteFigure"
-      @cancel="idToDelete = null"
-    />
+    ref="deleteDialogRef"
+    description="figure"
+    @delete="deleteFigure"
+    @cancel="idToDelete = null"
+  />
+
+    <VideoDialog ref="videoDialogRef" />
 
     <!-- Full screen graph dialog -->
     <Dialog :open="graphIsFullscreen" @close="setGraphIsFullScreen">

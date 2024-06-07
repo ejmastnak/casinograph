@@ -10,7 +10,9 @@ import DangerButton from '@/Components/DangerButton.vue'
 import SecondaryLink from '@/Components/SecondaryLink.vue'
 import FamilyPillbox from '@/Components/FamilyPillbox.vue'
 import PlainButton from '@/Components/PlainButton.vue'
-import { PencilSquareIcon, TrashIcon, PlusCircleIcon, ArrowsPointingOutIcon, ArrowsUpDownIcon, XMarkIcon } from '@heroicons/vue/24/outline'
+import SecondaryButton from '@/Components/SecondaryButton.vue'
+import VideoDialog from '@/Components/VideoDialog.vue'
+import { PencilSquareIcon, TrashIcon, PlayIcon, ListBulletIcon, PlusCircleIcon, ArrowsPointingOutIcon, ArrowsUpDownIcon, XMarkIcon } from '@heroicons/vue/24/outline'
 import {
   Dialog, DialogPanel, DialogTitle, DialogDescription,
 } from '@headlessui/vue'
@@ -25,7 +27,9 @@ const props = defineProps({
 })
 
 let idToDelete = ref(null)
-const deleteDialog = ref(null)
+const deleteDialogRef = ref(null)
+const videoDialogRef = ref(null)
+const showingAdjacentPositions = ref(false)
 
 function deletePosition() {
   if (idToDelete.value) {
@@ -106,10 +110,24 @@ export default {
       </div>
     </div>
 
+    <div class="mt-4 space-x-2">
+
+      <!-- Videos -->
+      <SecondaryButton @click="videoDialogRef.open()" class="flex items-center">
+        <PlayIcon class="h-5 w-5 -ml-1" />
+        <p class="ml-1">Show videos</p>
+      </SecondaryButton>
+
+      <!-- Show/hide text description -->
+      <SecondaryButton @click="showingAdjacentPositions = !showingAdjacentPositions" class="flex items-center">
+        <ListBulletIcon class="h-5 w-5 -ml-1" />
+        <p class="ml-1">{{showingAdjacentPositions ? 'Hide' : 'Show'}} text</p>
+      </SecondaryButton>
+
+    </div>
+
     <!-- Incoming and outgoing figures -->
-    <div
-      class="mt-6 grid grid-cols-2 gap-x-12 w-fit max-w-2xl"
-    >
+    <div v-if="showingAdjacentPositions" class="mt-3 grid grid-cols-2 gap-x-12 w-fit max-w-2xl" >
       <!-- Incoming figures -->
       <div>
         <h2 class="text-lg text-gray-600">Incoming figures</h2>
@@ -128,16 +146,6 @@ export default {
         <PlaceholderParagraph class="mt-1 text-sm" v-else>
           This position doesn't have any incoming figures.
         </PlaceholderParagraph>
-
-        <!-- Add incoming figures -->
-        <MyLink
-          v-if="can_create"
-          :href="route('figures.create-to-position', position.id)"
-          class="mt-3 w-fit h-fit inline-flex items-center rounded border border-gray-300 px-3 py-1 text-sm text-gray-800"
-        >
-          <PlusCircleIcon class="-ml-1 text-gray-600 h-5 w-5 shrink-0" />
-          <p class="ml-1 leading-tight">Add incoming figure</p>
-        </MyLink>
 
       </div>
 
@@ -160,37 +168,55 @@ export default {
           This position doesn't have any outgoing figures.
         </PlaceholderParagraph>
 
-        <!-- Add outgoing figures -->
-        <MyLink
-          v-if="can_create"
-          :href="route('figures.create-from-position', position.id)"
-          class="mt-3 w-fit h-fit inline-flex items-center rounded border border-gray-300 px-3 py-1 text-sm text-gray-800"
-        >
-          <PlusCircleIcon class="-ml-1 text-gray-600 h-5 w-5 shrink-0" />
-          <p class="ml-1 leading-tight">Add outgoing figure</p>
-        </MyLink>
       </div>
     </div>
 
-    <!-- Edit and Delete buttons -->
-    <div v-if="can_update || can_delete" class="flex items-center mt-10">
-      <SecondaryLink v-if="can_update" :href="route('positions.edit', position.id)" class="flex items-center">
-        <PencilSquareIcon class="text-gray-600 h-5 w-5 -ml-1" />
-        <p class="ml-1">Update</p>
-      </SecondaryLink>
+    <div v-if="can_create || can_update || can_delete" class="mt-6">
 
-      <DangerButton v-if="can_delete" @click="idToDelete = position.id; deleteDialog.open()" class="ml-2 flex items-center">
-        <TrashIcon class="text-white h-5 w-5 -ml-1" />
-        <p class="ml-1">Delete</p>
-      </DangerButton>
+      <!-- Add incoming/outgoing figures -->
+      <div v-if="can_create" class="flex flex-col space-y-1">
+
+        <!-- Incoming figures -->
+        <SecondaryLink
+          :href="route('figures.create-to-position', position.id)"
+          class="w-fit h-fit inline-flex items-center rounded border border-gray-300 px-3 py-1"
+        >
+          <PlusCircleIcon class="-ml-1 text-gray-600 h-5 w-5 shrink-0" />
+          <p class="ml-1 leading-tight">Add incoming figure</p>
+        </SecondaryLink>
+
+        <!-- Outgoing figures -->
+        <SecondaryLink
+          :href="route('figures.create-from-position', position.id)"
+          class="w-fit h-fit inline-flex items-center rounded border border-gray-300 px-3 py-1 text-sm text-gray-800"
+        >
+          <PlusCircleIcon class="-ml-1 text-gray-600 h-5 w-5 shrink-0" />
+          <p class="ml-1 leading-tight">Add outgoing figure</p>
+        </SecondaryLink>
+      </div>
+
+      <!-- Edit and Delete buttons -->
+      <div v-if="can_update || can_delete" class="flex items-center mt-2">
+        <SecondaryLink v-if="can_update" :href="route('positions.edit', position.id)" class="flex items-center">
+          <PencilSquareIcon class="text-gray-600 h-5 w-5 -ml-1" />
+          <p class="ml-1">Update</p>
+        </SecondaryLink>
+
+        <DangerButton v-if="can_delete" @click="idToDelete = position.id; deleteDialogRef.open()" class="ml-2 flex items-center">
+          <TrashIcon class="text-white h-5 w-5 -ml-1" />
+          <p class="ml-1">Delete</p>
+        </DangerButton>
+      </div>
     </div>
 
     <DeleteDialog
-    ref="deleteDialog"
+    ref="deleteDialogRef"
     description="position"
     @delete="deletePosition"
     @cancel="idToDelete = null"
   />
+
+    <VideoDialog ref="videoDialogRef" />
 
     <!-- Full screen graph dialog -->
     <Dialog :open="graphIsFullscreen" @close="setGraphIsFullScreen">
