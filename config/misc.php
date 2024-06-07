@@ -26,7 +26,7 @@ return [
                 ],
                 'root_node' => [
                     'fontname' => "Figtree Medium",
-                    'fontsize' => "22pt",
+                    'fontsize' => "18pt",
                     'style' => "filled",
                     'fillcolor' => "#bfdbfe",
                     'labelloc' => "c",
@@ -54,6 +54,7 @@ return [
         ],
         'config' => [
             'node' => [
+                'fontsize' => "12pt",
                 'fontname' => "Figtree ExtraBold",
                 'fontcolor' => "#172554",
                 'color' => "#172554",
@@ -62,6 +63,7 @@ return [
                 'target' => "_top",
             ],
             'edge' => [
+                'fontsize' => "12pt",
                 'fontname' => "Figtree",
                 'fontcolor' => "#172554",
                 'color' => "#172554",
