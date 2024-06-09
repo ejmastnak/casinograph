@@ -89,7 +89,7 @@ class FigureController extends Controller
     {
         RegenerateFigureGraph::dispatch($figure->id);
         return Inertia::render('Figures/Foundational/Show', [
-            'figure' => $figure->withFamilyAndPositions(),
+            'figure' => $figure->withFamilyAndPositionsAndVideos(),
             'can_create' => Auth::user() && Auth::user()->can('create', Figure::class),
             'can_update' => Auth::user() && Auth::user()->can('update', $figure),
             'can_delete' => Auth::user() && Auth::user()->can('delete', $figure),
@@ -103,7 +103,7 @@ class FigureController extends Controller
     public function edit(Figure $figure)
     {
         return Inertia::render('Figures/Foundational/Edit', [
-            'figure' => $figure->withFamilyAndPositions(),
+            'figure' => $figure->withFamilyAndPositionsAndVideos(),
             'figure_families' => FigureFamily::getForUser(Auth::id()),
             'positions' => Position::getForUser(Auth::id()),
         ]);

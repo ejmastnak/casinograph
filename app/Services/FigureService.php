@@ -4,6 +4,7 @@ namespace App\Services;
 use App\Models\Figure;
 use App\Models\FigureFamily;
 use App\Models\CompoundFigure;
+use App\Models\FigureVideo;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
@@ -36,6 +37,15 @@ class FigureService
                     'to_position_id' => $data['to_position_id'],
                     'user_id' => $userId,
                 ]);
+
+                foreach ($data['figure_videos'] as $figureVideo) {
+                    FigureVideo::create([
+                        'url' => $figureVideo['url'],
+                        'description' => $figureVideo['description'],
+                        'figure_id' => $figure->id,
+                    ]);
+                }
+
             });
         } catch (\Exception $e) {
             if (\App::environment('local')) throw $e;
@@ -71,6 +81,18 @@ class FigureService
                     'from_position_id' => $data['from_position_id'],
                     'to_position_id' => $data['to_position_id'],
                 ]);
+
+                // I'm just deleting old FigureVideos and creating new ones on
+                // each update, doesn't seem worth the extra complexity of
+                // going through create-new-update-existing-delete-stale.
+                foreach ($figure->figure_videos as $fv) $fv->delete();
+                foreach ($data['figure_videos'] as $figureVideo) {
+                    FigureVideo::create([
+                        'url' => $figureVideo['url'],
+                        'description' => $figureVideo['description'],
+                        'figure_id' => $figure->id,
+                    ]);
+                }
 
                 // If this update will orphan a figure family, delete it.
                 if ($previousFigureFamily) {

@@ -52,11 +52,12 @@ class Figure extends Model
             ]);
     }
 
-    public function withFamilyAndPositions() {
+    public function withFamilyAndPositionsAndVideos() {
         $this->load([
             'figure_family:id,name',
             'from_position:id,name',
-            'to_position:id,name'
+            'to_position:id,name',
+            'figure_videos:id,url,description,figure_id',
         ]);
         return $this->only([
             'id',
@@ -69,6 +70,7 @@ class Figure extends Model
             'from_position',
             'to_position_id',
             'to_position',
+            'figure_videos',
         ]);
     }
 
@@ -86,6 +88,10 @@ class Figure extends Model
 
     public function compound_figure_figures() {
         return $this->hasMany(CompoundFigureFigure::class, 'figure_id', 'id')->orderBy('compound_figure_id')->orderBy('seq_num');
+    }
+
+    public function figure_videos() {
+        return $this->hasMany(FigureVideo::class, 'figure_id', 'id');
     }
 
 }

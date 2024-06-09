@@ -13,6 +13,8 @@ return [
         'max_description_length' => "max:10000",
         'max_weight' => "max:1000",
         'max_compound_figure_figures' => "max:1000",
+        'max_videos' => "max:1000",
+        'max_url_length' => "max:1000",
     ],
     'seeding' => [
         'db' => storage_path('app/seeding/seed.sqlite'),

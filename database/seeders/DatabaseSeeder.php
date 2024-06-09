@@ -58,6 +58,7 @@ class DatabaseSeeder extends Seeder
             FigureFamilySeeder::class,
             PositionSeeder::class,
             FigureSeeder::class,
+            FigureVideoSeeder::class,
             CompoundFigureSeeder::class,
             CompoundFigureFigureSeeder::class,
         ]);

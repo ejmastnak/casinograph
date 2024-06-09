@@ -35,6 +35,10 @@ class UpdateFigureRequest extends FormRequest
             'figure_family' => ['nullable', 'array', 'required_array_keys:id,name'],
             'figure_family.id' => ['nullable', 'integer', 'exists:figure_families,id'],
             'figure_family.name' => ['required_with:figure_family', 'string', 'min:1', config('constants.validation.max_name_length')],
+            'figure_videos' => ['nullable', 'array', config('constants.validation.max_videos')],
+            'figure_videos.*' => ['required', 'array', 'required_array_keys:url,description'],
+            'figure_videos.*.url' => ['required', 'string', 'url', config('constants.validation.max_url_length')],
+            'figure_videos.*.description' => ['nullable', 'string', config('constants.validation.max_videos')],
         ];
     }
 
@@ -50,6 +54,8 @@ class UpdateFigureRequest extends FormRequest
             'to_position_id' => 'to position',
             'figure_family.id' => 'figure family',
             'figure_family.name' => 'figure family name',
+            'figure_videos.*.url' => 'figure video URL',
+            'figure_videos.*.description' => 'figure video description',
         ];
     }
 
