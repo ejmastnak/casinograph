@@ -47,7 +47,7 @@ class CompoundFigureController extends Controller
     {
         RegenerateCompoundFigureGraph::dispatch($compoundFigure->id);
         return Inertia::render('Figures/Compound/Show', [
-            'compound_figure' => $compoundFigure->withFamilyAndFigures(),
+            'compound_figure' => $compoundFigure->withFamilyAndFiguresAndVideos(),
             'can_create' => Auth::user() && Auth::user()->can('create', CompoundFigure::class),
             'can_update' => Auth::user() && Auth::user()->can('update', $compoundFigure),
             'can_delete' => Auth::user() && Auth::user()->can('delete', $compoundFigure),
@@ -61,7 +61,7 @@ class CompoundFigureController extends Controller
     public function edit(CompoundFigure $compoundFigure)
     {
         return Inertia::render('Figures/Compound/Edit', [
-            'compound_figure' => $compoundFigure->withFamilyAndFigures(),
+            'compound_figure' => $compoundFigure->withFamilyAndFiguresAndVideos(),
             'figure_families' => FigureFamily::getForUser(Auth::id()),
             'figures' => Figure::getWithOnlyPositionsForUser(Auth::id()),
         ]);

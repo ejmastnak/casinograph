@@ -116,7 +116,11 @@ export default {
     <div class="mt-4 space-x-2">
 
       <!-- Videos -->
-      <SecondaryButton @click="videoDialogRef.open()" class="flex items-center">
+      <SecondaryButton
+        v-if="compound_figure.compound_figure_videos.length"
+        @click="videoDialogRef.open()"
+        class="flex items-center"
+      >
         <PlayIcon class="h-5 w-5 -ml-1" />
         <p class="ml-1">Show videos</p>
       </SecondaryButton>
@@ -172,7 +176,7 @@ export default {
     @cancel="idToDelete = null"
   />
 
-    <VideoDialog ref="videoDialogRef" />
+    <VideoDialog ref="videoDialogRef" :videos="compound_figure.compound_figure_videos" />
 
     <!-- Full screen graph dialog -->
     <Dialog :open="graphIsFullscreen" @close="setGraphIsFullScreen">

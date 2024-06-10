@@ -1,5 +1,6 @@
 <script setup>
 import PrimaryButton from '@/Components/PrimaryButton.vue';
+import PlainButton from '@/Components/PlainButton.vue'
 import SecondaryLink from '@/Components/SecondaryLink.vue'
 import TextInput from '@/Components/TextInput.vue'
 import TextArea from '@/Components/TextArea.vue'
@@ -26,6 +27,7 @@ const form = useForm({
   figure_family_id: props.compound_figure.figure_family_id,
   figure_family: props.compound_figure.figure_family,
   figure_ids: [],
+  compound_figure_videos: [],
 });
 
 const compoundFigureFigures = ref(props.compound_figure.compound_figure_figures.map((cff, idx) => ({
@@ -43,6 +45,42 @@ useSortable(list, compoundFigureFigures.value, {
   animation: 250,
 })
 
+const compoundFigureVideos = ref(props.compound_figure.compound_figure_videos.map((cfv, idx) => ({
+  id: idx,
+  compound_figure_video: {
+    url: cfv.url,
+    description: cfv.description,
+  }
+})));
+var nextCompoundFigureVideoId = compoundFigureVideos.value.length;
+
+// Used to focus inputs after adding new figure video
+const compoundFigureVideoEntryDivRefs = ref([])
+
+function addCompoundFigureVideo() {
+  compoundFigureVideos.value.push({
+    id: nextCompoundFigureVideoId,
+    compound_figure_video: {
+      url: "",
+      description: "",
+    }
+  });
+
+  // Focus the first text input in the just-added (i.e. last) entryDiv
+  // Using setTimeout lets div be inserted into DOM
+  setTimeout(() => {
+    const input = compoundFigureVideoEntryDivRefs.value[compoundFigureVideoEntryDivRefs.value.length - 1].querySelectorAll('input')[0];
+    if (input) input.focus();
+  }, 0)
+
+  nextCompoundFigureVideoId += 1;
+}
+
+// Remove figure video with given index from list
+function removeCompoundFigureVideo(idx) {
+  if (idx >= 0 && idx < compoundFigureVideos.value.length) compoundFigureVideos.value.splice(idx, 1);
+}
+
 // Boolean flag for the presence of incompatible figures
 const incompatibleCompoundFigureFigures = computed(() => {
   let incompatible = false
@@ -57,7 +95,7 @@ const incompatibleCompoundFigureFigures = computed(() => {
 })
 
 // Used to focus input after adding new figure
-const entryDivRefs = ref([])
+const compoundFigureFigureEntryDivRefs = ref([])
 
 function addCompoundFigureFigure() {
   compoundFigureFigures.value.push({
@@ -71,7 +109,7 @@ function addCompoundFigureFigure() {
   // Focus the first text input in the just-added (i.e. last) entryDiv
   // Using setTimeout lets div be inserted into DOM
   setTimeout(() => {
-    const input = entryDivRefs.value[entryDivRefs.value.length - 1].querySelectorAll('input')[0];
+    const input = compoundFigureFigureEntryDivRefs.value[compoundFigureFigureEntryDivRefs.value.length - 1].querySelectorAll('input')[0];
     if (input) input.focus();
   }, 0)
 
@@ -86,6 +124,7 @@ function removeCompoundFigureFigure(idx) {
 const submit = () => {
   if (incompatibleCompoundFigureFigures.value) { return }
   form.figure_ids = compoundFigureFigures.value.map(cff => cff.compound_figure_figure.figure_id);
+  form.compound_figure_videos = compoundFigureVideos.value.map(cfv => cfv.compound_figure_video);
   if (props.action === "create") {
     form.post(route('compound-figures.store'));
   } else if (props.action === "edit") {
@@ -123,7 +162,7 @@ const submit = () => {
       >
         <li v-for="(cff, idx) in compoundFigureFigures" :key="cff.id" >
 
-          <div ref="entryDivRefs" class="flex items-center">
+          <div ref="compoundFigureFigureEntryDivRefs" class="flex items-center">
 
             <FuzzyCombobox
               class="w-80 ml-2"
@@ -221,6 +260,78 @@ const submit = () => {
         v-model="form.description"
       />
       <InputError class="mt-2" :message="form.errors.description" />
+    </div>
+
+    <!-- CompoundFigureVideos -->
+    <div class="mt-5 pb-8 border-b border-gray-200">
+      <h2 class="text-md text-gray-700">Videos (optional)</h2>
+
+      <ol
+        ref="list"
+        class="mt-2 space-y-3"
+      >
+        <li v-for="(cfv, idx) in compoundFigureVideos" :key="cfv.id" >
+          <!-- Wrapper div to allow focusing URL input programatically -->
+          <div ref="compoundFigureVideoEntryDivRefs" class="bg-gray-50 p-3 rounded-lg border border-gray-100">
+
+            <!-- Div to align URL input and delete/rearrange icons -->
+            <div class="flex items-center">
+              <!-- URL input -->
+              <div class="w-full">
+                <InputLabel :for="'compound-figure-video-url-' + cfv.id" value="URL" />
+                <TextInput
+                :id="'compound-figure-video-url-' + cfv.id"
+                type="text"
+                class="w-full max-w-xl"
+                v-model="cfv.compound_figure_video.url"
+                required
+              />
+                <InputError class="mt-2" :message="form.errors['compound_figure_videos.' + idx.toString() + '.url']" />
+              </div>
+
+              <!-- Hardcoded top margin aligns with text input -->
+              <PlainButton
+                type="button"
+                @click="removeCompoundFigureVideo(idx)"
+                class="ml-auto p-1 mt-[1.25rem] text-gray-700 inline-flex"
+              >
+                <TrashIcon class="-ml-1 w-6 h-6 text-gray-600 shrink-0" />
+                <span class="ml-1">Delete</span>
+              </PlainButton>
+
+            </div>
+
+            <!-- Description input -->
+            <div class="mt-3 w-full">
+              <InputLabel :for="'compound-figure-video-description-' + cfv.id" value="Description (optional)" />
+              <TextArea
+              id="'compound-figure-video-description-' + cfv.id"
+              class="block w-full h-20 text-sm max-w-xl"
+              v-model="cfv.compound_figure_video.description"
+            />
+              <InputError class="mt-2" :message="form.errors['compound_figure_videos.' + idx.toString() + '.description']" />
+            </div>
+
+          </div>
+
+        </li>
+      </ol>
+      <p v-if="compoundFigureVideos.length === 0" class="text-gray-500 text-sm" >
+        No videos added for this figure.
+      </p>
+
+      <InputError class="mt-2 max-w-lg" :message="form.errors.compound_figure_videos" />
+
+      <!-- Add CompoundFigureVideo -->
+      <button
+        type="button"
+        @click="addCompoundFigureVideo"
+        class="mt-4 inline-flex compound_figure_figures-center w-fit pl-2 pr-4 py-1 bg-white border border-gray-300 rounded-lg text-gray-500 shadow-sm hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 disabled:opacity-25 transition ease-in-out duration-150"
+      >
+        <PlusCircleIcon class="w-6 h-6"/>
+        <span class="ml-2 text-sm">Add video</span>
+      </button>
+
     </div>
 
     <!-- Submit and Cancel buttons -->

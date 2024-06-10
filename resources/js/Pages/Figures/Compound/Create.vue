@@ -39,6 +39,7 @@ export default {
         figure_family_id: null,
         figure_family: null,
         compound_figure_figures: [],
+        compound_figure_videos: [],
       }"
     />
 

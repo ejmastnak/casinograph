@@ -5,6 +5,7 @@ use App\Models\CompoundFigure;
 use App\Models\CompoundFigureFigure;
 use App\Models\Figure;
 use App\Models\FigureFamily;
+use App\Models\CompoundFigureVideo;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
@@ -50,6 +51,15 @@ class CompoundFigureService
                         'user_id' => $userId,
                     ]);
                 }
+
+                foreach ($data['compound_figure_videos'] as $compoundFigureVideo) {
+                    CompoundFigureVideo::create([
+                        'url' => $compoundFigureVideo['url'],
+                        'description' => $compoundFigureVideo['description'],
+                        'compound_figure_id' => $compoundFigure->id,
+                    ]);
+                }
+
             });
         } catch (\Exception $e) {
             if (\App::environment('local')) throw $e;
@@ -100,6 +110,18 @@ class CompoundFigureService
                         'seq_num' => $idx + 1,
                         'is_final' => $idx === count($data['figure_ids']) - 1,
                         'user_id' => $userId,
+                    ]);
+                }
+
+                // I'm just deleting old FigureVideos and creating new ones on
+                // each update, doesn't seem worth the extra complexity of
+                // going through create-new-update-existing-delete-stale.
+                foreach ($compoundFigure->compound_figure_videos as $cfv) $cfv->delete();
+                foreach ($data['compound_figure_videos'] as $compoundFigureVideo) {
+                    CompoundFigureVideo::create([
+                        'url' => $compoundFigureVideo['url'],
+                        'description' => $compoundFigureVideo['description'],
+                        'compound_figure_id' => $compoundFigure->id,
                     ]);
                 }
 

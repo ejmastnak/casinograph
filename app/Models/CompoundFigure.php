@@ -37,13 +37,14 @@ class CompoundFigure extends Model
             ]);
     }
 
-    public function withFamilyAndFigures() {
+    public function withFamilyAndFiguresAndVideos() {
         $this->load([
             'figure_family:id,name',
             'compound_figure_figures:id,seq_num,compound_figure_id,figure_id',
             'compound_figure_figures.figure:id,name,from_position_id,to_position_id',
             'compound_figure_figures.figure.from_position:id,name',
             'compound_figure_figures.figure.to_position:id,name',
+            'compound_figure_videos:id,url,description,compound_figure_id',
         ]);
         return $this->only([
             'id',
@@ -53,6 +54,7 @@ class CompoundFigure extends Model
             'figure_family_id',
             'figure_family',
             'compound_figure_figures',
+            'compound_figure_videos',
         ]);
     }
 
@@ -70,6 +72,10 @@ class CompoundFigure extends Model
 
     public function to_position() {
         return $this->belongsTo(Position::class, 'to_position_id', 'id');
+    }
+
+    public function compound_figure_videos() {
+        return $this->hasMany(CompoundFigureVideo::class, 'compound_figure_id', 'id');
     }
 
 }
