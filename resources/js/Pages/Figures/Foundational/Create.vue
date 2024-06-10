@@ -44,6 +44,7 @@ export default {
         to_position: to_position,
         figure_family_id: null,
         figure_family: null,
+        figure_videos: [],
       }"
     />
 

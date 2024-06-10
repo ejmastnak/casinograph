@@ -49,7 +49,7 @@ function constructYouTubeEmbedUrl(url) {
   if (timeParam) {
     let hours = timeParam.match(/(\d+)h/);
     let minutes = timeParam.match(/(\d+)m/);
-    let seconds = timeParam.match(/(\d+)s/);
+    let seconds = timeParam.match(/(\d+)s/) || timeParam.match(/(\d+)/);
 
     hours = hours ? parseInt(hours[1], 10) * 3600 : 0;
     minutes = minutes ? parseInt(minutes[1], 10) * 60 : 0;
@@ -66,7 +66,7 @@ function constructYouTubeEmbedUrl(url) {
 <template>
   <Dialog :open="isOpen" @close="close" class="relative z-50">
     <div class="fixed inset-0 flex items-center justify-center p-4 bg-blue-50/80">
-      <DialogPanel class="p-6 rounded-lg overflow-hidden bg-white shadow">
+      <DialogPanel class="p-6 rounded-lg overflow-auto bg-white shadow">
 
         <div class="space-y-5">
           <div v-for="video in videos" :key="video.id">
@@ -80,7 +80,11 @@ function constructYouTubeEmbedUrl(url) {
               allowfullscreen
             >
             </iframe>
-            <p>{{video.description}}</p>
+            <p class="mt-2 px-1 max-w-xl">
+              <span class="font-semibold text-gray-800">Description:</span>
+              {{video.description}}
+            </p>
+
           </div>
         </div>
 
