@@ -35,7 +35,7 @@ const compoundFigureFigures = ref(props.compound_figure.compound_figure_figures.
     figure: cff.figure,
   }
 })))
-var nextID = compoundFigureFigures.value.length
+var nextCompoundFigureFigureId = compoundFigureFigures.value.length
 
 const list = ref(null)
 useSortable(list, compoundFigureFigures.value, {
@@ -61,7 +61,7 @@ const entryDivRefs = ref([])
 
 function addCompoundFigureFigure() {
   compoundFigureFigures.value.push({
-    id: nextID,
+    id: nextCompoundFigureFigureId,
     compound_figure_figure: {
       figure_id: null,
       figure: null,
@@ -75,7 +75,7 @@ function addCompoundFigureFigure() {
     if (input) input.focus();
   }, 0)
 
-  nextID += 1;
+  nextCompoundFigureFigureId += 1;
 }
 
 // Remove CompoundFigureFigure with given index from list
