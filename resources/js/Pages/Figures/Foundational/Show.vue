@@ -67,10 +67,10 @@ export default {
 
     <div v-if="figure.figure_family">
       <div class="text-gray-600 ">
-          Figure family:
-          <MyLink class="font-semibold" :href="route('figure-families.show', figure.figure_family_id)">
-            {{figure.figure_family.name}}
-          </MyLink>
+        Figure family:
+        <MyLink class="font-semibold" :href="route('figure-families.show', figure.figure_family_id)">
+          {{figure.figure_family.name}}
+        </MyLink>
       </div>
     </div>
 
@@ -82,11 +82,11 @@ export default {
     <!-- Graph -->
     <div class="mt-6 relative">
 
-        <!-- Enter full screen -->
-        <PlainButton class="absolute left-2 top-2 z-10" @click="setGraphIsFullScreen(true)">
-          <ArrowsPointingOutIcon class="-ml-1 w-6 h-6 text-gray-500 shrink-0" />
-          <p class="ml-1">Full screen</p>
-        </PlainButton>
+      <!-- Enter full screen -->
+      <PlainButton class="absolute left-2 top-2 z-10" @click="setGraphIsFullScreen(true)">
+        <ArrowsPointingOutIcon class="-ml-1 w-6 h-6 text-gray-500 shrink-0" />
+        <p class="ml-1">Full screen</p>
+      </PlainButton>
 
       <div class="mt-1 relative border overflow-auto border-gray-200 shadow rounded-lg h-[12rem] grid place-items-center">
 
@@ -98,7 +98,11 @@ export default {
     </div>
 
     <!-- Videos -->
-    <SecondaryButton @click="videoDialogRef.open()" class="mt-2 flex items-center">
+    <SecondaryButton
+      v-if="figure.figure_videos.length"
+      @click="videoDialogRef.open()"
+      class="mt-2 flex items-center"
+    >
       <PlayIcon class="h-5 w-5 -ml-1" />
       <p class="ml-1">Show videos</p>
     </SecondaryButton>
@@ -123,7 +127,7 @@ export default {
     @cancel="idToDelete = null"
   />
 
-    <VideoDialog ref="videoDialogRef" />
+    <VideoDialog ref="videoDialogRef" :videos="figure.figure_videos" />
 
     <!-- Full screen graph dialog -->
     <Dialog :open="graphIsFullscreen" @close="setGraphIsFullScreen">
