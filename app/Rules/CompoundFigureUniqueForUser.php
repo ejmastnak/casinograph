@@ -48,7 +48,7 @@ class CompoundFigureUniqueForUser implements ValidationRule, DataAwareRule
             $candidateFigureIds = array_map(function($cff) {
                 return $cff['figure_id'];
             }, $candidate->compound_figure_figures->toArray());
-            if ($candidateFigureIds === $this->data['figure_ids']) {
+            if ($candidateFigureIds === $this->data['figure_ids'] && $candidate->id !== $this->data['id']) {
                 $fail("A figure with this combination of name and figure sequence already exists. Change this figure's the name or figure sequence.");
             }
         }
