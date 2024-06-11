@@ -80,7 +80,7 @@ function constructYouTubeEmbedUrl(url) {
               allowfullscreen
             >
             </iframe>
-            <p class="mt-2 px-1 max-w-xl">
+            <p v-if="video.description" class="mt-2 px-1 max-w-xl">
               <span class="font-semibold text-gray-800">Description:</span>
               {{video.description}}
             </p>
