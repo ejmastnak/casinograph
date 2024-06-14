@@ -38,7 +38,7 @@ class UpdateFigureRequest extends FormRequest
             'figure_videos' => ['nullable', 'array', config('constants.validation.max_videos')],
             'figure_videos.*' => ['required', 'array', 'required_array_keys:url,description'],
             'figure_videos.*.url' => ['required', 'string', 'url', config('constants.validation.max_url_length')],
-            'figure_videos.*.description' => ['nullable', 'string', config('constants.validation.max_videos')],
+            'figure_videos.*.description' => ['nullable', 'string', config('constants.validation.max_description_length')],
         ];
     }
 
