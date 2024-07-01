@@ -78,31 +78,33 @@ class PositionService
                 ]);
 
                 // Create-new-update-existing-delete-stale PositionImages
-                $freshPositionImageIds = [];
-                foreach ($data['position_images'] as $positionImage) {
-                    if (is_null($positionImage['id'])) {  // create new
-                        $path = $positionImage['image']->store(positionImageStoragePathForUser($userId), 'local');
-                        $freshPositionImageIds[] = PositionImage::create([
-                            'path' => $path,
-                            'description' => $positionImage['description'],
-                            'position_id' => $position->id,
-                        ])->id;
-                    } else {  // update existing
-                        $eloquentPositionImage = PositionImage::find($positionImage['id']);
-                        if (isset($positionImage['image'])) {  // new image uploaded
-                            Storage::disk('local')->delete($eloquentPositionImage->path);  // delete old image
-                            $newPath = $positionImage['image']->store(positionImageStoragePathForUser($userId), 'local');
-                            $eloquentPositionImage->update([
-                                'path' => $newPath,
+                if (isset($data['position_images'])) {
+                    $freshPositionImageIds = [];
+                    foreach ($data['position_images'] as $positionImage) {
+                        if (is_null($positionImage['id'])) {  // create new
+                            $path = $positionImage['image']->store(positionImageStoragePathForUser($userId), 'local');
+                            $freshPositionImageIds[] = PositionImage::create([
+                                'path' => $path,
                                 'description' => $positionImage['description'],
                                 'position_id' => $position->id,
-                            ]);
-                        } else {
-                            $eloquentPositionImage->update([
-                                'description' => $positionImage['description'],
-                            ]);
+                            ])->id;
+                        } else {  // update existing
+                            $eloquentPositionImage = PositionImage::find($positionImage['id']);
+                            if (isset($positionImage['image'])) {  // new image uploaded
+                                Storage::disk('local')->delete($eloquentPositionImage->path);  // delete old image
+                                $newPath = $positionImage['image']->store(positionImageStoragePathForUser($userId), 'local');
+                                $eloquentPositionImage->update([
+                                    'path' => $newPath,
+                                    'description' => $positionImage['description'],
+                                    'position_id' => $position->id,
+                                ]);
+                            } else {
+                                $eloquentPositionImage->update([
+                                    'description' => $positionImage['description'],
+                                ]);
+                            }
+                            $freshPositionImageIds[] = $positionImage['id'];
                         }
-                        $freshPositionImageIds[] = $positionImage['id'];
                     }
                 }
                 // Delete stale
