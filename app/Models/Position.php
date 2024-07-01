@@ -46,13 +46,29 @@ class Position extends Model
         ]);
     }
 
-    public function withPositionFamilyAndFigures() {
+    public function withPositionFamilyAndImages() {
+        $this->load([
+            'position_family:id,name',
+            'position_images:id,path,description,position_id'
+        ]);
+        return $this->only([
+            'id',
+            'name',
+            'description',
+            'position_family_id',
+            'position_family',
+            'position_images',
+        ]);
+    }
+
+    public function withFamilyImagesAndFigures() {
         $this->load([
             'position_family:id,name',
             'incoming_figures:id,name,to_position_id,from_position_id',
             'incoming_figures.from_position:id,name',
             'outgoing_figures:id,name,from_position_id,to_position_id',
             'outgoing_figures.to_position:id,name',
+            'position_images:id,path,description,position_id'
         ]);
         return $this->only([
             'id',
@@ -62,6 +78,7 @@ class Position extends Model
             'position_family',
             'incoming_figures',
             'outgoing_figures',
+            'position_images',
         ]);
     }
 
@@ -82,6 +99,10 @@ class Position extends Model
 
     public function outgoing_figures() {
         return $this->hasMany(Figure::class, 'from_position_id', 'id')->orderBy('name');
+    }
+
+    public function position_images() {
+        return $this->hasMany(PositionImage::class, 'position_id', 'id');
     }
 
 }

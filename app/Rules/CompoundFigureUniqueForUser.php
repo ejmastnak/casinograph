@@ -4,7 +4,8 @@ namespace App\Rules;
 
 use Closure;
 use App\Models\CompoundFigure;
-use Illuminate\Contracts\Validation\ValidationRule;use Illuminate\Contracts\Validation\DataAwareRule;
+use Illuminate\Contracts\Validation\ValidationRule;
+use Illuminate\Contracts\Validation\DataAwareRule;
 use Illuminate\Support\Facades\Auth;
 
 /**

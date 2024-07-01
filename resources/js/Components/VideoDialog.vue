@@ -1,8 +1,6 @@
 <script setup>
 import {ref} from 'vue'
-import DangerButton from "@/Components/DangerButton.vue";
 import SecondaryButton from "@/Components/SecondaryButton.vue";
-import { ExclamationTriangleIcon } from '@heroicons/vue/24/outline'
 import {
   TransitionRoot,
   Dialog,
@@ -19,8 +17,6 @@ defineExpose({ open })
 const isOpen = ref(false)
 function open() { isOpen.value = true }
 function close() { isOpen.value = false }
-
-const link = "https://youtu.be/KIJGqON_oi0?t=20"
 
 // Extracts a YouTube video ID and seek position in seconds from a YouTube URL
 // and constructs a corresponding embed URL. Credit: ChatGPT.
@@ -66,7 +62,7 @@ function constructYouTubeEmbedUrl(url) {
 <template>
   <Dialog :open="isOpen" @close="close" class="relative z-50">
     <div class="fixed inset-0 flex items-center justify-center p-4 bg-blue-50/80">
-      <DialogPanel class="p-6 rounded-lg overflow-auto bg-white shadow">
+      <DialogPanel class="p-6 rounded-lg max-h-screen overflow-auto bg-white shadow">
 
         <div class="space-y-5">
           <div v-for="video in videos" :key="video.id">

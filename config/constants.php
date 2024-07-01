@@ -14,6 +14,8 @@ return [
         'max_weight' => "max:1000",
         'max_compound_figure_figures' => "max:1000",
         'max_videos' => "max:1000",
+        'max_images' => "max:5",
+        'max_image_size' => "10mb",
         'max_url_length' => "max:1000",
     ],
     'seeding' => [

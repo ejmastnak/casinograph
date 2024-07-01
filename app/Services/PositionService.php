@@ -2,10 +2,12 @@
 namespace App\Services;
 
 use App\Models\Position;
+use App\Models\PositionImage;
 use App\Models\PositionFamily;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Storage;
 
 class PositionService
 {
@@ -32,6 +34,16 @@ class PositionService
                     'position_family_id' => $positionFamilyId,
                     'user_id' => $userId,
                 ]);
+
+                foreach ($data['position_images'] as $positionImage) {
+                    $path = $positionImage['image']->store(positionImageStoragePathForUser($userId), 'local');
+                    PositionImage::create([
+                        'path' => $path,
+                        'description' => $positionImage['description'],
+                        'position_id' => $position->id,
+                    ]);
+                }
+
             });
         } catch (\Exception $e) {
             if (\App::environment('local')) throw $e;
@@ -64,6 +76,41 @@ class PositionService
                     'description' => $data['description'],
                     'position_family_id' => $positionFamilyId,
                 ]);
+
+                // Create-new-update-existing-delete-stale PositionImages
+                $freshPositionImageIds = [];
+                foreach ($data['position_images'] as $positionImage) {
+                    if (is_null($positionImage['id'])) {  // create new
+                        $path = $positionImage['image']->store(positionImageStoragePathForUser($userId), 'local');
+                        $freshPositionImageIds[] = PositionImage::create([
+                            'path' => $path,
+                            'description' => $positionImage['description'],
+                            'position_id' => $position->id,
+                        ])->id;
+                    } else {  // update existing
+                        $eloquentPositionImage = PositionImage::find($positionImage['id']);
+                        if (isset($positionImage['image'])) {  // new image uploaded
+                            Storage::disk('local')->delete($eloquentPositionImage->path);  // delete old image
+                            $newPath = $positionImage['image']->store(positionImageStoragePathForUser($userId), 'local');
+                            $eloquentPositionImage->update([
+                                'path' => $newPath,
+                                'description' => $positionImage['description'],
+                                'position_id' => $position->id,
+                            ]);
+                        } else {
+                            $eloquentPositionImage->update([
+                                'description' => $positionImage['description'],
+                            ]);
+                        }
+                        $freshPositionImageIds[] = $positionImage['id'];
+                    }
+                }
+                // Delete stale
+                foreach ($position->position_images as $positionImage) {
+                    if (!in_array($positionImage->id, $freshPositionImageIds)) {
+                        $positionImage->delete();
+                    }
+                }
 
                 // If this update will orphan a position family, delete it.
                 if ($previousPositionFamily) {

@@ -11,7 +11,7 @@ import SecondaryLink from '@/Components/SecondaryLink.vue'
 import FamilyPillbox from '@/Components/FamilyPillbox.vue'
 import PlainButton from '@/Components/PlainButton.vue'
 import SecondaryButton from '@/Components/SecondaryButton.vue'
-import VideoDialog from '@/Components/VideoDialog.vue'
+import PositionImageDialog from '@/Components/PositionImageDialog.vue'
 import { PencilSquareIcon, TrashIcon, PlayIcon, ListBulletIcon, PlusCircleIcon, ArrowsPointingOutIcon, ArrowsUpDownIcon, XMarkIcon } from '@heroicons/vue/24/outline'
 import {
   Dialog, DialogPanel, DialogTitle, DialogDescription,
@@ -28,7 +28,7 @@ const props = defineProps({
 
 let idToDelete = ref(null)
 const deleteDialogRef = ref(null)
-const videoDialogRef = ref(null)
+const imageDialogRef = ref(null)
 const showingAdjacentPositions = ref(false)
 
 function deletePosition() {
@@ -113,9 +113,13 @@ export default {
     <div class="mt-4 space-x-2">
 
       <!-- Videos -->
-      <SecondaryButton @click="videoDialogRef.open()" class="flex items-center">
+      <SecondaryButton
+        v-if="position.position_images.length"
+        @click="imageDialogRef.open()"
+        class="flex items-center"
+      >
         <PlayIcon class="h-5 w-5 -ml-1" />
-        <p class="ml-1">Show videos</p>
+        <p class="ml-1">Show images</p>
       </SecondaryButton>
 
       <!-- Show/hide text description -->
@@ -216,7 +220,11 @@ export default {
     @cancel="idToDelete = null"
   />
 
-    <VideoDialog ref="videoDialogRef" />
+    <PositionImageDialog
+    ref="imageDialogRef" 
+    :position_name="position.name"
+    :position_images="position.position_images"
+  />
 
     <!-- Full screen graph dialog -->
     <Dialog :open="graphIsFullscreen" @close="setGraphIsFullScreen">

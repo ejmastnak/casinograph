@@ -28,6 +28,7 @@ export default {
         description: null,
         position_family_id: null,
         position_family: null,
+        position_images: [],
       }"
     />
 

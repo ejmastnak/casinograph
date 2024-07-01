@@ -13,6 +13,7 @@ use App\Http\Requests\UpdatePositionRequest;
 use App\Jobs\RegeneratePositionGraph;
 use App\Services\PositionService;
 use Inertia\Inertia;
+use Illuminate\Support\Facades\Storage;
 
 class PositionController extends Controller
 {
@@ -44,6 +45,11 @@ class PositionController extends Controller
      */
     public function store(StorePositionRequest $request, PositionService $positionService)
     {
+        // $files = $request->file('position_images');
+        // dd($files);
+        // foreach ($files as $file) {
+        //     dd($file);
+        // }
         $positionId = $positionService->storePosition($request->validated());
         return $positionId
             ? Redirect::route('positions.show', $positionId)->with('message', 'Success! Position created successfully.')
@@ -57,7 +63,7 @@ class PositionController extends Controller
     {
         RegeneratePositionGraph::dispatch($position->id);
         return Inertia::render('Positions/Show', [
-            'position' => $position->withPositionFamilyAndFigures(),
+            'position' => $position->withFamilyImagesAndFigures(),
             'can_create' => Auth::user() && Auth::user()->can('create', Position::class),
             'can_update' => Auth::user() && Auth::user()->can('update', $position),
             'can_delete' => Auth::user() && Auth::user()->can('delete', $position),
@@ -72,7 +78,7 @@ class PositionController extends Controller
     public function edit(Position $position)
     {
         return Inertia::render('Positions/Edit', [
-            'position' => $position->withPositionFamily(),
+            'position' => $position->withPositionFamilyAndImages(),
             'position_families' => PositionFamily::getForUser(Auth::id()),
         ]);
     }

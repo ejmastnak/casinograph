@@ -62,6 +62,7 @@ class DatabaseSeeder extends Seeder
             CompoundFigureFigureSeeder::class,
             FigureVideoSeeder::class,
             CompoundFigureVideoSeeder::class,
+            PositionImageSeeder::class,
         ]);
 
     }

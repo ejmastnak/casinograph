@@ -10,7 +10,8 @@
  */
 if (!function_exists('casinoGraphLocalPathForUser')) {
     function casinoGraphLocalPathForUser($userId) {
-        return $userId
+        return
+            $userId && $userId !== config('constants.user_ids.casino')
             ? config('misc.graphs.casinograph.user_basedir') . DIRECTORY_SEPARATOR . strval($userId) . ".svg"
             : config('misc.graphs.casinograph.public_file');
     }
@@ -22,7 +23,8 @@ if (!function_exists('casinoGraphLocalPathForUser')) {
  */
 if (!function_exists('casinoGraphFullPathForUser')) {
     function casinoGraphFullPathForUser($userId) {
-        return public_path($userId
+        return public_path(
+            $userId && $userId !== config('constants.user_ids.casino')
             ? config('misc.graphs.casinograph.user_basedir') . DIRECTORY_SEPARATOR . strval($userId) . ".svg"
             : config('misc.graphs.casinograph.public_file') 
         );
@@ -35,13 +37,19 @@ if (!function_exists('casinoGraphFullPathForUser')) {
  */
 if (!function_exists('positionGraphLocalPathForUser')) {
     function positionGraphLocalPathForUser($positionId, $userId) {
-        // Create directory, if needed, to store user's positions
-        if (!is_dir(public_path(config('misc.graphs.position_graph.user_basedir') . DIRECTORY_SEPARATOR . strval($userId)))) {
-            mkdir(public_path(config('misc.graphs.position_graph.user_basedir') . DIRECTORY_SEPARATOR . strval($userId)));
+        $svgDir = $userId && $userId !== config('constants.user_ids.casino')
+        ? config('misc.graphs.position_graph.user_basedir') . DIRECTORY_SEPARATOR . strval($userId)
+        : config('misc.graphs.position_graph.public_basedir');
+
+        // Create directory, if needed, to store user's position SVG files
+        if (!is_dir(public_path($svgDir))) {
+            mkdir(public_path($svgDir));
         }
-        return $userId
-            ? DIRECTORY_SEPARATOR . config('misc.graphs.position_graph.user_basedir') . DIRECTORY_SEPARATOR . strval($userId) . DIRECTORY_SEPARATOR . strval($positionId) . ".svg"
-            : DIRECTORY_SEPARATOR . config('misc.graphs.position_graph.public_basedir') . DIRECTORY_SEPARATOR . strval($positionId) . ".svg";
+
+        return
+            $userId && $userId !== config('constants.user_ids.casino')
+            ? DIRECTORY_SEPARATOR . $svgDir . DIRECTORY_SEPARATOR . strval($positionId) . ".svg"
+            : DIRECTORY_SEPARATOR . $svgDir . DIRECTORY_SEPARATOR . strval($positionId) . ".svg";
     }
 }
 
@@ -51,13 +59,19 @@ if (!function_exists('positionGraphLocalPathForUser')) {
  */
 if (!function_exists('positionGraphFullPathForUser')) {
     function positionGraphFullPathForUser($positionId, $userId) {
-        // Create directory, if needed, to store user's positions
-        if (!is_dir(public_path(config('misc.graphs.position_graph.user_basedir') . DIRECTORY_SEPARATOR . strval($userId)))) {
-            mkdir(public_path(config('misc.graphs.position_graph.user_basedir') . DIRECTORY_SEPARATOR . strval($userId)));
+        $svgDir = $userId && $userId !== config('constants.user_ids.casino')
+        ? config('misc.graphs.position_graph.user_basedir') . DIRECTORY_SEPARATOR . strval($userId)
+        : config('misc.graphs.position_graph.public_basedir');
+
+        // Create directory, if needed, to store user's position SVG files
+        if (!is_dir(public_path($svgDir))) {
+            mkdir(public_path($svgDir));
         }
-        return public_path($userId
-            ? config('misc.graphs.position_graph.user_basedir') . DIRECTORY_SEPARATOR . strval($userId) . DIRECTORY_SEPARATOR . strval($positionId) . ".svg"
-            : config('misc.graphs.position_graph.public_basedir') . DIRECTORY_SEPARATOR . strval($positionId) . ".svg"
+
+        return public_path(
+            $userId && $userId !== config('constants.user_ids.casino')
+            ? DIRECTORY_SEPARATOR . $svgDir . DIRECTORY_SEPARATOR . strval($positionId) . ".svg"
+            : DIRECTORY_SEPARATOR . $svgDir . DIRECTORY_SEPARATOR . strval($positionId) . ".svg"
         );
     }
 }
@@ -68,13 +82,19 @@ if (!function_exists('positionGraphFullPathForUser')) {
  */
 if (!function_exists('figureGraphLocalPathForUser')) {
     function figureGraphLocalPathForUser($figureId, $userId) {
-        // Create directory, if needed, to store user's figures
-        if (!is_dir(public_path(config('misc.graphs.figure_graph.user_basedir') . DIRECTORY_SEPARATOR . strval($userId)))) {
-            mkdir(public_path(config('misc.graphs.figure_graph.user_basedir') . DIRECTORY_SEPARATOR . strval($userId)));
+        $svgDir = $userId && $userId !== config('constants.user_ids.casino')
+        ? config('misc.graphs.figure_graph.user_basedir') . DIRECTORY_SEPARATOR . strval($userId)
+        : config('misc.graphs.figure_graph.public_basedir');
+
+        // Create directory, if needed, to store user's position SVG files
+        if (!is_dir(public_path($svgDir))) {
+            mkdir(public_path($svgDir));
         }
-        return $userId
-            ? DIRECTORY_SEPARATOR . config('misc.graphs.figure_graph.user_basedir') . DIRECTORY_SEPARATOR . strval($userId) . DIRECTORY_SEPARATOR . strval($figureId) . ".svg"
-            : DIRECTORY_SEPARATOR . config('misc.graphs.figure_graph.public_basedir') . DIRECTORY_SEPARATOR . strval($figureId) . ".svg";
+
+        return
+            $userId && $userId !== config('constants.user_ids.casino')
+            ? DIRECTORY_SEPARATOR . $svgDir . DIRECTORY_SEPARATOR . strval($figureId) . ".svg"
+            : DIRECTORY_SEPARATOR . $svgDir . DIRECTORY_SEPARATOR . strval($figureId) . ".svg";
     }
 }
 
@@ -84,13 +104,19 @@ if (!function_exists('figureGraphLocalPathForUser')) {
  */
 if (!function_exists('figureGraphFullPathForUser')) {
     function figureGraphFullPathForUser($figureId, $userId) {
-        // Create directory, if needed, to store user's figures
-        if (!is_dir(public_path(config('misc.graphs.figure_graph.user_basedir') . DIRECTORY_SEPARATOR . strval($userId)))) {
-            mkdir(public_path(config('misc.graphs.figure_graph.user_basedir') . DIRECTORY_SEPARATOR . strval($userId)));
+        $svgDir = $userId && $userId !== config('constants.user_ids.casino')
+        ? config('misc.graphs.figure_graph.user_basedir') . DIRECTORY_SEPARATOR . strval($userId)
+        : config('misc.graphs.figure_graph.public_basedir');
+
+        // Create directory, if needed, to store user's position SVG files
+        if (!is_dir(public_path($svgDir))) {
+            mkdir(public_path($svgDir));
         }
-        return public_path($userId
-            ? config('misc.graphs.figure_graph.user_basedir') . DIRECTORY_SEPARATOR . strval($userId) . DIRECTORY_SEPARATOR . strval($figureId) . ".svg"
-            : config('misc.graphs.figure_graph.public_basedir') . DIRECTORY_SEPARATOR . strval($figureId) . ".svg"
+
+        return public_path(
+            $userId && $userId !== config('constants.user_ids.casino')
+            ? DIRECTORY_SEPARATOR . $svgDir . DIRECTORY_SEPARATOR . strval($figureId) . ".svg"
+            : DIRECTORY_SEPARATOR . $svgDir . DIRECTORY_SEPARATOR . strval($figureId) . ".svg"
         );
     }
 }
@@ -101,13 +127,19 @@ if (!function_exists('figureGraphFullPathForUser')) {
  */
 if (!function_exists('compoundFigureGraphLocalPathForUser')) {
     function compoundFigureGraphLocalPathForUser($compoundFigureId, $userId) {
-        // Create directory, if needed, to store user's compound figures
-        if (!is_dir(public_path(config('misc.graphs.compound_figure_graph.user_basedir') . DIRECTORY_SEPARATOR . strval($userId)))) {
-            mkdir(public_path(config('misc.graphs.compound_figure_graph.user_basedir') . DIRECTORY_SEPARATOR . strval($userId)));
+        $svgDir = $userId && $userId !== config('constants.user_ids.casino')
+        ? config('misc.graphs.compound_figure_graph.user_basedir') . DIRECTORY_SEPARATOR . strval($userId)
+        : config('misc.graphs.compound_figure_graph.public_basedir');
+
+        // Create directory, if needed, to store user's position SVG files
+        if (!is_dir(public_path($svgDir))) {
+            mkdir(public_path($svgDir));
         }
-        return $userId
-            ? DIRECTORY_SEPARATOR . config('misc.graphs.compound_figure_graph.user_basedir') . DIRECTORY_SEPARATOR . strval($userId) . DIRECTORY_SEPARATOR . strval($compoundFigureId) . ".svg"
-            : DIRECTORY_SEPARATOR . config('misc.graphs.compound_figure_graph.public_basedir') . DIRECTORY_SEPARATOR . strval($compoundFigureId) . ".svg";
+
+        return
+            $userId && $userId !== config('constants.user_ids.casino')
+            ? DIRECTORY_SEPARATOR . $svgDir . DIRECTORY_SEPARATOR . strval($compoundFigureId) . ".svg"
+            : DIRECTORY_SEPARATOR . $svgDir . DIRECTORY_SEPARATOR . strval($compoundFigureId) . ".svg";
     }
 }
 
@@ -117,13 +149,50 @@ if (!function_exists('compoundFigureGraphLocalPathForUser')) {
  */
 if (!function_exists('compoundFigureGraphFullPathForUser')) {
     function compoundFigureGraphFullPathForUser($compoundFigureId, $userId) {
-        // Create directory, if needed, to store user's compound figures
-        if (!is_dir(public_path(config('misc.graphs.compound_figure_graph.user_basedir') . DIRECTORY_SEPARATOR . strval($userId)))) {
-            mkdir(public_path(config('misc.graphs.compound_figure_graph.user_basedir') . DIRECTORY_SEPARATOR . strval($userId)));
+        $svgDir = $userId && $userId !== config('constants.user_ids.casino')
+        ? config('misc.graphs.compound_figure_graph.user_basedir') . DIRECTORY_SEPARATOR . strval($userId)
+        : config('misc.graphs.compound_figure_graph.public_basedir');
+
+        // Create directory, if needed, to store user's position SVG files
+        if (!is_dir(public_path($svgDir))) {
+            mkdir(public_path($svgDir));
         }
-        return public_path($userId
-            ? config('misc.graphs.compound_figure_graph.user_basedir') . DIRECTORY_SEPARATOR . strval($userId) . DIRECTORY_SEPARATOR . strval($compoundFigureId) . ".svg"
-            : config('misc.graphs.compound_figure_graph.public_basedir') . DIRECTORY_SEPARATOR . strval($compoundFigureId) . ".svg"
+
+        return public_path(
+            $userId && $userId !== config('constants.user_ids.casino')
+            ? DIRECTORY_SEPARATOR . $svgDir . DIRECTORY_SEPARATOR . strval($compoundFigureId) . ".svg"
+            : DIRECTORY_SEPARATOR . $svgDir . DIRECTORY_SEPARATOR . strval($compoundFigureId) . ".svg"
         );
+    }
+}
+
+/**
+ *  Returns path to user's position_image directory relative to root of `local`
+ *  disk (used for storage of position images).
+ */
+if (!function_exists('positionImageStoragePathForUser')) {
+    function positionImageStoragePathForUser($userId) {
+        $dir = $userId && $userId !== config('constants.user_ids.casino')
+        ? config('misc.position_images.user_basedir') . DIRECTORY_SEPARATOR . strval($userId)
+        : config('misc.position_images.public_basedir');
+
+        // Create directory, if needed, to store user's position image files
+        if (!is_dir(storage_path('app' . DIRECTORY_SEPARATOR . $dir))) {
+            mkdir(storage_path('app' . DIRECTORY_SEPARATOR . $dir));
+        }
+
+        return $dir;
+    }
+}
+
+/**
+ * Returns path to user's position_image directory relative to `public` folder
+ * (used to publically display position images).
+ */
+if (!function_exists('positionImagePublicPathForUser')) {
+    function positionImagePublicPathForUser($userId) {
+        return $userId && $userId !== config('constants.user_ids.casino')
+            ? config('misc.position_images.user_basedir') . DIRECTORY_SEPARATOR . strval($userId)
+            : config('misc.position_images.public_basedir');
     }
 }

@@ -71,4 +71,8 @@ return [
             ],
         ],
     ],
+    'position_images' => [
+        'public_basedir' => 'img/position_images/public',
+        'user_basedir' => 'img/position_images/users',
+    ],
 ];
