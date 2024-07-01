@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Facades\Storage;
 
 class Position extends Model
 {
@@ -15,6 +16,16 @@ class Position extends Model
         "position_family_id",
         "user_id",
     ];
+
+    protected static function booted(): void
+    {
+        // Delete PositionImage files from disk before position is deleted
+        static::deleting(function (Position $position) {
+            foreach ($position->position_images as $positionImage) {
+                Storage::disk('local')->delete($positionImage->path);
+            }
+        });
+    }
 
     public static function getForUser(?int $userId) {
         return self::where('user_id', ($userId ?? config('constants.user_ids.casino')))
