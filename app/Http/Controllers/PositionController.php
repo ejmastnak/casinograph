@@ -45,12 +45,8 @@ class PositionController extends Controller
      */
     public function store(StorePositionRequest $request, PositionService $positionService)
     {
-        // $files = $request->file('position_images');
-        // dd($files);
-        // foreach ($files as $file) {
-        //     dd($file);
-        // }
         $positionId = $positionService->storePosition($request->validated());
+        RegeneratePositionGraph::dispatch($positionId);
         return $positionId
             ? Redirect::route('positions.show', $positionId)->with('message', 'Success! Position created successfully.')
             : back()->with('error', 'Error. Failed to create position.');
@@ -61,13 +57,12 @@ class PositionController extends Controller
      */
     public function show(Position $position)
     {
-        RegeneratePositionGraph::dispatch($position->id);
         return Inertia::render('Positions/Show', [
             'position' => $position->withFamilyImagesAndFigures(),
             'can_create' => Auth::user() && Auth::user()->can('create', Position::class),
             'can_update' => Auth::user() && Auth::user()->can('update', $position),
             'can_delete' => Auth::user() && Auth::user()->can('delete', $position),
-            'graph_path' => positionGraphLocalPathForUser($position->id, Auth::id()),
+            'graph_path' => positionGraphPublicPathForUser($position->id, Auth::id()),
             'graph_is_nonempty' => $position->hasFigures(),
         ]);
     }
@@ -89,6 +84,7 @@ class PositionController extends Controller
     public function update(UpdatePositionRequest $request, Position $position, PositionService $positionService)
     {
         $positionId = $positionService->updatePosition($request->validated(), $position);
+        RegeneratePositionGraph::dispatch($positionId);
         return $positionId
             ? Redirect::route('positions.show', $positionId)->with('message', 'Success! Position updated successfully.')
             : back()->with('error', 'Error. Failed to update position.');

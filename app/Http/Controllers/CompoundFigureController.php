@@ -35,6 +35,7 @@ class CompoundFigureController extends Controller
     public function store(StoreCompoundFigureRequest $request, CompoundFigureService $compoundFigureService)
     {
         $compoundFigureId = $compoundFigureService->storeCompoundFigure($request->validated());
+        RegenerateCompoundFigureGraph::dispatch($compoundFigureId);
         return $compoundFigureId
             ? Redirect::route('compound-figures.show', $compoundFigureId)->with('message', 'Success! Compound Figure created successfully.')
             : back()->with('error', 'Error. Failed to create figure.');
@@ -45,13 +46,12 @@ class CompoundFigureController extends Controller
      */
     public function show(CompoundFigure $compoundFigure)
     {
-        RegenerateCompoundFigureGraph::dispatch($compoundFigure->id);
         return Inertia::render('Figures/Compound/Show', [
             'compound_figure' => $compoundFigure->withFamilyAndFiguresAndVideos(),
             'can_create' => Auth::user() && Auth::user()->can('create', CompoundFigure::class),
             'can_update' => Auth::user() && Auth::user()->can('update', $compoundFigure),
             'can_delete' => Auth::user() && Auth::user()->can('delete', $compoundFigure),
-            'graph_path' => compoundFigureGraphLocalPathForUser($compoundFigure->id, Auth::id()),
+            'graph_path' => compoundFigureGraphPublicPathForUser($compoundFigure->id, Auth::id()),
         ]);
     }
 
@@ -73,6 +73,7 @@ class CompoundFigureController extends Controller
     public function update(UpdateCompoundFigureRequest $request, CompoundFigure $compoundFigure, CompoundFigureService $compoundFigureService)
     {
         $compoundFigureId = $compoundFigureService->updateCompoundFigure($request->validated(), $compoundFigure);
+        RegenerateCompoundFigureGraph::dispatch($compoundFigureId);
         return $compoundFigureId
             ? Redirect::route('compound-figures.show', $compoundFigureId)->with('message', 'Success! Figure updated successfully.')
             : back()->with('error', 'Error. Failed to update figure.');

@@ -11,7 +11,6 @@ use Illuminate\Queue\SerializesModels;
 use Illuminate\Queue\Middleware\RateLimited;
 use Illuminate\Support\Facades\Process;
 use Illuminate\Support\Facades\Log;
-use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use App\Models\Position;
 
@@ -41,7 +40,8 @@ class RegeneratePositionGraph implements ShouldQueue
      */
     public function handle(): void
     {
-        $userId = Auth::id();
+        $position = Position::find($this->positionId);
+        $userId = $position->user_id;
 
         $incomingFigures = $this->getIncomingFigures($this->positionId, $userId);
         $outgoingFigures = $this->getOutgoingFigures($this->positionId, $userId);
@@ -55,7 +55,7 @@ class RegeneratePositionGraph implements ShouldQueue
             '-Tsvg',
             $tmpDotFile,
             '-o',
-            positionGraphFullPathForUser($this->positionId, $userId),
+            positionGraphStoragePathForUser($this->positionId, $userId),
         ];
         $cleanupCommandWithParams = [ 'rm', '-f', $tmpDotFile ];
 

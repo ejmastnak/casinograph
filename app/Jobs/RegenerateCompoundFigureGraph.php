@@ -11,7 +11,6 @@ use Illuminate\Queue\SerializesModels;
 use Illuminate\Queue\Middleware\RateLimited;
 use Illuminate\Support\Facades\Process;
 use Illuminate\Support\Facades\Log;
-use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use App\Models\CompoundFigure;
 use App\Models\Position;
@@ -42,9 +41,8 @@ class RegenerateCompoundFigureGraph implements ShouldQueue
      */
     public function handle(): void
     {
-        $userId = Auth::id();
-
         $compoundFigure = CompoundFigure::find($this->compoundFigureId);
+        $userId = $compoundFigure->user_id;
         $numPositions = Position::where('user_id', ($userId ?? config('constants.user_ids.casino')))->count();
 
         $timestamp = str_replace(".", "-", microtime(true));
@@ -56,7 +54,7 @@ class RegenerateCompoundFigureGraph implements ShouldQueue
             '-Tsvg',
             $tmpDotFile,
             '-o',
-            compoundFigureGraphFullPathForUser($this->compoundFigureId, $userId),
+            compoundFigureGraphStoragePathForUser($this->compoundFigureId, $userId),
         ];
         $cleanupCommandWithParams = [ 'rm', '-f', $tmpDotFile ];
 

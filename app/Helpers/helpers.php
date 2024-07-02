@@ -35,16 +35,11 @@ if (!function_exists('casinoGraphFullPathForUser')) {
  *  Returns path to Position SVG file for inputted position and current user
  *  relative to app's public directory.
  */
-if (!function_exists('positionGraphLocalPathForUser')) {
-    function positionGraphLocalPathForUser($positionId, $userId) {
+if (!function_exists('positionGraphPublicPathForUser')) {
+    function positionGraphPublicPathForUser($positionId, $userId) {
         $svgDir = $userId && $userId !== config('constants.user_ids.casino')
         ? config('misc.graphs.position_graph.user_basedir') . DIRECTORY_SEPARATOR . strval($userId)
         : config('misc.graphs.position_graph.public_basedir');
-
-        // Create directory, if needed, to store user's position SVG files
-        if (!is_dir(public_path($svgDir))) {
-            mkdir(public_path($svgDir));
-        }
 
         return
             $userId && $userId !== config('constants.user_ids.casino')
@@ -55,10 +50,10 @@ if (!function_exists('positionGraphLocalPathForUser')) {
 
 /**
  *  Returns path to Position SVG file for inputted position and current user
- *  relative to server's root directory.
+ *  relative to server's root directory, used for storing SVG files on disk.
  */
-if (!function_exists('positionGraphFullPathForUser')) {
-    function positionGraphFullPathForUser($positionId, $userId) {
+if (!function_exists('positionGraphStoragePathForUser')) {
+    function positionGraphStoragePathForUser($positionId, $userId) {
         $svgDir = $userId && $userId !== config('constants.user_ids.casino')
         ? config('misc.graphs.position_graph.user_basedir') . DIRECTORY_SEPARATOR . strval($userId)
         : config('misc.graphs.position_graph.public_basedir');
@@ -80,16 +75,11 @@ if (!function_exists('positionGraphFullPathForUser')) {
  *  Returns path to Figure SVG file for inputted figure and current user
  *  relative to app's public directory.
  */
-if (!function_exists('figureGraphLocalPathForUser')) {
-    function figureGraphLocalPathForUser($figureId, $userId) {
+if (!function_exists('figureGraphPublicPathForUser')) {
+    function figureGraphPublicPathForUser($figureId, $userId) {
         $svgDir = $userId && $userId !== config('constants.user_ids.casino')
         ? config('misc.graphs.figure_graph.user_basedir') . DIRECTORY_SEPARATOR . strval($userId)
         : config('misc.graphs.figure_graph.public_basedir');
-
-        // Create directory, if needed, to store user's position SVG files
-        if (!is_dir(public_path($svgDir))) {
-            mkdir(public_path($svgDir));
-        }
 
         return
             $userId && $userId !== config('constants.user_ids.casino')
@@ -100,10 +90,10 @@ if (!function_exists('figureGraphLocalPathForUser')) {
 
 /**
  *  Returns path to Figure SVG file for inputted figure and current user
- *  relative to server's root directory.
+ *  relative to server's root directory, used for storing SVG files on disk.
  */
-if (!function_exists('figureGraphFullPathForUser')) {
-    function figureGraphFullPathForUser($figureId, $userId) {
+if (!function_exists('figureGraphStoragePathForUser')) {
+    function figureGraphStoragePathForUser($figureId, $userId) {
         $svgDir = $userId && $userId !== config('constants.user_ids.casino')
         ? config('misc.graphs.figure_graph.user_basedir') . DIRECTORY_SEPARATOR . strval($userId)
         : config('misc.graphs.figure_graph.public_basedir');
@@ -125,16 +115,11 @@ if (!function_exists('figureGraphFullPathForUser')) {
  *  Returns path to Figure SVG file for inputted compound figure and current
  *  user relative to app's public directory.
  */
-if (!function_exists('compoundFigureGraphLocalPathForUser')) {
-    function compoundFigureGraphLocalPathForUser($compoundFigureId, $userId) {
+if (!function_exists('compoundFigureGraphPublicPathForUser')) {
+    function compoundFigureGraphPublicPathForUser($compoundFigureId, $userId) {
         $svgDir = $userId && $userId !== config('constants.user_ids.casino')
         ? config('misc.graphs.compound_figure_graph.user_basedir') . DIRECTORY_SEPARATOR . strval($userId)
         : config('misc.graphs.compound_figure_graph.public_basedir');
-
-        // Create directory, if needed, to store user's position SVG files
-        if (!is_dir(public_path($svgDir))) {
-            mkdir(public_path($svgDir));
-        }
 
         return
             $userId && $userId !== config('constants.user_ids.casino')
@@ -147,8 +132,8 @@ if (!function_exists('compoundFigureGraphLocalPathForUser')) {
  *  Returns path to Figure SVG file for inputted compound figure and current
  *  user relative to server's root directory.
  */
-if (!function_exists('compoundFigureGraphFullPathForUser')) {
-    function compoundFigureGraphFullPathForUser($compoundFigureId, $userId) {
+if (!function_exists('compoundFigureGraphStoragePathForUser')) {
+    function compoundFigureGraphStoragePathForUser($compoundFigureId, $userId) {
         $svgDir = $userId && $userId !== config('constants.user_ids.casino')
         ? config('misc.graphs.compound_figure_graph.user_basedir') . DIRECTORY_SEPARATOR . strval($userId)
         : config('misc.graphs.compound_figure_graph.public_basedir');

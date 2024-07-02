@@ -77,6 +77,7 @@ class FigureController extends Controller
     public function store(StoreFigureRequest $request, FigureService $figureService)
     {
         $figureId = $figureService->storeFigure($request->validated());
+        RegenerateFigureGraph::dispatch($figureId);
         return $figureId
             ? Redirect::route('figures.show', $figureId)->with('message', 'Success! Figure created successfully.')
             : back()->with('error', 'Error. Failed to create figure.');
@@ -87,13 +88,12 @@ class FigureController extends Controller
      */
     public function show(Figure $figure)
     {
-        RegenerateFigureGraph::dispatch($figure->id);
         return Inertia::render('Figures/Foundational/Show', [
             'figure' => $figure->withFamilyAndPositionsAndVideos(),
             'can_create' => Auth::user() && Auth::user()->can('create', Figure::class),
             'can_update' => Auth::user() && Auth::user()->can('update', $figure),
             'can_delete' => Auth::user() && Auth::user()->can('delete', $figure),
-            'graph_path' => figureGraphLocalPathForUser($figure->id, Auth::id()),
+            'graph_path' => figureGraphPublicPathForUser($figure->id, Auth::id()),
         ]);
     }
 
@@ -115,6 +115,7 @@ class FigureController extends Controller
     public function update(UpdateFigureRequest $request, Figure $figure, FigureService $figureService)
     {
         $figureId = $figureService->updateFigure($request->validated(), $figure);
+        RegenerateFigureGraph::dispatch($figureId);
         return $figureId
             ? Redirect::route('figures.show', $figure->id)->with('message', 'Success! Figure updated successfully.')
             : back()->with('error', 'Error. Failed to update figure.');
