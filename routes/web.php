@@ -9,6 +9,7 @@ use App\Http\Controllers\FigureController;
 use App\Http\Controllers\CompoundFigureController;
 use App\Http\Controllers\PositionFamilyController;
 use App\Http\Controllers\FigureFamilyController;
+use App\Http\Controllers\RandomWalkController;
 use App\Jobs\RegenerateCasinoGraph;
 use Illuminate\Foundation\Application;
 use Illuminate\Support\Facades\Route;
@@ -33,6 +34,9 @@ Route::get('/', function () {
         'graph_is_nonempty' => Figure::where('user_id', ($userId ?? config('constants.user_ids.casino')))->count() > 0,
     ]);
 })->name('home');
+
+Route::get('random-walk', [RandomWalkController::class, 'home'])->name('random-walk.home');
+Route::post('random-walk', [RandomWalkController::class, 'randomWalk'])->name('random-walk.random-walk');
 
 Route::get('positions', [PositionController::class, 'index'])->name('positions.index');
 Route::get('figures', [FigureController::class, 'index'])->name('figures.index');

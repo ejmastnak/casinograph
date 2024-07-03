@@ -17,6 +17,7 @@ return [
         'max_images' => "max:5",
         'max_image_size' => "10mb",
         'max_url_length' => "max:1000",
+        'max_random_walk_length' => "max:500",
     ],
     'seeding' => [
         'db' => storage_path('app/seeding/seed.sqlite'),

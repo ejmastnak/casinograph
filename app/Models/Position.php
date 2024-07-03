@@ -112,6 +112,14 @@ class Position extends Model
         return $this->hasMany(Figure::class, 'from_position_id', 'id')->orderBy('name');
     }
 
+    public function incoming_compound_figures() {
+        return $this->hasMany(CompoundFigure::class, 'to_position_id', 'id')->orderBy('name');
+    }
+
+    public function outgoing_compound_figures() {
+        return $this->hasMany(CompoundFigure::class, 'from_position_id', 'id')->orderBy('name');
+    }
+
     public function position_images() {
         return $this->hasMany(PositionImage::class, 'position_id', 'id');
     }

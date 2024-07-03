@@ -7,6 +7,11 @@
 return [
     'default_figure_weight' => 1,
     'restrict_on_delete_message_limit' => 1,
+    'random_walk' => [
+        'default_length' => 20,
+        'default_include_figures' => true,
+        'default_include_compound_figures' => true,
+    ],
     'graphs' => [
         'casinograph' => [
             'public_file' => 'img/casinograph/public.svg',
