@@ -9,6 +9,7 @@ import FuzzyCombobox from '@/Components/FuzzyCombobox.vue'
 import InputLabel from '@/Components/InputLabel.vue'
 import InputError from '@/Components/InputError.vue'
 import { PlusCircleIcon, TrashIcon } from '@heroicons/vue/24/outline'
+import QuestionMarkPopover from '@/Components/QuestionMarkPopover.vue'
 import { useForm } from '@inertiajs/vue3';
 import { ref } from 'vue';
 
@@ -165,7 +166,20 @@ const submit = () => {
 
     <!-- FigureVideos -->
     <div class="mt-5 pb-8 border-b border-gray-200">
-      <h2 class="text-md text-gray-700">Videos (optional)</h2>
+
+      <div class="flex items-center space-x-0.5">
+        <h2 class="text-md text-gray-700">Videos (optional)</h2>
+        <QuestionMarkPopover class="w-full max-w-[400px]">
+          <p>You can add videos to remind yourself what the figure looks like—we accept URLs to YouTube videos, optionally including a timestamp.</p>
+          <p class="mt-1">Valid URLs include:</p>
+          <ul class="mt-2 list-disc ml-5 text-sm font-mono">
+            <li>https://youtu.be/Hb9J9h9Ebxg</li>
+            <li>https://youtu.be/Hb9J9h9Ebxg?t=33</li>
+            <li>https://www.youtube.com/watch?v=Hb9J9h9Ebxg</li>
+            <li>https://www.youtube.com/watch?v=Hb9J9h9Ebxg&t=33s</li>
+          </ul>
+        </QuestionMarkPopover>
+      </div>
 
       <ol
         ref="list"
@@ -179,7 +193,7 @@ const submit = () => {
             <div class="flex items-center">
               <!-- URL input -->
               <div class="w-full">
-                <InputLabel :for="'figure-video-url-' + fv.id" value="URL" />
+                <InputLabel :for="'figure-video-url-' + fv.id" value="URL (to a YouTube video)" />
                 <TextInput
                 :id="'figure-video-url-' + fv.id"
                 type="text"

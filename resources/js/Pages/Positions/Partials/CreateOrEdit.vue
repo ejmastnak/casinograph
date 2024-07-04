@@ -8,6 +8,7 @@ import CustomValueCombobox from '@/Components/CustomValueCombobox.vue'
 import InputLabel from '@/Components/InputLabel.vue'
 import InputError from '@/Components/InputError.vue'
 import { PlusCircleIcon, TrashIcon } from '@heroicons/vue/24/outline'
+import QuestionMarkPopover from '@/Components/QuestionMarkPopover.vue'
 import { useForm, router } from '@inertiajs/vue3';
 import { ref } from 'vue';
 
@@ -123,7 +124,13 @@ const submit = () => {
 
     <!-- PositionImages -->
     <div class="mt-5 pb-8 border-b border-gray-200">
-      <h2 class="text-md text-gray-700">Images (optional)</h2>
+
+      <div class="flex items-center space-x-0.5">
+        <h2 class="text-md text-gray-700">Images (optional)</h2>
+        <QuestionMarkPopover class="w-full max-w-[400px]">
+          <p>You can add images to remind yourself what the position looks like—we accept PNG and JPEG files.</p>
+        </QuestionMarkPopover>
+      </div>
 
       <ol
         ref="list"
@@ -147,11 +154,11 @@ const submit = () => {
                 >
 
                 <input
-                  type="file"
-                  :id="'position-image-image-' + positionImage.id"
-                  @input="positionImage.position_image.image = $event.target.files[0]" 
-                  :required="positionImage.position_image.id === null"
-                />
+                type="file"
+                :id="'position-image-image-' + positionImage.id"
+                @input="positionImage.position_image.image = $event.target.files[0]" 
+                :required="positionImage.position_image.id === null"
+              />
                 <InputError class="mt-2" :message="form.errors['position_images.' + idx.toString() + '.image']" />
                 <InputError class="mt-2" :message="form.errors['position_images.' + idx.toString() + '.id']" />
               </div>
