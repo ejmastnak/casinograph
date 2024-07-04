@@ -210,7 +210,7 @@ const submit = () => {
         :class="{ 'opacity-25': form.processing }"
         :disabled="form.processing"
       >
-        <span v-if="action === 'edit'">Update</span>
+        <span v-if="action === 'edit'">Save</span>
         <span v-else>Create</span>
       </PrimaryButton>
 
