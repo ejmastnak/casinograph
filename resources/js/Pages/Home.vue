@@ -107,8 +107,7 @@ export default {
 
       <!-- Explanation of site -->
       <div class="max-w-lg text-gray-600">
-        You're seeing Cuban Casino represented as a directed cyclic graph in which the figures (edges) connect the positions (vertices).
-        The goal of this project is to visualize the interconnections between positions and figures in Casino.
+        The goal of this website is to model Cuban Casino as a set of interconnected positions and figures and to interactively visualize the connections between them. In nerd speak, you're seeing Casino represented as a directed cyclic graph in which the figures (edges) connect the positions (vertices).
         <a href="#more-info" class="p-px rounded-md text-blue-500 hover:text-blue-600 hover:underline focus:outline-none focus:ring-2 focus:ring-blue-700" >
           More info below.
         </a>
@@ -173,36 +172,14 @@ export default {
 
     <!-- Notify user instead of showing an empty graph -->
     <Warning v-if="$page.props.auth.user && !graph_is_nonempty" class="mt-8 max-w-lg">
-        You have not created any positions or figures yet.
-        First <MyLink :colored="true" :href="route('positions.create')">create some positions</MyLink>, then connect the positions to <MyLink :colored="true" :href="route('figures.create')">create figures</MyLink>.
+      You have not created any positions or figures yet.
+      First <MyLink :colored="true" :href="route('positions.create')">create some positions</MyLink>, then connect the positions to <MyLink :colored="true" :href="route('figures.create')">create figures</MyLink>.
     </Warning>
 
     <!-- Questions and answers -->
     <div v-if="$page.props.auth.user === null" class="mt-8">
       <h2 class="text-xl text-gray-700" id="qa">Questions and answers</h2>
       <ul class="mt-3 space-y-5">
-        <li>
-          <QuestionAndAnswer>
-            <template #question>I don't like your names.</template>
-            <template #answer>
-              Fair enough.
-              Choosing names was tricky for me—even common figures often have many names (e.g. Enchufa or Enchufla?),
-              and many figures and positions don't have well-accepted names at all!
-              I've mixed the names I was originally taught with what I've most commonly found online, and done my best to think of sensible new names when I couldn't find an existing one.
-              Also, see the previous question.
-            </template>
-          </QuestionAndAnswer>
-        </li>
-        <li>
-          <QuestionAndAnswer>
-            <template #question>There's no videos!</template>
-            <template #answer>
-              I know.
-              There definitely <span class="italic">should</span> be be videos—dance is inherently visual and you can only get so far with plain-text descriptions.
-              But filming and/or procuring videos is a project beyond the scope of what I could commit to here.
-            </template>
-          </QuestionAndAnswer>
-        </li>
         <li>
           <QuestionAndAnswer>
             <template #question>Can I create new positions and figures?</template>
@@ -215,14 +192,25 @@ export default {
         </li>
         <li>
           <QuestionAndAnswer>
-            <template #question>Why do this?</template>
+            <template #question>I don't like your names.</template>
             <template #answer>
-              Three reasons:
-              <ul class="list-disc ml-5">
-                <li>To practice building web applications.</li>
-                <li>To explore the idea that Casino's structure is fundamentally simple—at its core lie only a handful of fundamental figures connecting a handful of fundamental positions; at least for me, this made the dance more approachable and less overwhelming.</li>
-                <li>I'm both a Casino and computer nerd, and the Casino-graph connection seemed too cool to resist.</li>
-              </ul>
+              Fair enough.
+              Choosing names was tricky for me—even common figures often have many names (e.g. Enchufa or Enchufla?),
+              and many figures and positions don't have well-accepted names at all!
+              I've mixed the names I was originally taught with what I've most commonly found online, and done my best to think of sensible new names when I couldn't find an existing one.
+              <br>
+              You can also create your own set of positions and figures with any names you like—see above.
+            </template>
+          </QuestionAndAnswer>
+        </li>
+        <li>
+          <QuestionAndAnswer>
+            <template #question>What was the motivation for this site?</template>
+            <template #answer>
+              To explore the idea that Casino's structure is fundamentally simple—at its core lie a handful of fundamental figures connecting a handful of fundamental positions, which appear over and over in different variations.
+              At least for me, the idea of chaining together variations on foundational figures made the dance more approachable and less overwhelming—and made it much easier to come up with interesting new combinations and figure sequences I would not have otherwise consider.
+              <br>
+              And as for the graph theme: as a part-time computer nerd, a graph data structure seemed a perfect fit for representating the interconnections of positions and figures.
             </template>
           </QuestionAndAnswer>
         </li>
@@ -230,7 +218,7 @@ export default {
     </div>
 
     <!-- For nerds -->
-    <div v-if="$page.props.auth.user === null" class="mt-8">
+    <div class="mt-8">
       <h2 class="text-xl text-gray-700" id="nerds">For nerds</h2>
       <p class="mt-0.5 text-gray-600 text-sm">
         (Read: I want to geek out about the tech stack to anyone who will listen.)
