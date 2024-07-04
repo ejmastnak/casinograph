@@ -200,7 +200,7 @@ export default {
       </div>
 
       <!-- Edit and Delete buttons -->
-      <div v-if="can_update || can_delete" class="flex items-center mt-2">
+      <div v-if="can_update || can_delete" class="flex items-center mt-5">
         <SecondaryLink v-if="can_update" :href="route('positions.edit', position.id)" class="flex items-center">
           <PencilSquareIcon class="text-gray-600 h-5 w-5 -ml-1" />
           <p class="ml-1">Edit</p>
