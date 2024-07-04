@@ -80,7 +80,7 @@ export default {
     </div>
 
     <!-- Description -->
-    <div v-if="compound_figure.description" class="mt-3">
+    <div v-if="compound_figure.description" class="mt-3 whitespace-pre-wrap">
       <p class="max-w-xl">{{compound_figure.description}}</p>
     </div>
 

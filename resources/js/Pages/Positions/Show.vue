@@ -77,7 +77,7 @@ export default {
     </div>
 
     <!-- Description -->
-    <div v-if="position.description" class="mt-3">
+    <div v-if="position.description" class="mt-3 whitespace-pre-wrap">
       <p class="max-w-xl">{{position.description}}</p>
     </div>
 

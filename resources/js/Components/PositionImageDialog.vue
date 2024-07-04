@@ -35,7 +35,7 @@ function close() { isOpen.value = false }
               class="max-w-lg"
             >
 
-            <p v-if="position_image.description" class="mt-2 px-1 max-w-xl">
+            <p v-if="position_image.description" class="mt-2 px-1 max-w-xl whitespace-pre-wrap">
               <span class="font-semibold text-gray-800">Description:</span>
               {{position_image.description}}
             </p>
