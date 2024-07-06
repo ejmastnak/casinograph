@@ -15,7 +15,6 @@ import { TrashIcon, PlusCircleIcon, MagnifyingGlassIcon, XMarkIcon } from '@hero
 const props = defineProps({
   positions: Array,
   position_families: Array,
-  can_delete: Boolean,
 })
 
 // For filtering Positions by PositionFamily
@@ -229,11 +228,11 @@ export default {
           <p class="col-span-7 sm:col-span-8 px-3 sm:px-5 py-3 bg-blue-50">Name</p>
           <p 
             class="px-3 sm:px-5 py-3 bg-blue-100"
-            :class="can_delete ? 'col-span-5 sm:col-span-3' : 'col-span-5 sm:col-span-4'"
+            :class="$page.props.auth.user ? 'col-span-5 sm:col-span-3' : 'col-span-5 sm:col-span-4'"
           >
             Family
           </p>
-          <p v-if="can_delete" class="hidden sm:block sm:col-span-1 py-3 bg-blue-50" />
+          <p v-if="$page.props.auth.user" class="hidden sm:block sm:col-span-1 py-3 bg-blue-50" />
         </div>
 
         <div
@@ -251,7 +250,7 @@ export default {
           <!-- Position family -->
           <div
             class="px-3 sm:px-4 text-gray-600"
-            :class="can_delete ? 'col-span-5 sm:col-span-3' : 'col-span-5 sm:col-span-4'"
+            :class="$page.props.auth.user ? 'col-span-5 sm:col-span-3' : 'col-span-5 sm:col-span-4'"
           >
             <MyLink
               v-if="position.obj.position_family"
@@ -261,7 +260,7 @@ export default {
             </MyLink>
           </div>
           <!-- Delete button -->
-          <div v-if="can_delete" class="hidden sm:block sm:col-span-1 px-1">
+          <div v-if="$page.props.auth.user" class="hidden sm:block sm:col-span-1 px-1">
             <PlainButton
               class="text-gray-500 hover:text-red-600"
               @click="idToDelete = position.obj.id; deleteDialog.open()"

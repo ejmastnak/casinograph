@@ -26,7 +26,6 @@ class PositionController extends Controller
         return Inertia::render('Positions/Index', [
             'positions' => Position::getForUserWithPositionFamilies(Auth::id()),
             'position_families' => PositionFamily::getForUser(Auth::id()),
-            'can_delete' => $user ? $user->can('delete', Position::class) : false,
         ]);
     }
 

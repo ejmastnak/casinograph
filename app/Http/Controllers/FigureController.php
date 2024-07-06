@@ -29,8 +29,6 @@ class FigureController extends Controller
             'compound_figures' => CompoundFigure::getForUser(Auth::id()),
             'figure_families' => FigureFamily::getForUser(Auth::id()),
             'positions' => Position::getForUser(Auth::id()),
-            'can_delete_figures' => $user ? $user->can('delete', Figure::class) : false,
-            'can_delete_compound_figures' => $user ? $user->can('delete', CompoundFigure::class) : false,
         ]);
     }
 

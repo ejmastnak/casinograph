@@ -14,8 +14,6 @@ const props = defineProps({
   compound_figures: Array,
   figure_families: Array,
   positions: Array,
-  can_delete_figures: Boolean,
-  can_delete_compound_figures: Boolean,
 })
 
 // I'm separating the figure families of figures and compound figures here.
@@ -151,7 +149,7 @@ export default {
             :figure_families="figure_families.filter(f => baseFigureFamilyIds.has(f.id))"
             :positions="positions"
             :compound="false"
-            :can_delete="can_delete_figures"
+            :can_delete="$page.props.auth.user"
           />
         </TabPanel>
 
@@ -162,7 +160,7 @@ export default {
             :figure_families="figure_families.filter(f => compoundFigureFamilyIds.has(f.id))"
             :positions="positions"
             :compound="true"
-            :can_delete="can_delete_compound_figures"
+            :can_delete="$page.props.auth.user"
           />
         </TabPanel>
 
