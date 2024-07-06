@@ -90,14 +90,22 @@ export default {
               add a figure leaving the final position, {{walk[walk.length - 1].payload.name}}.
             </MyLink>
           </p>
-
         </div>
       </div>
-
     </div>
 
-
-
+    <!-- No valid start position! -->
+    <div class="max-w-xl">
+          <div 
+          v-if="no_valid_start_position"
+          class="!mt-3 pt-2 text-center max-w-sm mx-auto"
+        >
+          <ExclamationTriangleIcon class="w-6 h-6 text-yellow-800 shrink-0 mx-auto"/>
+          <div class="text-yellow-900">
+            You have no positions with outgoing figures from which to begin the walk!
+          </div>
+        </div>
+    </div>
 
 
   </div>

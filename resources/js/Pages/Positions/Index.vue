@@ -272,17 +272,19 @@ export default {
       </div>
 
       <p v-show="numDisplayedPositions === 0" class="px-6 py-4" >
-        No results found. Try a less restrictive filter or search?
+        <span v-if="positions.length === 0">You haven't created any positions yet! You can create one <MyLink :colored="true" :href="route('positions.create')" >here</MyLink>.
+        </span>
+        <span v-else>No results found. Try a less restrictive filter or search?</span>
       </p>
 
     </div>
 
     <DeleteDialog
-      ref="deleteDialog"
-      description="position"
-      @delete="deletePosition"
-      @cancel="idToDelete = null"
-    />
+    ref="deleteDialog"
+    description="position"
+    @delete="deletePosition"
+    @cancel="idToDelete = null"
+  />
 
   </div>
 </template>

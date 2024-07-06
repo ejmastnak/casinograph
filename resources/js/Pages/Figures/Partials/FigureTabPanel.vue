@@ -354,7 +354,9 @@ onMounted(() => {
     </div>
 
     <p v-show="numDisplayedFigures === 0" class="px-5 py-4" >
-      No results found. Try a less restrictive filter or search?
+        <span v-if="positions.length === 0">You haven't created any figures yet! You can create one <MyLink :colored="true" :href="route('figures.create')" >here</MyLink>.
+        </span>
+        <span v-else>No results found. Try a less restrictive filter or search?</span>
     </p>
 
     <DeleteDialog

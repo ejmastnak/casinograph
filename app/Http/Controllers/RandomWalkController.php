@@ -26,8 +26,8 @@ class RandomWalkController extends Controller
         return Inertia::render('RandomWalk/Home', [
             'length' => $length,
             'walk' => $walk,
-            'no_valid_start_position' => !is_null($walk),
-            'dead_ended' => count($walk) < $length,
+            'no_valid_start_position' => is_null($walk),
+            'dead_ended' => $walk && (count($walk) < $length),
         ]);
     }
 

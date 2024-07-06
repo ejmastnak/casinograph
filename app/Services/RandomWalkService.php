@@ -16,6 +16,7 @@ class RandomWalkService
         // the edge case where every single one of a user's positions will not
         // have outgoing figures.
         $positions = Position::where('user_id', $userId)->inRandomOrder()->get($positionProperties);
+        if (count($positions) === 0) return null;
         $position = null;
         $i = 0;
         do {
