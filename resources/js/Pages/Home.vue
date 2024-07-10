@@ -37,7 +37,7 @@ export default {
   <div>
     <Head title="Home" />
 
-    <h1 class="text-2xl text-gray-800">CasinoGraph</h1>
+    <h1 class="text-2xl text-gray-800">SonGraph</h1>
 
     <div class="mt-2">
 
