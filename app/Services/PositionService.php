@@ -46,9 +46,8 @@ class PositionService
 
             });
         } catch (\Exception $e) {
-            if (\App::environment('local')) throw $e;
             Log::error($e);
-            return null;
+            throw $e;
         }
         return $position->id;
     }
@@ -122,9 +121,8 @@ class PositionService
                 }
             });
         } catch (\Exception $e) {
-            if (\App::environment('local')) throw $e;
             Log::error($e);
-            return null;
+            throw $e;
         }
         return $position->id;
     }
@@ -172,8 +170,8 @@ class PositionService
                     $success = true;
                 });
             } catch (\Exception $e) {
-                if (\App::environment('local')) throw $e;
                 Log::error($e);
+                throw $e;
             }
         }
 

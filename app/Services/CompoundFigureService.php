@@ -62,9 +62,8 @@ class CompoundFigureService
 
             });
         } catch (\Exception $e) {
-            if (\App::environment('local')) throw $e;
             Log::error($e);
-            return null;
+            throw $e;
         }
         return $compoundFigure->id;
     }
@@ -133,9 +132,8 @@ class CompoundFigureService
                 }
             });
         } catch (\Exception $e) {
-            if (\App::environment('local')) throw $e;
             Log::error($e);
-            return null;
+            throw $e;
         }
         return $compoundFigure->id;
     }
@@ -163,8 +161,8 @@ class CompoundFigureService
                 $success = true;
             });
         } catch (\Exception $e) {
-            if (\App::environment('local')) throw $e;
             Log::error($e);
+            throw $e;
         }
 
         if ($success) $message = 'Success! Figure deleted successfully.';

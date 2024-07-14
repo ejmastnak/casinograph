@@ -48,9 +48,8 @@ class FigureService
 
             });
         } catch (\Exception $e) {
-            if (\App::environment('local')) throw $e;
             Log::error($e);
-            return null;
+            throw $e;
         }
         return $figure->id;
     }
@@ -102,9 +101,8 @@ class FigureService
                 }
             });
         } catch (\Exception $e) {
-            if (\App::environment('local')) throw $e;
             Log::error($e);
-            return null;
+            throw $e;
         }
         return $figure->id;
     }
@@ -146,8 +144,8 @@ class FigureService
                     $success = true;
                 });
             } catch (\Exception $e) {
-                if (\App::environment('local')) throw $e;
                 Log::error($e);
+                throw $e;
             }
         }
 
