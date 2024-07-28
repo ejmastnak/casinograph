@@ -1,3 +1,7 @@
 *
 !.gitignore
+!casinograph
+!compoundfiguregraph
+!figuregraph
+!positiongraph
 !position_images

@@ -1,5 +1,5 @@
 <?php
-
+use Illuminate\Support\Facades\App;
 return [
 
     /*
@@ -75,10 +75,16 @@ return [
     |
     */
 
-    'links' => [
-        public_path('storage') => storage_path('app/public'),
-        public_path('img/position_images/public') => storage_path('app/img/position_images/public'),
-        public_path('img/position_images/users') => storage_path('app/img/position_images/users'),
-    ],
+    'links' => array_merge([
+        public_path('img/casinograph') => storage_path('app/img/casinograph'),
+        public_path('img/compoundfiguregraph') => storage_path('app/img/compoundfiguregraph'),
+        public_path('img/figuregraph') => storage_path('app/img/figuregraph'),
+        public_path('img/position_images') => storage_path('app/img/position_images'),
+        public_path('img/positiongraph') => storage_path('app/img/positiongraph'),
+    ], (env('APP_ENV') === 'local') ? [
+        public_path('img/position_images/seeded') => storage_path('app/seeding/position_images'),
+    ] : []),
+
+
 
 ];
