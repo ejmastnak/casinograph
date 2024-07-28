@@ -51,7 +51,7 @@ class RegenerateCasinoGraph implements ShouldQueue
             '-Tsvg',
             $tmpDotFile,
             '-o',
-            casinoGraphFullPathForUser($userId),
+            casinoGraphStoragePathForUser($userId),
         ];
         $cleanupCommandWithParams = [ 'rm', '-f', $tmpDotFile ];
 

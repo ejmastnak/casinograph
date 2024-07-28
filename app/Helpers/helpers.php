@@ -10,8 +10,8 @@ use Illuminate\Support\Facades\App;
  *  Returns path to CasinoGraph SVG file for current user relative to app's
  *  public directory.
  */
-if (!function_exists('casinoGraphLocalPathForUser')) {
-    function casinoGraphLocalPathForUser($userId) {
+if (!function_exists('casinoGraphPublicPathForUser')) {
+    function casinoGraphPublicPathForUser($userId) {
         return
             $userId && $userId !== config('constants.user_ids.casino')
             ? config('misc.graphs.casinograph.user_basedir') . DIRECTORY_SEPARATOR . strval($userId) . ".svg"
@@ -21,15 +21,24 @@ if (!function_exists('casinoGraphLocalPathForUser')) {
 
 /**
  * Returns path to CasinoGraph SVG file for current user relative to server's
- * root directory.
+ * root directory, used for storing SVG files on disk.
  */
-if (!function_exists('casinoGraphFullPathForUser')) {
-    function casinoGraphFullPathForUser($userId) {
-        return public_path(
-            $userId && $userId !== config('constants.user_ids.casino')
-            ? config('misc.graphs.casinograph.user_basedir') . DIRECTORY_SEPARATOR . strval($userId) . ".svg"
-            : config('misc.graphs.casinograph.public_file') 
-        );
+if (!function_exists('casinoGraphStoragePathForUser')) {
+    function casinoGraphStoragePathForUser($userId) {
+        if ($userId && $userId !== config('constants.user_ids.casino')) {
+            // Create directory
+            $svgDir = config('misc.graphs.casinograph.user_basedir');
+
+            // Create directory, if needed, to store user's position SVG files
+            $perms = \App::environment('local') ? 0777 : 0775;
+            if (!is_dir(public_path($svgDir))) {
+                mkdir(public_path($svgDir), $perms, true);
+            }
+
+            return public_path($svgDir . DIRECTORY_SEPARATOR . strval($userId) . ".svg");
+        } else {
+            return public_path(config('misc.graphs.casinograph.public_file'));
+        }
     }
 }
 
