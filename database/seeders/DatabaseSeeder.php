@@ -29,7 +29,7 @@ class DatabaseSeeder extends Seeder
 
         // Create directory for SQL seed scripts, if needed
         if (!is_dir(config('constants.seeding.sqldir'))) {
-            mkdir(config('constants.seeding.sqldir', 0777, true));
+            mkdir(config('constants.seeding.sqldir', 0755, true));
         }
 
         $casinoUserId = config('constants.user_ids.casino');

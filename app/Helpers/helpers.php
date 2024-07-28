@@ -30,7 +30,7 @@ if (!function_exists('casinoGraphStoragePathForUser')) {
             $svgDir = config('misc.graphs.casinograph.user_basedir');
 
             // Create directory, if needed, to store user's position SVG files
-            $perms = \App::environment('local') ? 0777 : 0775;
+            $perms = \App::environment('local') ? 0755 : 0775;
             if (!is_dir(public_path($svgDir))) {
                 mkdir(public_path($svgDir), $perms, true);
             }
@@ -70,7 +70,7 @@ if (!function_exists('positionGraphStoragePathForUser')) {
         : config('misc.graphs.position_graph.public_basedir');
 
         // Create directory, if needed, to store user's position SVG files
-        $perms = \App::environment('local') ? 0777 : 0775;
+        $perms = \App::environment('local') ? 0755 : 0775;
         if (!is_dir(public_path($svgDir))) {
             mkdir(public_path($svgDir), $perms, true);
         }
@@ -111,7 +111,7 @@ if (!function_exists('figureGraphStoragePathForUser')) {
         : config('misc.graphs.figure_graph.public_basedir');
 
         // Create directory, if needed, to store user's position SVG files
-        $perms = \App::environment('local') ? 0777 : 0775;
+        $perms = \App::environment('local') ? 0755 : 0775;
         if (!is_dir(public_path($svgDir))) {
             mkdir(public_path($svgDir), $perms, true);
         }
@@ -152,7 +152,7 @@ if (!function_exists('compoundFigureGraphStoragePathForUser')) {
         : config('misc.graphs.compound_figure_graph.public_basedir');
 
         // Create directory, if needed, to store user's position SVG files
-        $perms = \App::environment('local') ? 0777 : 0775;
+        $perms = \App::environment('local') ? 0755 : 0775;
         if (!is_dir(public_path($svgDir))) {
             mkdir(public_path($svgDir), $perms, true);
         }
@@ -176,7 +176,7 @@ if (!function_exists('positionImageStoragePathForUser')) {
         : config('misc.position_images.public_basedir');
 
         // Create directory, if needed, to store user's position image files
-        $perms = \App::environment('local') ? 0777 : 0775;
+        $perms = \App::environment('local') ? 0755 : 0775;
         if (!is_dir(storage_path('app' . DIRECTORY_SEPARATOR . $dir))) {
             mkdir(storage_path('app' . DIRECTORY_SEPARATOR . $dir), $perms, true);
         }
