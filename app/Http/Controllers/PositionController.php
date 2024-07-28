@@ -45,7 +45,6 @@ class PositionController extends Controller
     public function store(StorePositionRequest $request, PositionService $positionService)
     {
         $positionId = $positionService->storePosition($request->validated());
-        RegeneratePositionGraph::dispatch($positionId);
         return $positionId
             ? Redirect::route('positions.show', $positionId)->with('message', 'Success! Position created successfully.')
             : back()->with('error', 'Error. Failed to create position.');
@@ -56,6 +55,7 @@ class PositionController extends Controller
      */
     public function show(Position $position)
     {
+        RegeneratePositionGraph::dispatch($position->id);
         return Inertia::render('Positions/Show', [
             'position' => $position->withFamilyImagesAndFigures(),
             'can_create' => Auth::user() && Auth::user()->can('create', Position::class),
@@ -83,7 +83,6 @@ class PositionController extends Controller
     public function update(UpdatePositionRequest $request, Position $position, PositionService $positionService)
     {
         $positionId = $positionService->updatePosition($request->validated(), $position);
-        RegeneratePositionGraph::dispatch($positionId);
         return $positionId
             ? Redirect::route('positions.show', $positionId)->with('message', 'Success! Position updated successfully.')
             : back()->with('error', 'Error. Failed to update position.');
