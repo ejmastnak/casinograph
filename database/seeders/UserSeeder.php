@@ -26,6 +26,13 @@ class UserSeeder extends Seeder {
                 'can_crud' => true,
                 'is_admin' => true,
             ]);
+            User::updateOrCreate([
+                'username' => 'test',
+                'name' => 'Test',
+                'password' => Hash::make('password'),
+                'can_crud' => true,
+                'is_admin' => false,
+            ]);
         }
         if (\App::environment('production')) {
             User::updateOrCreate([
