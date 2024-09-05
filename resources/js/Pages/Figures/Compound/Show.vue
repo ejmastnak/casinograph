@@ -25,7 +25,6 @@ const props = defineProps({
 let idToDelete = ref(null)
 const deleteDialogRef = ref(null)
 const videoDialogRef = ref(null)
-const showingFigureSequence = ref(false)
 
 function deleteFigure() {
   if (idToDelete.value) {
@@ -125,16 +124,10 @@ export default {
         <p class="ml-1">Show videos</p>
       </SecondaryButton>
 
-      <!-- Show/hide text description -->
-      <SecondaryButton @click="showingFigureSequence = !showingFigureSequence" class="flex items-center">
-        <ListBulletIcon class="h-5 w-5 -ml-1" />
-        <p class="ml-1">{{showingFigureSequence ? 'Hide' : 'Show'}} text</p>
-      </SecondaryButton>
-
     </div>
 
     <!-- Figure sequence text -->
-    <div v-if="showingFigureSequence" class="mt-3">
+    <div class="mt-3">
       <h2 class="text-lg text-gray-700">Figure sequence</h2>
       <ol class="mt-1 list-decimal ml-5 space-y-1">
         <li v-for="compound_figure_figure in compound_figure.compound_figure_figures" :key="compound_figure_figure.id">

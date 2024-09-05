@@ -29,7 +29,6 @@ const props = defineProps({
 let idToDelete = ref(null)
 const deleteDialogRef = ref(null)
 const imageDialogRef = ref(null)
-const showingAdjacentPositions = ref(false)
 
 function deletePosition() {
   if (idToDelete.value) {
@@ -122,16 +121,10 @@ export default {
         <p class="ml-1">Show images</p>
       </SecondaryButton>
 
-      <!-- Show/hide text description -->
-      <SecondaryButton @click="showingAdjacentPositions = !showingAdjacentPositions" class="flex items-center">
-        <ListBulletIcon class="h-5 w-5 -ml-1" />
-        <p class="ml-1">{{showingAdjacentPositions ? 'Hide' : 'Show'}} text</p>
-      </SecondaryButton>
-
     </div>
 
     <!-- Incoming and outgoing figures -->
-    <div v-if="showingAdjacentPositions" class="mt-3 grid grid-cols-2 gap-x-12 w-fit max-w-2xl" >
+    <div class="mt-3 grid grid-cols-2 gap-x-12 w-fit max-w-2xl" >
       <!-- Incoming figures -->
       <div>
         <h2 class="text-lg text-gray-600">Incoming figures</h2>
