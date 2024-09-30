@@ -51,7 +51,7 @@ class CompoundFigureController extends Controller
             'can_create' => Auth::user() && Auth::user()->can('create', CompoundFigure::class),
             'can_update' => Auth::user() && Auth::user()->can('update', $compoundFigure),
             'can_delete' => Auth::user() && Auth::user()->can('delete', $compoundFigure),
-            'graph_path' => compoundFigureGraphPublicPathForUser($compoundFigure->id, Auth::id()),
+            'graph_url' => compoundFigureGraphUrlForUser($compoundFigure->id, Auth::id()),
         ]);
     }
 

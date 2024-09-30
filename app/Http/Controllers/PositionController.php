@@ -61,7 +61,7 @@ class PositionController extends Controller
             'can_create' => Auth::user() && Auth::user()->can('create', Position::class),
             'can_update' => Auth::user() && Auth::user()->can('update', $position),
             'can_delete' => Auth::user() && Auth::user()->can('delete', $position),
-            'graph_path' => positionGraphPublicPathForUser($position->id, Auth::id()),
+            'graph_url' => positionGraphUrlForUser($position->id, Auth::id()),
             'graph_is_nonempty' => $position->hasFigures(),
         ]);
     }

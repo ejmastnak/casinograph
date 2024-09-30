@@ -15,7 +15,7 @@ import {
 } from '@headlessui/vue'
 
 const props = defineProps({
-  graph_path: String,
+  graph_url: String,
   graph_is_nonempty: Boolean,
 })
 
@@ -133,7 +133,7 @@ export default {
 
         <!-- SVG -->
         <Transition name="zoom" appear>
-          <object class="p-1 mx-auto max-w-xl md:max-w-3xl lg:max-w-4xl" type="image/svg+xml" :data="graph_path"></object>
+          <object class="p-1 mx-auto max-w-xl md:max-w-3xl lg:max-w-4xl" type="image/svg+xml" :data="graph_url"></object>
         </Transition>
       </div>
     </div>
@@ -310,7 +310,7 @@ export default {
 
         <!-- Graph -->
         <Transition name="zoom" appear>
-          <object class="mx-auto max-w-2xl sm:max-w-3xl md:max-w-5xl lg:max-w-7xl xl:max-w-none" type="image/svg+xml" :data="graph_path"></object>
+          <object class="mx-auto max-w-2xl sm:max-w-3xl md:max-w-5xl lg:max-w-7xl xl:max-w-none" type="image/svg+xml" :data="graph_url"></object>
         </Transition>
 
         <!-- Close button -->

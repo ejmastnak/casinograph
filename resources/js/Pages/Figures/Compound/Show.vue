@@ -19,7 +19,7 @@ const props = defineProps({
   can_create: Boolean,
   can_update: Boolean,
   can_delete: Boolean,
-  graph_path: String,
+  graph_url: String,
 })
 
 let idToDelete = ref(null)
@@ -107,7 +107,7 @@ export default {
 
         <!-- SVG -->
         <Transition name="quickzoom" appear>
-          <object class="p-1 mx-auto max-w-xl md:max-w-3xl lg:max-w-4xl" type="image/svg+xml" :data="graph_path"></object>
+          <object class="p-1 mx-auto max-w-xl md:max-w-3xl lg:max-w-4xl" type="image/svg+xml" :data="graph_url"></object>
         </Transition>
       </div>
     </div>
@@ -177,7 +177,7 @@ export default {
 
         <!-- Graph -->
         <Transition name="quickzoom" appear>
-          <object class="p-1 mx-auto max-w-xl md:max-w-3xl lg:max-w-4xl" type="image/svg+xml" :data="graph_path"></object>
+          <object class="p-1 mx-auto max-w-xl md:max-w-3xl lg:max-w-4xl" type="image/svg+xml" :data="graph_url"></object>
         </Transition>
 
         <!-- Close button -->

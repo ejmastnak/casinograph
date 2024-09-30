@@ -91,7 +91,7 @@ class FigureController extends Controller
             'can_create' => Auth::user() && Auth::user()->can('create', Figure::class),
             'can_update' => Auth::user() && Auth::user()->can('update', $figure),
             'can_delete' => Auth::user() && Auth::user()->can('delete', $figure),
-            'graph_path' => figureGraphPublicPathForUser($figure->id, Auth::id()),
+            'graph_url' => figureGraphUrlForUser($figure->id, Auth::id()),
         ]);
     }
 

@@ -30,7 +30,7 @@ Route::get('/', function () {
     RegenerateCasinoGraph::dispatch();
     $userId = Auth::id();
     return Inertia::render('Home', [
-        'graph_path' => casinoGraphPublicPathForUser($userId),
+        'graph_url' => casinoGraphUrlForUser($userId),
         'graph_is_nonempty' => Figure::where('user_id', ($userId ?? config('constants.user_ids.casino')))->count() > 0,
     ]);
 })->name('home');
