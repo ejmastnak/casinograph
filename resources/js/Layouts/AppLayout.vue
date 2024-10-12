@@ -29,11 +29,11 @@ const showingNavigationDropdown = ref(false);
                 <NavLink :href="route('home')" :active="route().current('home')" >
                   Home
                 </NavLink>
-                <NavLink class="hidden sm:inline-flex" :href="route('positions.index')" :active="route().current('positions.index')" >
-                  Positions
-                </NavLink>
                 <NavLink class="hidden sm:inline-flex" :href="route('figures.index')" :active="route().current('figures.index')" >
                   Figures
+                </NavLink>
+                <NavLink class="hidden sm:inline-flex" :href="route('positions.index')" :active="route().current('positions.index')" >
+                  Positions
                 </NavLink>
                 <NavLink class="hidden sm:inline-flex" :href="route('random-walk.home')" :active="route().current('random-walk.home')" >
                   Random walk
@@ -134,11 +134,11 @@ const showingNavigationDropdown = ref(false);
 
           <!-- Links in mobile navigation menu -->
           <div class="pt-2 pb-3 space-y-1">
-            <ResponsiveNavLink :href="route('positions.index')" :active="route().current('positions.index')" >
-              Positions
-            </ResponsiveNavLink>
             <ResponsiveNavLink :href="route('figures.index')" :active="route().current('figures.index')" >
               Figures
+            </ResponsiveNavLink>
+            <ResponsiveNavLink :href="route('positions.index')" :active="route().current('positions.index')" >
+              Positions
             </ResponsiveNavLink>
             <ResponsiveNavLink :href="route('random-walk.home')" :active="route().current('random-walk.home')" >
               Random walk

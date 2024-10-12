@@ -1,5 +1,5 @@
 <script setup>
-import { ref } from 'vue'
+import { ref, onMounted } from 'vue'
 import { Head } from '@inertiajs/vue3'
 import MyLink from '@/Components/MyLink.vue'
 import QuestionAndAnswer from '@/Components/QuestionAndAnswer.vue'
@@ -24,6 +24,34 @@ function setGraphIsFullScreen(value) {
   graphIsFullscreen.value = value
 }
 
+const casinoGraphDivRef = ref(null)
+const casinoGraphRef = ref(null)
+const casinoGraphWidth = ref(1280)
+
+function centerSVG() {
+  const svgDoc = casinoGraphRef.value.contentDocument; // Get the embedded SVG document
+  const containerElement = casinoGraphDivRef.value; // The parent div that is scrollable
+
+  if (svgDoc && containerElement) {
+    const scrollableElement = casinoGraphRef.value; // The object tag itself is scrollable
+    const widthPt = svgDoc.documentElement.getAttribute('width');
+    const heightPt = svgDoc.documentElement.getAttribute('height');
+
+    var width = parseFloat(widthPt);
+    width = isNaN(width) ? 0 : width;
+    if (width > 0) casinoGraphWidth.value = width;
+
+    var height = parseFloat(heightPt);
+    height = isNaN(height) ? 0 : height;
+
+    containerElement.scrollLeft = (0.6*width)/2;
+  }
+}
+
+onMounted(() => {
+  casinoGraphRef.value.addEventListener('load', centerSVG); // Listen for load event on the object tag
+});
+
 </script>
 
 <script>
@@ -37,9 +65,15 @@ export default {
   <div>
     <Head title="Home" />
 
-    <h1 class="text-2xl text-gray-800">CasinoGraph</h1>
+    <h1 class="text-3xl font-light text-gray-800">CasinoGraph</h1>
 
-    <div class="mt-2">
+    <p class="ml-px mt-1 text-gray-700 font-semibold">
+      Answering which figures combine with each other in Cuban Casino
+    </p>
+
+    <!-- make it easier to connect figures and improvise new ones. -->
+
+    <div class="mt-4">
 
       <!-- Popover buttons for What is Casino, What is a graph? -->
       <div class="w-fit h-fit float-right ml-2 xs:ml-4">
@@ -50,7 +84,7 @@ export default {
             <PopoverButton class="w-full flex items-center px-3 py-1 bg-blue-50 border border-gray-300 rounded-lg text-sm text-gray-600 shadow-sm hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 disabled:opacity-25 transition ease-in-out duration-150" >
               <InformationCircleIcon class="-ml-1 h-6 w-6 text-gray-500 shrink-0" />
               <p class="md:hidden ml-1.5 whitespace-nowrap">What is Casino?</p>
-              <p class="hidden md:block ml-1.5 whitespace-nowrap">Wait, what is Casino?</p>
+              <p class="hidden md:block ml-1.5 whitespace-nowrap font-bold">Wait, what is Casino?</p>
             </PopoverButton>
 
             <PopoverOverlay class="fixed inset-0 bg-black opacity-20 z-40" />
@@ -107,7 +141,9 @@ export default {
 
       <!-- Explanation of site -->
       <div class="max-w-lg text-gray-600">
-        The goal of this website is to model Cuban Casino as a set of interconnected positions and figures and to interactively visualize the connections between them. In nerd speak, you're seeing Casino represented as a directed cyclic graph in which the figures (edges) connect the positions (vertices).
+        Goal of this site: make it easier to connect standard figures and improvise new ones.
+        We do this by modeling Casino as a set of interconnected positions and figures;
+        in nerd speak, you're seeing Casino represented as a directed cyclic graph in which the figures (edges) connect the positions (vertices).
         <a href="#more-info" class="p-px rounded-md text-blue-500 hover:text-blue-600 hover:underline focus:outline-none focus:ring-2 focus:ring-blue-700" >
           More info below.
         </a>
@@ -117,7 +153,7 @@ export default {
 
     <!-- Graph -->
     <div v-if="graph_is_nonempty" class="relative mt-8 -mx-2">
-      <div class="border overflow-auto border-gray-200 shadow rounded-lg h-96 sm:h-[36rem]">
+      <div ref="casinoGraphDivRef" class="border overflow-auto border-gray-200 shadow rounded-lg h-96 sm:h-[36rem]">
 
         <!-- Enter full screen -->
         <PlainButton class="absolute left-2 top-2" @click="setGraphIsFullScreen(true)">
@@ -133,7 +169,13 @@ export default {
 
         <!-- SVG -->
         <Transition name="zoom" appear>
-          <object class="p-1 mx-auto max-w-xl md:max-w-3xl lg:max-w-4xl" type="image/svg+xml" :data="graph_url"></object>
+          <object 
+            ref="casinoGraphRef"
+            :style="{ maxWidth: 0.6*casinoGraphWidth + 'pt'}"
+            class="p-1"
+            type="image/svg+xml"
+            :data="graph_url">
+          </object>
         </Transition>
       </div>
     </div>
@@ -145,15 +187,11 @@ export default {
         <li>
           <span class="font-medium">It's clickable!</span>
           Click on any figure or position to learn more.
-          <span v-if="!$page.props.auth.user">(Disclaimer: descriptions are currently minimal.)</span>
         </li>
         <li>
-          <span class="font-medium">One figure per position pair:</span>
-          Only one figure is drawn between each pair of positions—this is intentional, to avoid overcrowding the graph with parallel figures.
-        </li>
-        <li>
-          <span class="font-medium">Refresh the page for new parallel figures:</span>
-          Two positions are often connected by multiple figures (for example, Vacílala, Enchufa, and Dile que sí all take you from the Open position to Caida), so showing only one figure per position pair leaves many figures out.
+          <span class="font-medium">Only one figure per position pair:</span>
+          Only one figure is drawn between each pair of positions, even when there are multiple figures that connect the same two positions.
+          This is intentional, to avoid overcrowding the graph with parallel figures.
           To keep things interesting, you can refresh the page to display a new (randomly chosen) figure from each group of parallel figures.
         </li>
         <li>
@@ -178,7 +216,7 @@ export default {
 
     <!-- Questions and answers -->
     <div v-if="$page.props.auth.user === null" class="mt-8">
-      <h2 class="text-xl text-gray-700" id="qa">Questions and answers</h2>
+      <h2 class="text-xl text-gray-800" id="qa">Questions and answers</h2>
       <ul class="mt-3 space-y-5">
         <li>
           <QuestionAndAnswer>
@@ -207,10 +245,26 @@ export default {
           <QuestionAndAnswer>
             <template #question>What was the motivation for this site?</template>
             <template #answer>
-              To explore the idea that Casino's structure is fundamentally simple—at its core lie a handful of fundamental figures connecting a handful of fundamental positions, which appear over and over in different variations.
-              At least for me, the idea of chaining together variations on foundational figures made the dance more approachable and less overwhelming—and made it much easier to come up with interesting new combinations and figure sequences I would not have otherwise consider.
-              <br>
-              And as for the graph theme: as a part-time computer nerd, a graph data structure seemed a perfect fit for representating the interconnections of positions and figures.
+              <ul class="mt-2 ml-5 list-disc">
+                <li>To make it easier to connect standard figures and improvise new ones.</li>
+                <li>To document and visualize the connections between figures.</li>
+                <li>To explore the idea that Casino's structure is fundamentally simple—at its core lie a handful of fundamental figures connecting a handful of fundamental positions, which appear over and over in different variations.</li>
+              </ul>
+              <p class="mt-2">
+                At least for me, the idea of chaining together variations on foundational figures made the dance less overwhelming—and made it easier to come up with interesting new combinations and figure sequences I would not have otherwise considered.
+                And as for the graph theme: as a moonlighting computer nerd, a graph data structure seemed a perfect fit for representating the interconnections of positions and figures.
+              </p>
+            </template>
+          </QuestionAndAnswer>
+        </li>
+        <li>
+          <QuestionAndAnswer>
+            <template #question>Who made this?</template>
+            <template #answer>
+              <a class="p-px rounded-md hover:text-blue-600 text-blue-500 hover:underline focus:outline-none focus:ring-2 focus:ring-blue-700" href="https://ejmastnak.com">
+                Elijan Mastnak
+              </a>
+
             </template>
           </QuestionAndAnswer>
         </li>
@@ -219,7 +273,7 @@ export default {
 
     <!-- For nerds -->
     <div class="mt-8">
-      <h2 class="text-xl text-gray-700" id="nerds">For nerds</h2>
+      <h2 class="text-xl text-gray-800" id="nerds">For nerds</h2>
       <p class="mt-0.5 text-gray-600 text-sm">
         (Read: I want to geek out about the tech stack to anyone who will listen.)
       </p>
@@ -231,7 +285,7 @@ export default {
               The web site is built with
               <MyLink :colored="true" href="https://laravel.com/">Laravel</MyLink> and <MyLink :colored="true" href="https://vuejs.org/">Vue</MyLink>;
               it uses an <MyLink :colored="true" href="https://www.sqlite.org/index.html">SQLite</MyLink> database and is powered by <MyLink :colored="true" href="https://www.nginx.com/">Nginx</MyLink>.
-              The site is hosted on a Digital Ocean droplet running Ubuntu LTS 22.04.
+              The site is hosted on a Digital Ocean droplet running the current Ubuntu LTS.
               The graph on the home page is drawn with <MyLink :colored="true" href="https://graphviz.org/">Graphviz</MyLink>.
             </template>
           </QuestionAndAnswer>

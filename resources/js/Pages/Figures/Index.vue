@@ -149,7 +149,6 @@ export default {
             :figure_families="figure_families.filter(f => baseFigureFamilyIds.has(f.id))"
             :positions="positions"
             :compound="false"
-            :can_delete="$page.props.auth.user"
           />
         </TabPanel>
 
@@ -160,7 +159,6 @@ export default {
             :figure_families="figure_families.filter(f => compoundFigureFamilyIds.has(f.id))"
             :positions="positions"
             :compound="true"
-            :can_delete="$page.props.auth.user"
           />
         </TabPanel>
 
