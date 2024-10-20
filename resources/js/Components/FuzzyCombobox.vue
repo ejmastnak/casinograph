@@ -36,7 +36,7 @@ const props = defineProps({
     type: String,
     default: "",
   },
-  bespokeDisplayForCompoundFigureFigures: {
+  bespokeDisplayForFigures: {  // shows from/to position name in addition to figure name
     type: Boolean,
     default: false,
   }
@@ -103,7 +103,6 @@ watch(normalizedOptions, () => {
           {{labelText}}
         </ComboboxLabel>
 
-            <!-- :displayValue="(option) => option ? option[searchKey] : ''" -->
         <div class="relative">
           <ComboboxInput
             class="w-full border border-gray-300 rounded-md shadow-sm focus:border focus:border-blue-500"
@@ -141,7 +140,7 @@ watch(normalizedOptions, () => {
             }">
               {{option.obj.original[props.searchKey]}}
             </p>
-            <div v-if="bespokeDisplayForCompoundFigureFigures" class="text-sm">
+            <div v-if="bespokeDisplayForFigures" class="text-sm">
               {{option.obj.original.from_position.name}}
               to
               {{option.obj.original.to_position.name}}

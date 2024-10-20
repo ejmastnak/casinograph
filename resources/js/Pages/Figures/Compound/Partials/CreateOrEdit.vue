@@ -169,7 +169,7 @@ const submit = () => {
               class="w-80 ml-2"
               searchKey="name"
               inputClasses="text-sm"
-              :bespokeDisplayForCompoundFigureFigures="true"
+              :bespokeDisplayForFigures="true"
               :options="(idx > 0 && compoundFigureFigures[idx - 1].compound_figure_figure.figure) ? figures.filter(figure => figure.from_position_id === compoundFigureFigures[idx - 1].compound_figure_figure.figure.to_position_id) : figures"
               :modelValue="cff.compound_figure_figure.figure"
               @update:modelValue="(newValue) => {
