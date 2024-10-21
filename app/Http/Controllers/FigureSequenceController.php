@@ -27,26 +27,13 @@ class FigureSequenceController extends Controller
     public function figureSequence(FigureSequenceRequest $request, FigureSequenceService $figureSequenceService) {
         $userId = Auth::id() ?? config('constants.user_ids.casino');
         $validated = $request->validated();
-        $length = $validated['length'];
-
-        $figureSequence = $figureSequenceService->getFigureSequence($userId, $length, [], []);
-
+        $figureSequence = $figureSequenceService->getFigureSequence($userId, $validated);
         return Response::json([
-            'length' => $length,
+            'length' => $validated['length'],
             'figure_sequence' => $figureSequence,
             'no_valid_start_position' => is_null($figureSequence),
-            'dead_ended' => $figureSequence && (count($figureSequence) < $length),
+            'dead_ended' => $figureSequence && (count($figureSequence) < $validated['length']),
         ]);
-
-        // return Inertia::render('FigureSequence/Home', [
-        //     'figures' => Figure::getWithOnlyPositionsForUser($userId),
-        //     'figure_families' => FigureFamily::getForUser($userId),
-        //     'length' => $length,
-        //     'figure_sequence' => $figureSequence,
-        //     'no_valid_start_position' => is_null($figureSequence),
-        //     'dead_ended' => $figureSequence && (count($figureSequence) < $length),
-        // ]);
-
     }
 
 }

@@ -4,19 +4,23 @@ namespace App\Services;
 use App\Models\Position;
 use App\Models\Figure;
 use App\Models\CompoundFigure;
+use Illuminate\Database\Eloquent\Builder;
 
 class FigureSequenceService
 {
-    public function getFigureSequence($userId, $length, $figureIdsToExclude, $figureFamilyIdsToExclude) {
+    public function getFigureSequence($userId, $data) {
+        $length = $data['length'];
+        $excludedFigureIds = $data['excluded_figure_ids'];
+        $excludedFigureFamilyIds = $data['excluded_figure_family_ids'];
 
         // All figures matching filters and whose ending position has at least
         // one outgoing figure.
         $figures = Figure::where('user_id', $userId)
-            ->when(!empty($figureIdsToExclude), function (Builder $query, string $role) {
-                $query->whereNotIn('id', $figureIdsToExclude);
+            ->when(!empty($excludedFigureIds), function (Builder $query) use ($excludedFigureIds) {
+                $query->whereNotIn('id', $excludedFigureIds);
             })
-            ->when(!empty($figureFamilyIdsToExclude), function (Builder $query, string $role) {
-                $query->whereNotIn('figure_family_id', $figureFamilyIdsToExclude);
+            ->when(!empty($excludedFigureFamilyIds), function (Builder $query) use ($excludedFigureFamilyIds) {
+                $query->whereNotIn('figure_family_id', $excludedFigureFamilyIds);
             })
             ->with(['from_position:id,name', 'to_position:id,name'])
             ->get(['id', 'name', 'from_position_id', 'to_position_id',])->toArray();
@@ -47,11 +51,11 @@ class FigureSequenceService
 
             // Edge case: dead end!
             if (count($outgoingFigures) == 0) return $figureSequence;
-            
+
             $currentFigure = $outgoingFigures[array_rand($outgoingFigures, 1)];
             $figureSequence[] = $currentFigure;
         }
-        
+
         return $figureSequence;
     }
 
