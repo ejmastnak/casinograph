@@ -10,6 +10,7 @@ use App\Http\Controllers\CompoundFigureController;
 use App\Http\Controllers\PositionFamilyController;
 use App\Http\Controllers\FigureFamilyController;
 use App\Http\Controllers\RandomWalkController;
+use App\Services\CasinoGraphService;
 use App\Jobs\RegenerateCasinoGraph;
 use Illuminate\Foundation\Application;
 use Illuminate\Support\Facades\Route;
@@ -26,8 +27,8 @@ use Inertia\Inertia;
 |
 */
 
-Route::get('/', function () {
-    RegenerateCasinoGraph::dispatch();
+Route::get('/', function (CasinoGraphService $casinoGraphService) {
+    RegenerateCasinoGraph::dispatch($casinoGraphService);
     $userId = Auth::id();
     return Inertia::render('Home', [
         'graph_url' => casinoGraphUrlForUser($userId),

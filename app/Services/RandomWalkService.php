@@ -26,10 +26,11 @@ class RandomWalkService
         // TODO: preserve only positions that are part of cycles, so that figure
         // sequence is guaranteed not to dead-end.
 
-        // Builds a positionId-indexed associative array of "adjacency lists"
-        // of the figures exiting each position
-        $vertices = [];
-        foreach ($figures as $figure) $vertices[$figure['from_position_id']][] = $figure;
+        // Builds an adjacency-list graph representation where
+        // `$adjList[$position_id]` contains a list of all figures outbound
+        // from the Position with `$position_id`.
+        $adjList = [];
+        foreach ($figures as $figure) $adjList[$figure['from_position_id']][] = $figure;
 
         // Choose a random starting figure
         $figureSequence = [];
@@ -40,9 +41,9 @@ class RandomWalkService
             $nextPositionId = $currentFigure['to_position_id'];
 
             // Edge case: current figure ends in a position with no outgoing figures
-            if (!array_key_exists($nextPositionId, $vertices)) return $figureSequence;
+            if (!array_key_exists($nextPositionId, $adjList)) return $figureSequence;
 
-            $outgoingFigures = $vertices[$nextPositionId];
+            $outgoingFigures = $adjList[$nextPositionId];
 
             // Edge case: dead end!
             if (count($outgoingFigures) == 0) return $figureSequence;
