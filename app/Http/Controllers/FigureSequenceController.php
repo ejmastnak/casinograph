@@ -8,6 +8,7 @@ use App\Http\Requests\FigureSequenceRequest;
 use App\Services\FigureSequenceService;
 use Inertia\Inertia;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Response;
 
 class FigureSequenceController extends Controller
 {
@@ -30,14 +31,22 @@ class FigureSequenceController extends Controller
 
         $figureSequence = $figureSequenceService->getFigureSequence($userId, $length, [], []);
 
-        return Inertia::render('FigureSequence/Home', [
-            'figures' => Figure::getWithOnlyPositionsForUser($userId),
-            'figure_families' => FigureFamily::getForUser($userId),
+        return Response::json([
             'length' => $length,
             'figure_sequence' => $figureSequence,
             'no_valid_start_position' => is_null($figureSequence),
             'dead_ended' => $figureSequence && (count($figureSequence) < $length),
         ]);
+
+        // return Inertia::render('FigureSequence/Home', [
+        //     'figures' => Figure::getWithOnlyPositionsForUser($userId),
+        //     'figure_families' => FigureFamily::getForUser($userId),
+        //     'length' => $length,
+        //     'figure_sequence' => $figureSequence,
+        //     'no_valid_start_position' => is_null($figureSequence),
+        //     'dead_ended' => $figureSequence && (count($figureSequence) < $length),
+        // ]);
+
     }
 
 }
