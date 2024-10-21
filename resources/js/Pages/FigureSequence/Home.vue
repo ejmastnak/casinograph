@@ -13,7 +13,7 @@ const props = defineProps({
   figures: Array,
   figure_families: Array,
   length: Number,
-  walk: Array,
+  figure_sequence: Array,
   dead_ended: Boolean,
   no_valid_start_position: Boolean,
 })
@@ -236,10 +236,10 @@ export default {
     </form>
 
     <!-- Figure sequence text -->
-    <div v-if="walk && walk.length > 0" class="mt-3">
+    <div v-if="figure_sequence && figure_sequence.length > 0" class="mt-3">
       <h2 class="text-lg text-gray-700">Figure sequence</h2>
       <ol class="mt-1 list-decimal ml-5 space-y-1 grid grid-cols-2 lg:grid-cols-3 gap-x-5">
-        <li v-for="figure in walk">
+        <li v-for="figure in figure_sequence">
           <MyLink class="inline-block" :href="route('figures.show', figure.id)" >
             {{figure.name}}
           </MyLink>
@@ -261,7 +261,7 @@ export default {
     <div v-if="dead_ended || no_valid_start_position" class="!mt-3 pt-2 text-center max-w-sm mx-auto" >
       <ExclamationTriangleIcon class="w-6 h-6 text-yellow-800 shrink-0 mx-auto"/>
       <p v-if="no_valid_start_position" class="text-yellow-900">
-        You have no positions with outgoing figures from which to begin the walk!
+        You have no positions with outgoing figures from which to begin the figure sequence!
       </p>
       <p v-else class="text-yellow-900">
         The sequence ended early at a position with no outgoing figures.

@@ -17,7 +17,7 @@ class FigureSequenceController extends Controller
             'figures' => Figure::getWithOnlyPositionsForUser($userId),
             'figure_families' => FigureFamily::getForUser($userId),
             'length' => config('misc.figure_sequence.default_length'),
-            'walk' => [],
+            'figure_sequence' => [],
             'dead_ended' => false,
             'no_valid_start_position' => false,
         ]);
@@ -28,15 +28,15 @@ class FigureSequenceController extends Controller
         $validated = $request->validated();
         $length = $validated['length'];
 
-        $walk = $figureSequenceService->getFigureSequence($userId, $length, [], []);
+        $figureSequence = $figureSequenceService->getFigureSequence($userId, $length, [], []);
 
         return Inertia::render('FigureSequence/Home', [
             'figures' => Figure::getWithOnlyPositionsForUser($userId),
             'figure_families' => FigureFamily::getForUser($userId),
             'length' => $length,
-            'walk' => $walk,
-            'no_valid_start_position' => is_null($walk),
-            'dead_ended' => $walk && (count($walk) < $length),
+            'figure_sequence' => $figureSequence,
+            'no_valid_start_position' => is_null($figureSequence),
+            'dead_ended' => $figureSequence && (count($figureSequence) < $length),
         ]);
     }
 
