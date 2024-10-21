@@ -84,7 +84,7 @@ function removeExcludedFigureFamily(idx) {
 function submit() {
   form.excluded_figure_ids = excludedFigures.value.filter(excludedFigure => excludedFigure.excluded_figure.id).map(excludedFigure => excludedFigure.excluded_figure.id)
   form.excluded_figure_family_ids = excludedFigureFamilies.value.filter(excludedFigureFamily => excludedFigureFamily.excluded_figure_family.id).map(excludedFigureFamily => excludedFigureFamily.excluded_figure_family.id)
-  form.post(route('random-walk.random-walk'));
+  form.post(route('figure-sequence.figure-sequence'));
 }
 
 </script>
@@ -98,12 +98,12 @@ export default {
 
 <template>
   <div>
-    <Head title="Random walk" />
+    <Head title="Figure sequence" />
 
-    <h1 class="text-2xl">Random walk</h1>
+    <h1 class="text-2xl">Figure sequence</h1>
 
     <p class="mt-1 text-gray-900 max-w-xl">
-      Use this page to generate a random sequence of positions and figures (or, in nerd speak, a random walk on the CasinoGraph).
+      Use this page to generate a random sequence of figures.
       You might do this to discover and/or practice new figures combinations that you would not have thought of yourself.
     </p>
 

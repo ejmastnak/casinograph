@@ -5,9 +5,9 @@ use App\Models\Position;
 use App\Models\Figure;
 use App\Models\CompoundFigure;
 
-class RandomWalkService
+class FigureSequenceService
 {
-    public function getRandomWalk($userId, $length, $figureIdsToExclude, $figureFamilyIdsToExclude) {
+    public function getFigureSequence($userId, $length, $figureIdsToExclude, $figureFamilyIdsToExclude) {
 
         // All figures matching filters and whose ending position has at least
         // one outgoing figure.

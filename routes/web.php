@@ -9,7 +9,7 @@ use App\Http\Controllers\FigureController;
 use App\Http\Controllers\CompoundFigureController;
 use App\Http\Controllers\PositionFamilyController;
 use App\Http\Controllers\FigureFamilyController;
-use App\Http\Controllers\RandomWalkController;
+use App\Http\Controllers\FigureSequenceController;
 use App\Services\CasinoGraphService;
 use App\Jobs\RegenerateCasinoGraph;
 use Illuminate\Foundation\Application;
@@ -36,8 +36,8 @@ Route::get('/', function (CasinoGraphService $casinoGraphService) {
     ]);
 })->name('home');
 
-Route::get('random-walk', [RandomWalkController::class, 'home'])->name('random-walk.home');
-Route::post('random-walk', [RandomWalkController::class, 'randomWalk'])->name('random-walk.random-walk');
+Route::get('figure-sequence', [FigureSequenceController::class, 'home'])->name('figure-sequence.home');
+Route::post('figure-sequence', [FigureSequenceController::class, 'figureSequence'])->name('figure-sequence.figure-sequence');
 
 Route::get('positions', [PositionController::class, 'index'])->name('positions.index');
 Route::get('figures', [FigureController::class, 'index'])->name('figures.index');

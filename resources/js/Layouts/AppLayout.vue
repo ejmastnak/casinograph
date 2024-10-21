@@ -35,8 +35,8 @@ const showingNavigationDropdown = ref(false);
                 <NavLink class="hidden sm:inline-flex" :href="route('positions.index')" :active="route().current('positions.index')" >
                   Positions
                 </NavLink>
-                <NavLink class="hidden sm:inline-flex" :href="route('random-walk.home')" :active="route().current('random-walk.home')" >
-                  Random walk
+                <NavLink class="hidden sm:inline-flex" :href="route('figure-sequence.home')" :active="route().current('figure-sequence.home')" >
+                  Figure sequence
                 </NavLink>
               </div>
             </div>
@@ -140,8 +140,8 @@ const showingNavigationDropdown = ref(false);
             <ResponsiveNavLink :href="route('positions.index')" :active="route().current('positions.index')" >
               Positions
             </ResponsiveNavLink>
-            <ResponsiveNavLink :href="route('random-walk.home')" :active="route().current('random-walk.home')" >
-              Random walk
+            <ResponsiveNavLink :href="route('figure-sequence.home')" :active="route().current('figure-sequence.home')" >
+              Figure sequence
             </ResponsiveNavLink>
             <!-- Display log in link for unauthenticated users -->
             <ResponsiveNavLink v-if="!$page.props.auth.user" :href="route('login')">

@@ -6,7 +6,7 @@ use Illuminate\Foundation\Http\FormRequest;
 use App\Models\Position;
 use App\Rules\FiguresRequiredIfCompoundFiguresAbsent;
 
-class RandomWalkRequest extends FormRequest
+class FigureSequenceRequest extends FormRequest
 {
 
     /**
@@ -17,7 +17,7 @@ class RandomWalkRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'length' => ['required', 'integer', 'min:1', config('constants.validation.max_random_walk_length')],
+            'length' => ['required', 'integer', 'min:1', config('constants.validation.max_figure_sequence_length')],
             'excluded_figure_ids' => ['nullable', 'array', config('constants.validation.max_figure_sequence_excluded_items')],
             'excluded_figure_ids.*' => ['integer', 'exists:figures,id'],
             'excluded_figure_family_ids' => ['nullable', 'array', config('constants.validation.max_figure_sequence_excluded_items')],
