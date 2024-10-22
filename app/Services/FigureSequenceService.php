@@ -5,6 +5,7 @@ use App\Models\Position;
 use App\Models\Figure;
 use App\Models\CompoundFigure;
 use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Support\Facades\Log;
 
 class FigureSequenceService
 {
@@ -47,9 +48,15 @@ class FigureSequenceService
             }
         }
 
-        // Edge case: the SCC is a single position with no outgoing figures
-        // that return to the SCC.
-        if (count($sccAdjList) === 1 && count($sccAdjList[0]['adj'] === 0)) return null;
+        // Edge case: the SCC is a single position...
+        $singleSelfLoop = false;
+        if (count($sccAdjList) === 1) {
+            // ...with no outgoing figures that return to the SCC
+            if (count($sccAdjList[0]['adj'] === 0)) return null;
+            // ...with only a single, self-looping figure. This is to protect
+            // against infinite loops when applying max repeated figure limit.
+            else if (count($sccAdjList[0]['adj'] === 1)) $singleSelfLoop = true;
+        }
 
 
         // Choose a random starting position
@@ -57,9 +64,26 @@ class FigureSequenceService
 
         // Construct figure sequence
         $figureSequence = [];
+        $repeatedFigures = 0;
+        $prevFigureId = null;
         for ($i = 0; $i < $length; $i++) {
-            $figIdx = array_rand($sccAdjList[$nextPositionId]['adj'], 1);
-            $currentFigure = $sccAdjList[$nextPositionId]['adj'][$figIdx];
+
+            // Choose a random next figure, avoiding excessively repeated figures
+            $justInCase = 0;
+            do {
+                $figIdx = array_rand($sccAdjList[$nextPositionId]['adj'], 1);
+                $currentFigure = $sccAdjList[$nextPositionId]['adj'][$figIdx];
+                if ($prevFigureId === $currentFigure['figure_id']) $repeatedFigures++;
+                else $repeatedFigures = 0;
+                $justInCase++;
+            } while ($repeatedFigures > config('misc.figure_sequence.max_repeated_figures') && !$singleSelfLoop && $justInCase <= config('misc.figure_sequence.infinite_loop_guard'));
+            $prevFigureId = $currentFigure;
+
+            if ($justInCase > config('misc.figure_sequence.infinite_loop_guard')) {
+                Log::warning("Unexpectedly hit infinite loop guard when avoiding excessively repeated figures when generating Figure sequence. Printing sequence so far:");
+                Log::warning($figureSequence);
+            }
+
             $figureSequence[] = [
                 'figure_id' => $currentFigure['figure_id'],
                 'figure_name' => $currentFigure['figure_name'],
@@ -68,6 +92,7 @@ class FigureSequenceService
                 'to_position_id' => $currentFigure['to_position_id'],
                 'to_position_name' => $currentFigure['to_position_name'],
             ];
+
             $nextPositionId = $currentFigure['to_position_id'];
         }
 

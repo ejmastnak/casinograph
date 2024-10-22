@@ -9,8 +9,8 @@ return [
     'restrict_on_delete_message_limit' => 1,
     'figure_sequence' => [
         'default_length' => 10,
-        'default_include_figures' => true,
-        'default_include_compound_figures' => true,
+        'max_repeated_figures' => 1,
+        'infinite_loop_guard' => 10,
     ],
     'graphs' => [
         'casinograph' => [
