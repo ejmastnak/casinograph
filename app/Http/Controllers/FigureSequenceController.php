@@ -29,10 +29,8 @@ class FigureSequenceController extends Controller
         $validated = $request->validated();
         $figureSequence = $figureSequenceService->getFigureSequence($userId, $validated);
         return Response::json([
-            'length' => $validated['length'],
             'figure_sequence' => $figureSequence,
             'no_valid_start_position' => is_null($figureSequence),
-            'dead_ended' => $figureSequence && (count($figureSequence) < $validated['length']),
         ]);
     }
 

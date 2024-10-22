@@ -24,7 +24,6 @@ const form = useForm({
 });
 
 const figureSequence = ref([]);
-const deadEnded = ref(null);
 const noValidStartPosition = ref(null);
 
 // Shown temporarily next to e.g. submit button on error
@@ -104,7 +103,6 @@ function submit() {
       errors.value = {};
       errorMessage.value = null;
       figureSequence.value = response.data.figure_sequence;
-      deadEnded.value = response.data.dead_ended;
       noValidStartPosition.value = response.data.no_valid_start_position;
     })
     .catch((error) => {
@@ -285,21 +283,29 @@ export default {
     </form>
 
     <!-- Figure sequence text -->
-    <div v-if="figureSequence && figureSequence.length > 0" class="mt-3">
+    <div v-if="figureSequence && figureSequence.length > 0" class="mt-3 ml-1">
       <h2 class="text-lg text-gray-700">Figure sequence</h2>
-      <ol class="mt-1 list-decimal ml-5 space-y-1 grid grid-cols-2 lg:grid-cols-3 gap-x-5">
-        <li v-for="figure in figureSequence">
-          <MyLink class="inline-block" :href="route('figures.show', figure.id)" >
-            {{figure.name}}
+      <ol
+        class="mt-1 list-decimal ml-5 space-y-1 gap-x-5 grid sm:grid-cols-2 sm:grid-flow-col"
+      >
+        <li
+          v-for="(figure, idx) in figureSequence"
+          :class="{
+            'sm:col-start-1': idx < figureSequence.length/2,
+            'sm:col-start-2': idx >= figureSequence.length/2,
+          }"
+        >
+          <MyLink class="inline-block" :href="route('figures.show', figure.figure_id)" >
+            {{figure.figure_name}}
           </MyLink>
           <p class="-mt-1 text-sm text-gray-600">
             From
             <MyLink class="font-medium" :href="route('positions.show',figure.from_position_id)" >
-              {{figure.from_position.name}}
+              {{figure.from_position_name}}
             </MyLink>
             to
             <MyLink class="font-medium" :href="route('positions.show', figure.to_position_id)" >
-              {{figure.to_position.name}}
+              {{figure.to_position_name}}
             </MyLink>
           </p>
         </li>
@@ -307,13 +313,10 @@ export default {
     </div>
 
     <!-- No valid start position! -->
-    <div v-if="deadEnded || noValidStartPosition" class="!mt-3 pt-2 text-center max-w-sm mx-auto" >
+    <div v-if="noValidStartPosition" class="!mt-3 pt-2 text-center max-w-sm mx-auto" >
       <ExclamationTriangleIcon class="w-6 h-6 text-yellow-800 shrink-0 mx-auto"/>
-      <p v-if="noValidStartPosition" class="text-yellow-900">
+      <p class="text-yellow-900">
         You have no positions with outgoing figures from which to begin the figure sequence!
-      </p>
-      <p v-else class="text-yellow-900">
-        The sequence ended early at a position with no outgoing figures.
       </p>
     </div>
 

@@ -13,9 +13,169 @@ class FigureSequenceService
         $excludedFigureIds = $data['excluded_figure_ids'];
         $excludedFigureFamilyIds = $data['excluded_figure_family_ids'];
 
-        // All figures matching filters and whose ending position has at least
-        // one outgoing figure.
-        $figures = Figure::where('user_id', $userId)
+        $figures = $this->getFiguresAsArray($userId, $excludedFigureIds, $excludedFigureFamilyIds);
+        if (empty($figures)) return null;
+
+        $adjList = [];
+        $sccList = $this->findSCCs($figures, $adjList);
+        $maxIdx = 0;
+        $maxCount = $sccList[$maxIdx]['count'];
+        for ($i = 1; $i < count($sccList); $i++) {
+            if ($sccList[$i]['count'] > $maxCount) {
+                $maxCount = $sccList[$i]['count'];
+                $maxIdx = $i;
+            }
+        }
+        $scc = $sccList[$maxIdx];
+
+        /**
+         *  Build an adjacency-list representation `$sccAdjList` of `$scc` in
+         *  which `$sccAdjList[$position_id]` is an array of all figures
+         *  outbound from `$position_id` *that end in figures also in the SCC*.
+         */
+        $sccAdjList = [];
+        foreach ($scc['position_ids'] as $positionId) {
+            $sccAdjList[$positionId] = [
+                'from_position_name' => $adjList[$positionId]['from_position_name'],
+                'adj' => [],
+            ];
+
+            foreach ($adjList[$positionId]['adj'] as $figure) {
+                if (in_array($figure['to_position_id'], $scc['position_ids'])) {
+                    $sccAdjList[$positionId]['adj'][] = $figure;
+                }
+            }
+        }
+
+        // Edge case: the SCC is a single position with no outgoing figures
+        // that return to the SCC.
+        if (count($sccAdjList) === 1 && count($sccAdjList[0]['adj'] === 0)) return null;
+
+
+        // Choose a random starting position
+        $nextPositionId = array_rand($sccAdjList, 1);
+
+        // Construct figure sequence
+        $figureSequence = [];
+        for ($i = 0; $i < $length; $i++) {
+            $figIdx = array_rand($sccAdjList[$nextPositionId]['adj'], 1);
+            $currentFigure = $sccAdjList[$nextPositionId]['adj'][$figIdx];
+            $figureSequence[] = [
+                'figure_id' => $currentFigure['figure_id'],
+                'figure_name' => $currentFigure['figure_name'],
+                'from_position_id' => $nextPositionId,
+                'from_position_name' => $sccAdjList[$nextPositionId]['from_position_name'],
+                'to_position_id' => $currentFigure['to_position_id'],
+                'to_position_name' => $currentFigure['to_position_name'],
+            ];
+            $nextPositionId = $currentFigure['to_position_id'];
+        }
+
+        return $figureSequence;
+    }
+
+    /**
+     *  Input an array `$figures` of figures and empty array to hold adjacency
+     *  list representation of `$figures`.
+
+     *  Output: a list `$sccs` of SCCs in the CasinoGraph formed by `$figures`,
+     *  where each SCC is represented by an associate array with two keys:
+     *
+     *    - `count`: the number of positions in the SCC
+     *    - `postion_ids`: a list of position ids for all positions in that SCC.
+     * 
+     *  Side effect: fills `$adjList` with an adjacency list representation of
+     *  `$figures`.
+     */
+    private function findSCCs($figures, &$adjList) {
+        $index = [];
+        $lowLink = [];
+        $onStack = [];
+        $stack = [];
+        $sccList = [];
+        $currentIndex = 0;
+
+        // Initialize variables and build adjacency list
+        foreach ($figures as $figure) {
+            $fromPositionId = $figure['from_position_id'];
+            $toPositionId = $figure['to_position_id'];
+
+            if (!isset($adjList[$fromPositionId])) {
+                $adjList[$fromPositionId] = [
+                    'from_position_name' => $figure['from_position']['name'],
+                    'adj' => [],
+                ];
+            }
+
+            $adjList[$fromPositionId]['adj'][] = [
+                'figure_id' => $figure['id'],
+                'figure_name' => $figure['name'],
+                'to_position_id' => $toPositionId,
+                'to_position_name' => $figure['to_position']['name'],
+            ];
+
+            if (!isset($index[$fromPositionId])) {
+                $index[$fromPositionId] = -1;
+                $lowLink[$fromPositionId] = null;
+                $onStack[$fromPositionId] = false;
+            }
+
+            // Ensure all positions (even isolated ones) are initialized
+            if (!isset($index[$toPositionId])) {
+                $index[$toPositionId] = -1;
+                $lowLink[$toPositionId] = null;
+                $onStack[$toPositionId] = false;
+            }
+        }
+
+        // Run DFS from each position that hasn't been visited yet
+        foreach (array_keys($index) as $positionId) {
+            if ($index[$positionId] == -1) $this->tarjanSCC($positionId, $adjList, $index, $lowLink, $onStack, $stack, $sccList, $currentIndex);
+        }
+
+        return $sccList;
+    }
+
+    private function tarjanSCC($positionId, &$adjList, &$index, &$lowLink, &$onStack, &$stack, &$sccList, &$currentIndex) {
+        $index[$positionId] = $currentIndex;
+        $lowLink[$positionId] = $currentIndex;
+        $currentIndex++;
+        array_push($stack, $positionId);
+        $onStack[$positionId] = true;
+
+        if (isset($adjList[$positionId])) {
+            foreach ($adjList[$positionId]['adj'] as $figure) {
+                $toPositionId = $figure['to_position_id'];
+                if ($index[$toPositionId] === -1) {  // If neighbor is unvisited
+                    $this->tarjanSCC($toPositionId, $adjList, $index, $lowLink, $onStack, $stack, $sccList, $currentIndex);
+                    $lowLink[$positionId] = min($lowLink[$positionId], $lowLink[$toPositionId]);
+                } else if ($onStack[$toPositionId]) {  // Back-edge
+                    $lowLink[$positionId] = min($lowLink[$positionId], $index[$toPositionId]);
+                }
+            }
+        }
+
+        if ($lowLink[$positionId] == $index[$positionId]) {
+            $currentSCC = [
+                'count' => 0,
+                'position_ids' => [],
+            ];
+            while (true) {
+                $poppedPositionId = array_pop($stack);
+                $onStack[$poppedPositionId] = false;
+                $currentSCC['position_ids'][] = $poppedPositionId;
+                $currentSCC['count'] += 1;
+                if ($poppedPositionId == $positionId) break;
+            }
+            $sccList[] = $currentSCC;
+        }
+    }
+
+    /**
+     *  All figures satisfying given filters with at least one outgoi
+     */
+    private function getFiguresAsArray($userId, $excludedFigureIds, $excludedFigureFamilyIds) {
+        return Figure::where('user_id', $userId)
             ->when(!empty($excludedFigureIds), function (Builder $query) use ($excludedFigureIds) {
                 $query->whereNotIn('id', $excludedFigureIds);
             })
@@ -24,39 +184,6 @@ class FigureSequenceService
             })
             ->with(['from_position:id,name', 'to_position:id,name'])
             ->get(['id', 'name', 'from_position_id', 'to_position_id',])->toArray();
-
-        if (empty($figures)) return null;
-
-        // TODO: preserve only positions that are part of cycles, so that figure
-        // sequence is guaranteed not to dead-end.
-
-        // Builds an adjacency-list graph representation where
-        // `$adjList[$position_id]` contains a list of all figures outbound
-        // from the Position with `$position_id`.
-        $adjList = [];
-        foreach ($figures as $figure) $adjList[$figure['from_position_id']][] = $figure;
-
-        // Choose a random starting figure
-        $figureSequence = [];
-        $currentFigure = $figures[array_rand($figures, 1)];
-        $figureSequence[] = $currentFigure;
-
-        for ($i = 1; $i < $length; $i++) {
-            $nextPositionId = $currentFigure['to_position_id'];
-
-            // Edge case: current figure ends in a position with no outgoing figures
-            if (!array_key_exists($nextPositionId, $adjList)) return $figureSequence;
-
-            $outgoingFigures = $adjList[$nextPositionId];
-
-            // Edge case: dead end!
-            if (count($outgoingFigures) == 0) return $figureSequence;
-
-            $currentFigure = $outgoingFigures[array_rand($outgoingFigures, 1)];
-            $figureSequence[] = $currentFigure;
-        }
-
-        return $figureSequence;
     }
 
 }
