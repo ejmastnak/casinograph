@@ -8,7 +8,7 @@ return [
     'default_figure_weight' => 1,
     'restrict_on_delete_message_limit' => 1,
     'figure_sequence' => [
-        'default_length' => 20,
+        'default_length' => 10,
         'default_include_figures' => true,
         'default_include_compound_figures' => true,
     ],
