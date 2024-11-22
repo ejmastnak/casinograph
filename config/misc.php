@@ -26,16 +26,38 @@ return [
         'position_graph' => [
             'public_basedir' => 'img/positiongraph/public',
             'user_basedir' => 'img/positiongraph/users',
+            // Grep pattern used to identify line with root node (to extract
+            // its XY coordinates). Logic: since I write the root node first,
+            // just find the first ellipse, using `grep -m 1` to only print the
+            // first match.
+            'grep_pattern_for_root_node' => 'ellipse',
             'config' => [
                 'graph' => [
-                    'ranksep' => 0,
+                    'ranksep' => 0.3,
                 ],
                 'root_node' => [
                     'fontname' => "Figtree Medium",
-                    'fontsize' => "30pt",
+                    'fontsize' => 16,
                     'style' => "filled",
                     'fillcolor' => "#bfdbfe",
                     'labelloc' => "c",
+                    'target' => "_top",
+                    'id' => 'root',
+                ],
+                'node' => [
+                    'fontsize' => 10,
+                    'fontname' => "Figtree ExtraBold",
+                    'fontcolor' => "#172554",
+                    'color' => "#172554",
+                    'style' => "filled",
+                    'fillcolor' => "#eff6ff",
+                    'target' => "_top",
+                ],
+                'edge' => [
+                    'fontsize' => 10,
+                    'fontname' => "Figtree",
+                    'fontcolor' => "#172554",
+                    'color' => "#172554",
                     'target' => "_top",
                 ],
             ],

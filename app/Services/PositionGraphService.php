@@ -1,75 +1,100 @@
 <?php
+namespace App\Services;
 
-namespace App\Jobs;
-
-use Illuminate\Bus\Queueable;
-use Illuminate\Contracts\Queue\ShouldBeUnique;
-use Illuminate\Contracts\Queue\ShouldQueue;
-use Illuminate\Foundation\Bus\Dispatchable;
-use Illuminate\Queue\InteractsWithQueue;
-use Illuminate\Queue\SerializesModels;
-use Illuminate\Queue\Middleware\RateLimited;
+use App\Models\Position;
 use Illuminate\Support\Facades\Process;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\DB;
-use App\Models\Position;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\RateLimiter;
 
-class RegeneratePositionGraph implements ShouldQueue
+class PositionGraphService
 {
-    use Dispatchable, InteractsWithQueue, Queueable, SerializesModels;
-
-    // The number of times the job may be attempted.
-    public $tries = 1;
-
-    // The number of seconds the job can run before timing out.
-    public $timeout = 5;
-    public $failOnTimeout = true;
-
-    protected $positionId = null;
 
     /**
-     * Create a new job instance.
+     *  Generates an SVG graph diagram for the given position, and returns the
+     *  X and Y coordinates of the root position node (used by frontend to
+     *  center SVG around root node).
      */
-    public function __construct(int $positionId)
-    {
-        $this->positionId = $positionId;
+    public function generatePositionGraph(Position $position) {
+        $user = Auth::id() ?? 'public';
+        $rootNodeCoordinates = [  // safe default values
+            'x' => 0,
+            'y' => 0,
+        ];
+        $executed = RateLimiter::attempt(
+            'generate-position-graph'.$user,
+            $perMinute = config('constants.rate_limits.position_graph_per_minute'),
+            function() use ($position, &$rootNodeCoordinates) {
+                $rootNodeCoordinates = $this->generatePositionGraphHandler($position);
+            }
+        );
+
+        return $rootNodeCoordinates;
     }
 
-    /**
-     * Execute the job.
-     */
-    public function handle(): void
-    {
-        $position = Position::find($this->positionId);
+    private function generatePositionGraphHandler(Position $position) {
         $userId = $position->user_id;
 
-        $incomingFigures = $this->getIncomingFigures($this->positionId, $userId);
-        $outgoingFigures = $this->getOutgoingFigures($this->positionId, $userId);
+        $incomingFigures = $this->getIncomingFigures($position->id, $userId);
+        $outgoingFigures = $this->getOutgoingFigures($position->id, $userId);
 
         $timestamp = str_replace(".", "-", microtime(true));
-        $tmpDotFile = "/tmp/positiongraph-{$this->positionId}-{$timestamp}.dot";
-        $this->writeDotFile($tmpDotFile, $this->positionId, $incomingFigures, $outgoingFigures);
+        $tmpDotFile = "/tmp/positiongraph-{$position->id}-{$timestamp}.dot";
+        $this->writeDotFile($tmpDotFile, $position->id, $incomingFigures, $outgoingFigures);
 
         $dotCommandWithParams = [
             '/usr/bin/dot',
             '-Tsvg',
             $tmpDotFile,
             '-o',
-            positionGraphStoragePathForUser($this->positionId, $userId),
+            positionGraphStoragePathForUser($position->id, $userId),
+        ];
+        // Finds XY coordinates of root node in SVG
+        $grepCommandWithParams = [
+            'grep',
+            '-m',
+            '1',
+            config('misc.graphs.position_graph.grep_pattern_for_root_node'),
+            positionGraphStoragePathForUser($position->id, $userId),
         ];
         $cleanupCommandWithParams = [ 'rm', '-f', $tmpDotFile ];
 
-        $result = Process::run(implode(' ', $dotCommandWithParams));
-        $cleanup = Process::run(implode(' ', $cleanupCommandWithParams));
+        $dotResult = Process::run(implode(' ', $dotCommandWithParams));
+        $grepResult = Process::run(implode(' ', $grepCommandWithParams));
+        $cleanupResult = Process::run(implode(' ', $cleanupCommandWithParams));
 
-        if ($result->failed()) {
+        # Extracts values of cx and cy attributes from a string like
+        # <ellipse fill="#bfdbfe" stroke="#172554" cx="633.28" cy="-96.16" rx="47.91" ry="23.16"/>
+        if ($grepResult->successful()) {
+            $pattern = '/\bcx="([\d.-]+)" cy="([\d.-]+)"/';
+            $matches = [];
+            if (preg_match($pattern, $grepResult->output(), $matches)) {
+                $rootX = $matches[1];
+                $rootY = $matches[2];
+            } else {
+                $rootX = "0";
+                $rootY = "0";
+            }
+        } else {
+            $rootX = "0";
+            $rootY = "0";
+        }
+
+        if ($dotResult->failed()) {
             Log::error("RegeneratePositionGraph failed.\n");
-            Log::error($result->errorOutput());
+            Log::error($dotResult->errorOutput());
             if (\App::environment('local')) {
-                dd($result->errorOutput());
+                dd($dotResult->errorOutput());
             }
         }
+
+        return [
+            'x' => $rootX,
+            'y' => $rootY,
+        ];
     }
+
 
     private function writeDotFile($tmpDotFile, $rootPositionId, $incomingFigures, $outgoingFigures) {
         $file = fopen($tmpDotFile, "w");
@@ -77,8 +102,8 @@ class RegeneratePositionGraph implements ShouldQueue
 
         $digraphOpen = 'digraph PositionGraph {';
         $graphConfig = "graph [{$this->prepareStringFromConfigArray(config('misc.graphs.position_graph.config.graph'))}];";
-        $nodeConfig = "node [{$this->prepareStringFromConfigArray(config('misc.graphs.config.node'))}];";
-        $edgeConfig = "edge [{$this->prepareStringFromConfigArray(config('misc.graphs.config.edge'))}];";
+        $nodeConfig = "node [{$this->prepareStringFromConfigArray(config('misc.graphs.position_graph.config.node'))}];";
+        $edgeConfig = "edge [{$this->prepareStringFromConfigArray(config('misc.graphs.position_graph.config.edge'))}];";
         $digraphClose = '}';
 
         if ($file) {
@@ -161,7 +186,6 @@ class RegeneratePositionGraph implements ShouldQueue
         ]);
         return $incomingFigures;
     }
-    
 
     /**
      *  Selects all figures leaving the position with id `$positionId` and
@@ -214,16 +238,6 @@ class RegeneratePositionGraph implements ShouldQueue
             $parts[] = "{$key}={$valueFormatted}";
         }
         return implode(", ", $parts);
-    }
-
-    /**
-     * Get the middleware the job should pass through.
-     *
-     * @return array<int, object>
-     */
-    public function middleware(): array
-    {
-        return [(new RateLimited('positiongraph'))->dontRelease()];
     }
 
 }

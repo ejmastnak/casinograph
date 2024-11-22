@@ -1,7 +1,7 @@
 <script setup>
 import { Head } from '@inertiajs/vue3'
 import { router } from '@inertiajs/vue3'
-import { ref } from 'vue'
+import { ref, onMounted } from 'vue'
 import MyLink from '@/Components/MyLink.vue'
 import Warning from '@/Components/Warning.vue'
 import PlaceholderParagraph from '@/Components/PlaceholderParagraph.vue'
@@ -12,7 +12,7 @@ import FamilyPillbox from '@/Components/FamilyPillbox.vue'
 import PlainButton from '@/Components/PlainButton.vue'
 import SecondaryButton from '@/Components/SecondaryButton.vue'
 import PositionImageDialog from '@/Components/PositionImageDialog.vue'
-import { PencilSquareIcon, TrashIcon, PlayIcon, ListBulletIcon, PlusCircleIcon, ArrowsPointingOutIcon, ArrowsUpDownIcon, XMarkIcon } from '@heroicons/vue/24/outline'
+import { PencilSquareIcon, TrashIcon, PlayIcon, ListBulletIcon, PlusCircleIcon, ArrowsPointingOutIcon, ArrowsRightLeftIcon, XMarkIcon } from '@heroicons/vue/24/outline'
 import {
   Dialog, DialogPanel, DialogTitle, DialogDescription,
 } from '@headlessui/vue'
@@ -24,6 +24,7 @@ const props = defineProps({
   can_delete: Boolean,
   graph_url: String,
   graph_is_nonempty: Boolean,
+  graph_center_coordinates: Object,
 })
 
 let idToDelete = ref(null)
@@ -41,6 +42,46 @@ const graphIsFullscreen = ref(false)
 function setGraphIsFullScreen(value) {
   graphIsFullscreen.value = value
 }
+
+const positionGraphContainerRef = ref(null)
+const positionGraphObjectRef = ref(null)
+const positionGraphWidth = ref(1280)
+
+function centerSVG() {
+  const svgDoc = positionGraphObjectRef.value.contentDocument;
+  const svgElement = svgDoc.documentElement;
+  const container = positionGraphContainerRef.value;
+
+  if (container && svgDoc && svgElement) {
+
+    // Desired focus coordinate in the SVG's internal coordinate system
+    const focusX = props.graph_center_coordinates.x;
+    const focusY = props.graph_center_coordinates.y;
+
+    // Get the bounding box of the entire SVG
+    const svgBBox = svgElement.getBBox();
+
+  // Calculate the scroll positions to center the focus point
+    const containerWidth = container.offsetWidth;
+    const containerHeight = container.offsetHeight;
+
+    const scrollX = (focusX / svgBBox.width) * svgElement.clientWidth - containerWidth / 2;
+    const scrollY = (focusY / svgBBox.height) * svgElement.clientHeight - containerHeight / 2;
+
+   // Scroll the container to the calculated positions
+    container.scrollTo({
+      left: Math.max(0, scrollX),
+      top: Math.max(0, scrollY),
+    });
+
+  }
+}
+
+onMounted(() => {
+  positionGraphObjectRef.value.addEventListener('load', centerSVG);
+  // centerSVG();
+});
+
 
 </script>
 
@@ -68,10 +109,10 @@ export default {
 
     <div v-if="position.position_family" class="mt-0">
       <div class="text-gray-600">
-          Position family:
-          <MyLink class="font-semibold" :href="route('position-families.show', position.position_family_id)">
-            {{position.position_family.name}}
-          </MyLink>
+        Position family:
+        <MyLink class="font-semibold" :href="route('position-families.show', position.position_family_id)">
+          {{position.position_family.name}}
+        </MyLink>
       </div>
     </div>
 
@@ -82,32 +123,40 @@ export default {
 
     <!-- Graph -->
     <div v-if="graph_is_nonempty" class="mt-6 relative">
-
-        <!-- Enter full screen -->
-      <PlainButton class="absolute left-2 bottom-2 sm:bottom-auto sm:top-2 z-10" @click="setGraphIsFullScreen(true)">
-        <ArrowsPointingOutIcon class="-ml-1 w-6 h-6 text-gray-500 shrink-0" />
-        <p class="ml-1">Full screen</p>
-      </PlainButton>
-
-      <!-- Scroll to explore -->
-      <div class="absolute left-2 bottom-14 sm:bottom-auto sm:top-14 px-2 py-1 bg-white/95 flex items-center rounded z-10">
-        <ArrowsUpDownIcon class="-ml-1 w-6 h-6 text-gray-500 shrink-0" />
-        <p class="ml-1 -mt-0.5 text-sm text-gray-600">Scroll to explore</p>
-      </div>
-
-      <div class="mt-1 relative border overflow-auto border-gray-200 shadow rounded-lg h-96 sm:h-[30rem] grid place-items-center">
-
-        <!-- Figure title -->
-        <h2 class="absolute top-2 text-lg sm:text-xl md:text-2xl text-gray-700 px-2 py-1 bg-white/95 rounded-xl text-center z-20">
+      <div class="overflow-auto">
+        <!-- Title -->
+        <!-- Harcoded mx-12 provides space for enter-full-screen button -->
+        <h2 class="absolute inset-x-0 top-2 text-xl sm:text-2xl text-gray-700 px-2 py-1 bg-white/95 rounded-xl text-center mx-12 sm:mx-auto">
           Incoming and outgoing figures
         </h2>
 
-        <!-- SVG -->
-        <Transition name="zoom" appear>
-          <object class="p-1 mx-auto max-w-xl md:max-w-3xl lg:max-w-4xl" type="image/svg+xml" :data="graph_url"></object>
-        </Transition>
+        <!-- Enter full screen -->
+        <PlainButton class="absolute right-2 top-2 !p-2 sm:!px-3 z-10" @click="setGraphIsFullScreen(true)">
+          <ArrowsPointingOutIcon class="sm:-ml-1 w-6 h-6 text-gray-500 shrink-0" />
+          <p class="hidden sm:block ml-1">Full screen</p>
+        </PlainButton>
+
+        <!-- Scroll to explore -->
+        <div class="absolute right-2 bottom-2 px-2 py-1 bg-white/95 flex items-center rounded z-10">
+          <ArrowsRightLeftIcon class="-ml-1 w-6 h-6 text-gray-500 shrink-0" />
+          <p class="ml-1 -mt-0.5 text-sm text-gray-600">Scroll to explore</p>
+        </div>
+
+        <div ref="positionGraphContainerRef" class="mt-1 relative border overflow-auto border-gray-200 shadow rounded-lg h-96 sm:h-[30rem] grid place-items-center">
+
+          <!-- SVG -->
+          <Transition name="zoom" appear>
+            <object
+              ref="positionGraphObjectRef"
+              class="p-1 mx-auto"
+              type="image/svg+xml"
+              :data="graph_url">
+            </object>
+          </Transition>
+        </div>
       </div>
     </div>
+
 
     <div class="mt-4 space-x-2">
 
@@ -221,11 +270,11 @@ export default {
 
     <!-- Full screen graph dialog -->
     <Dialog :open="graphIsFullscreen" @close="setGraphIsFullScreen">
-      <DialogPanel class="fixed inset-0 bg-white overflow-auto z-30">
+      <DialogPanel class="fixed inset-0 grid place-items-center bg-white overflow-auto z-30">
 
         <!-- Graph -->
         <Transition name="quickzoom" appear>
-          <object class="p-1 mx-auto max-w-xl md:max-w-3xl lg:max-w-4xl" type="image/svg+xml" :data="graph_url"></object>
+          <object class="p-1 mx-auto" type="image/svg+xml" :data="graph_url"></object>
         </Transition>
 
         <!-- Close button -->

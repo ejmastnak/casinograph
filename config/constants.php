@@ -33,4 +33,7 @@ return [
             'compound_figure_figures' => 'compound_figure_figures.sql',
         ],
     ],
+    'rate_limits' => [
+        'position_graph_per_minute' => 30,
+    ],
 ];
