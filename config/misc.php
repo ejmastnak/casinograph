@@ -16,10 +16,32 @@ return [
         'casinograph' => [
             'public_file' => 'img/casinograph/public.svg',
             'user_basedir' => 'img/casinograph/users',
+            // Grep pattern used to identify line with focused node (to extract
+            // its XY coordinates). Logic: first find containing group of
+            // node's ellipse element, by searching for e.g. 'id="a_node42"',
+            // then count on ellipse element being on line after that.
+            'grep' => [
+                'after' => 1,
+            ],
             'config' => [
                 'graph' => [
-                    // 'nodesep' => 0.2,
-                    'ranksep' => 0.0,
+                    'ranksep' => 0.25,
+                ],
+                'node' => [
+                    'fontsize' => "14pt",
+                    'fontname' => "Figtree ExtraBold",
+                    'fontcolor' => "#172554",
+                    'color' => "#172554",
+                    'style' => "filled",
+                    'fillcolor' => "#eff6ff",
+                    'target' => "_top",
+                ],
+                'edge' => [
+                    'fontsize' => "14pt",
+                    'fontname' => "Figtree",
+                    'fontcolor' => "#172554",
+                    'color' => "#172554",
+                    'target' => "_top",
                 ],
             ],
         ],
@@ -110,24 +132,6 @@ return [
                     'color' => "#172554",
                     'target' => "_top",
                 ],
-            ],
-        ],
-        'config' => [
-            'node' => [
-                'fontsize' => "20pt",
-                'fontname' => "Figtree ExtraBold",
-                'fontcolor' => "#172554",
-                'color' => "#172554",
-                'style' => "filled",
-                'fillcolor' => "#eff6ff",
-                'target' => "_top",
-            ],
-            'edge' => [
-                'fontsize' => "20pt",
-                'fontname' => "Figtree",
-                'fontcolor' => "#172554",
-                'color' => "#172554",
-                'target' => "_top",
             ],
         ],
     ],

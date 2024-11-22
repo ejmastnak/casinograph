@@ -28,11 +28,12 @@ use Inertia\Inertia;
 */
 
 Route::get('/', function (CasinoGraphService $casinoGraphService) {
-    RegenerateCasinoGraph::dispatch($casinoGraphService);
+    $rootNodeCoordinates = $casinoGraphService->generateCasinoGraph();
     $userId = Auth::id();
     return Inertia::render('Home', [
         'graph_url' => casinoGraphUrlForUser($userId),
         'graph_is_nonempty' => Figure::where('user_id', ($userId ?? config('constants.user_ids.casino')))->count() > 0,
+        'graph_center_coordinates' => $rootNodeCoordinates,
     ]);
 })->name('home');
 

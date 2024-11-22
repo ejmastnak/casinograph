@@ -34,6 +34,7 @@ return [
         ],
     ],
     'rate_limits' => [
+        'casino_graph_per_minute' => 30,
         'position_graph_per_minute' => 30,
     ],
 ];

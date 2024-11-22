@@ -3,16 +3,57 @@ namespace App\Services;
 
 use Illuminate\Support\Facades\Process;
 use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\RateLimiter;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
 
 class CasinoGraphService
 {
+
+    public function generateCasinoGraph() {
+        $user = Auth::id() ?? 'public';
+        $focusedNodeCoordinates = [  // safe default values
+            'x' => 0,
+            'y' => 0,
+        ];
+
+        $executed = RateLimiter::attempt(
+            'generate-casino-graph'.$user,
+            $perMinute = config('constants.rate_limits.casino_graph_per_minute'),
+            function() use (&$focusedNodeCoordinates) {
+                $focusedNodeCoordinates = $this->generateCasinoGraphHandler();
+            }
+        );
+
+        return $focusedNodeCoordinates;
+    }
 
     /**
      *  Given an array of figures with `[id, name, from_position,
      *  to_position]`, generates and saves an SVG of the corresponding
      *  CasinoGraph at the provided $svgOutputPath.
      */
-    public function generateCasinoGraph($positions, $figures, $svgOutputPath) {
+    private function generateCasinoGraphHandler() {
+
+        $userId = Auth::id();
+        $positions = $this->getPositions($userId);
+        $figures = $this->getFigures($userId);
+        $svgOutputPath = casinoGraphStoragePathForUser($userId);
+
+        # Identify position with the most incoming figures.
+        # Frontend will focus SVG around this position.
+        $incomingEdgeCounts = [];
+        foreach ($positions as $position) $incomingEdgeCounts[$position->id] = 0;
+        foreach ($figures as $figure) $incomingEdgeCounts[$figure->to_position_id]++;
+        $maxCount = 0;
+        $focusedPositionId = null;
+        foreach ($incomingEdgeCounts as $positionId => $count) {
+            if ($count > $maxCount) {
+                $maxCount = $count;
+                $focusedPositionId = $positionId;
+            }
+        }
+
         $timestamp = str_replace(".", "-", microtime(true));
         $tmpDotFile = "/tmp/casinograph-{$timestamp}.dot";
         $this->writeDotFile($tmpDotFile, $positions, $figures);
@@ -24,19 +65,100 @@ class CasinoGraphService
             '-o',
             $svgOutputPath,
         ];
+
+        // Finds XY coordinates of focused node in SVG
+        $grepCommandWithParams = [
+            'grep',
+            '-m',
+            '1',
+            '-A',
+            config('misc.graphs.casinograph.grep.after'),
+            # searches for e.g. 'id="a_node42"'
+            'id=\"a_node' . $focusedPositionId . '\"',
+            $svgOutputPath,
+        ];
+
         $cleanupCommandWithParams = [ 'rm', '-f', $tmpDotFile ];
 
-        $result = Process::run(implode(' ', $dotCommandWithParams));
-        $cleanup = Process::run(implode(' ', $cleanupCommandWithParams));
+        $dotResult = Process::run(implode(' ', $dotCommandWithParams));
+        $grepResult = Process::run(implode(' ', $grepCommandWithParams));
+        $cleanupResult = Process::run(implode(' ', $cleanupCommandWithParams));
 
-        if ($result->failed()) {
+        # Extracts values of cx and cy attributes from a string like
+        # <ellipse fill="#bfdbfe" stroke="#172554" cx="633.28" cy="-96.16" rx="47.91" ry="23.16"/>
+        if ($grepResult->successful()) {
+            $pattern = '/\bcx="([\d.-]+)" cy="([\d.-]+)"/';
+            $matches = [];
+            if (preg_match($pattern, $grepResult->output(), $matches)) {
+                $rootX = $matches[1];
+                $rootY = $matches[2];
+            } else {
+                $rootX = "0";
+                $rootY = "0";
+            }
+        } else {
+            $rootX = "0";
+            $rootY = "0";
+        }
+
+        if ($dotResult->failed()) {
             Log::error("RegenerateCasinoGraph failed.\n");
-            Log::error($result->errorOutput());
+            Log::error($dotResult->errorOutput());
             if (\App::environment('local')) {
-                dd($result->errorOutput());
+                dd($dotResult->errorOutput());
             }
         }
 
+        return [
+            'x' => $rootX,
+            'y' => $rootY,
+        ];
+
+    }
+
+    /**
+     *  Designed to leave out orphaned positions.
+     */
+    private function getPositions($userId) {
+        $positionQuery = "
+        select
+        positions.id,
+        positions.name
+        from positions
+        inner join figures
+        on figures.from_position_id
+        = positions.id
+        or figures.to_position_id
+        = positions.id 
+        where positions.user_id = :user_id
+        group by positions.id; ";
+        $positions = DB::select($positionQuery, ['user_id' => ($userId ?? config('constants.user_ids.casino'))]);
+        return $positions;
+    }
+
+    /**
+     *  Designed to only choose one figure between any two nodes, to avoid
+     *  overcrowding the graph. The figure is chosen randomly, so the graph
+     *  should change on every regeneration... to keep things interesting!
+     */
+    private function getFigures($userId) {
+        $figuresQuery = "
+        select
+        *
+        from (
+        select
+        id,
+        from_position_id,
+        to_position_id,
+        name
+        from figures
+        where figures.user_id = :user_id
+        order by random()
+        )
+        group by from_position_id, to_position_id;
+        ";
+        $figures = DB::select($figuresQuery, ['user_id' => ($userId ?? config('constants.user_ids.casino'))]);
+        return $figures;
     }
 
     /**
@@ -48,8 +170,8 @@ class CasinoGraphService
 
         $digraphOpen = 'digraph CasinoGraph {';
         $graphConfig = "graph [{$this->prepareStringFromConfigArray(config('misc.graphs.casinograph.config.graph'))}];";
-        $nodeConfig = "node [{$this->prepareStringFromConfigArray(config('misc.graphs.config.node'))}];";
-        $edgeConfig = "edge [{$this->prepareStringFromConfigArray(config('misc.graphs.config.edge'))}];";
+        $nodeConfig = "node [{$this->prepareStringFromConfigArray(config('misc.graphs.casinograph.config.node'))}];";
+        $edgeConfig = "edge [{$this->prepareStringFromConfigArray(config('misc.graphs.casinograph.config.edge'))}];";
         $digraphClose = '}';
 
         if ($file) {

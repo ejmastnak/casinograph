@@ -8,7 +8,7 @@ import SecondaryButton from '@/Components/SecondaryButton.vue'
 import PrimaryButton from '@/Components/PrimaryButton.vue'
 import DangerButton from '@/Components/DangerButton.vue'
 import PlainButton from '@/Components/PlainButton.vue'
-import { QuestionMarkCircleIcon, InformationCircleIcon, ExclamationTriangleIcon, ArrowsUpDownIcon, ArrowsPointingOutIcon, XMarkIcon } from '@heroicons/vue/24/outline'
+import { QuestionMarkCircleIcon, InformationCircleIcon, ExclamationTriangleIcon, ArrowsRightLeftIcon, ArrowsPointingOutIcon, XMarkIcon } from '@heroicons/vue/24/outline'
 import {
   Dialog, DialogPanel, DialogTitle, DialogDescription,
   Popover, PopoverButton, PopoverPanel, PopoverOverlay
@@ -17,6 +17,7 @@ import {
 const props = defineProps({
   graph_url: String,
   graph_is_nonempty: Boolean,
+  graph_center_coordinates: Object,
 })
 
 const graphIsFullscreen = ref(false)
@@ -24,32 +25,41 @@ function setGraphIsFullScreen(value) {
   graphIsFullscreen.value = value
 }
 
-const casinoGraphDivRef = ref(null)
-const casinoGraphRef = ref(null)
-const casinoGraphWidth = ref(1280)
+const casinoGraphContainerRef = ref(null)
+const casinoGraphObjectRef = ref(null)
 
 function centerSVG() {
-  const svgDoc = casinoGraphRef.value.contentDocument; // Get the embedded SVG document
-  const containerElement = casinoGraphDivRef.value; // The parent div that is scrollable
+  const svgDoc = casinoGraphObjectRef.value.contentDocument;
+  const svgElement = svgDoc.documentElement;
+  const container = casinoGraphContainerRef.value;
 
-  if (svgDoc && containerElement) {
-    const scrollableElement = casinoGraphRef.value; // The object tag itself is scrollable
-    const widthPt = svgDoc.documentElement.getAttribute('width');
-    const heightPt = svgDoc.documentElement.getAttribute('height');
+  if (container && svgDoc && svgElement) {
 
-    var width = parseFloat(widthPt);
-    width = isNaN(width) ? 0 : width;
-    if (width > 0) casinoGraphWidth.value = width;
+    // Desired focus coordinate in the SVG's internal coordinate system
+    const focusX = props.graph_center_coordinates.x;
+    const focusY = props.graph_center_coordinates.y;
 
-    var height = parseFloat(heightPt);
-    height = isNaN(height) ? 0 : height;
+    // Get the bounding box of the entire SVG
+    const svgBBox = svgElement.getBBox();
 
-    containerElement.scrollLeft = (0.6*width)/2;
+  // Calculate the scroll positions to center the focus point
+    const containerWidth = container.offsetWidth;
+    const containerHeight = container.offsetHeight;
+
+    const scrollX = (focusX / svgBBox.width) * svgElement.clientWidth - containerWidth / 2;
+    const scrollY = (focusY / svgBBox.height) * svgElement.clientHeight - containerHeight / 2;
+
+   // Scroll the container to the calculated positions
+    container.scrollTo({
+      left: Math.max(0, scrollX),
+      top: Math.max(0, scrollY),
+    });
+
   }
 }
 
 onMounted(() => {
-  casinoGraphRef.value.addEventListener('load', centerSVG); // Listen for load event on the object tag
+  casinoGraphObjectRef.value.addEventListener('load', centerSVG);
 });
 
 </script>
@@ -68,7 +78,7 @@ export default {
     <h1 class="text-3xl font-light text-gray-800">CasinoGraph</h1>
 
     <p class="ml-px mt-1 text-gray-700 font-semibold">
-      Answering which figures combine with each other in Cuban Casino
+      Documenting connections between figures in Cuban Casino
     </p>
 
     <!-- make it easier to connect figures and improvise new ones. -->
@@ -153,30 +163,34 @@ export default {
 
     <!-- Graph -->
     <div v-if="graph_is_nonempty" class="relative mt-8 -mx-2">
-      <div ref="casinoGraphDivRef" class="border overflow-auto border-gray-200 shadow rounded-lg h-96 sm:h-[36rem]">
+
+
+      <div class="overflow-auto">
 
         <!-- Enter full screen -->
-        <PlainButton class="absolute left-2 top-2" @click="setGraphIsFullScreen(true)">
-          <ArrowsPointingOutIcon class="-ml-1 w-6 h-6 text-gray-500 shrink-0" />
+        <PlainButton class="absolute right-2 top-2 !p-2 sm:!px-3 z-10" @click="setGraphIsFullScreen(true)">
+          <ArrowsPointingOutIcon class="sm:-ml-1 w-6 h-6 text-gray-500 shrink-0" />
           <p class="ml-1">Full screen</p>
         </PlainButton>
 
         <!-- Scroll to explore -->
-        <div class="absolute left-2 top-14 px-2 py-1 bg-white/95 flex items-center rounded">
-          <ArrowsUpDownIcon class="-ml-1 w-6 h-6 text-gray-500 shrink-0" />
+        <div class="absolute right-2 bottom-2 px-2 py-1 bg-white/95 flex items-center rounded z-10">
+          <ArrowsRightLeftIcon class="-ml-1 w-6 h-6 text-gray-500 shrink-0" />
           <p class="ml-1 -mt-0.5 text-sm text-gray-600">Scroll to explore</p>
         </div>
 
-        <!-- SVG -->
-        <Transition name="zoom" appear>
-          <object 
-            ref="casinoGraphRef"
-            :style="{ maxWidth: 0.6*casinoGraphWidth + 'pt'}"
-            class="p-1"
-            type="image/svg+xml"
-            :data="graph_url">
-          </object>
-        </Transition>
+        <div ref="casinoGraphContainerRef" class="mt-1 relative border overflow-auto border-gray-200 shadow rounded-lg h-96 sm:h-[36rem] grid place-items-center">
+
+          <!-- SVG -->
+          <Transition name="zoom" appear>
+            <object 
+              ref="casinoGraphObjectRef"
+              class="p-1"
+              type="image/svg+xml"
+              :data="graph_url">
+            </object>
+          </Transition>
+        </div>
       </div>
     </div>
 
@@ -360,11 +374,11 @@ export default {
 
     <!-- Full screen graph dialog -->
     <Dialog :open="graphIsFullscreen" @close="setGraphIsFullScreen">
-      <DialogPanel class="fixed inset-0 bg-white overflow-auto">
+      <DialogPanel class="fixed inset-0 bg-white overflow-auto z-30">
 
         <!-- Graph -->
         <Transition name="zoom" appear>
-          <object class="mx-auto max-w-2xl sm:max-w-3xl md:max-w-5xl lg:max-w-7xl xl:max-w-none" type="image/svg+xml" :data="graph_url"></object>
+          <object class="mx-auto" type="image/svg+xml" :data="graph_url"></object>
         </Transition>
 
         <!-- Close button -->

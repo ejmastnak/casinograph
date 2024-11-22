@@ -45,7 +45,6 @@ function setGraphIsFullScreen(value) {
 
 const positionGraphContainerRef = ref(null)
 const positionGraphObjectRef = ref(null)
-const positionGraphWidth = ref(1280)
 
 function centerSVG() {
   const svgDoc = positionGraphObjectRef.value.contentDocument;
