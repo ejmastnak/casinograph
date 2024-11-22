@@ -86,28 +86,28 @@ export default {
     <!-- Graph -->
     <div class="mt-6 relative">
 
-        <!-- Enter full screen -->
-        <PlainButton class="absolute left-2 bottom-2 sm:bottom-auto sm:top-2 z-10" @click="setGraphIsFullScreen(true)">
-          <ArrowsPointingOutIcon class="-ml-1 w-6 h-6 text-gray-500 shrink-0" />
-          <p class="ml-1">Full screen</p>
-        </PlainButton>
+      <!-- Figure title -->
+      <h2 class="absolute inset-x-0 top-2 text-xl sm:text-2xl text-gray-700 px-2 py-1 bg-white/95 rounded-xl text-center">
+        Figure sequence
+      </h2>
 
-        <!-- Scroll to explore -->
-        <div class="absolute left-2 bottom-14 sm:bottom-auto sm:top-14 px-2 py-1 bg-white/95 flex items-center rounded z-10">
-          <ArrowsRightLeftIcon class="-ml-1 w-6 h-6 text-gray-500 shrink-0" />
-          <p class="ml-1 -mt-0.5 text-sm text-gray-600">Scroll to explore</p>
-        </div>
+      <!-- Enter full screen -->
+      <PlainButton class="absolute right-2 top-2 !p-2 xs:!px-3 z-10" @click="setGraphIsFullScreen(true)">
+        <ArrowsPointingOutIcon class="xs:-ml-1 w-6 h-6 text-gray-500 shrink-0" />
+        <p class="hidden xs:block ml-1">Full screen</p>
+      </PlainButton>
+
+      <!-- Scroll to explore -->
+      <div class="absolute right-2 bottom-2 px-2 py-1 bg-white/95 flex items-center rounded z-10">
+        <ArrowsRightLeftIcon class="-ml-1 w-6 h-6 text-gray-500 shrink-0" />
+        <p class="ml-1 -mt-0.5 text-sm text-gray-600">Scroll to explore</p>
+      </div>
 
       <div class="mt-1 relative border overflow-auto border-gray-200 shadow rounded-lg h-[15rem] grid place-items-center">
 
-        <!-- Figure title -->
-        <h2 class="absolute top-2 text-xl sm:text-2xl text-gray-700 px-2 py-1 bg-white/95 rounded-xl text-center z-20">
-          Figure sequence
-        </h2>
-
         <!-- SVG -->
         <Transition name="quickzoom" appear>
-          <object class="p-1 mx-auto max-w-xl md:max-w-3xl lg:max-w-4xl" type="image/svg+xml" :data="graph_url"></object>
+          <object class="p-1 mx-auto w-fit" type="image/svg+xml" :data="graph_url"></object>
         </Transition>
       </div>
     </div>
@@ -173,11 +173,11 @@ export default {
 
     <!-- Full screen graph dialog -->
     <Dialog :open="graphIsFullscreen" @close="setGraphIsFullScreen">
-      <DialogPanel class="fixed inset-0 bg-white overflow-auto z-30">
+      <DialogPanel class="fixed inset-0 grid place-items-center bg-white overflow-auto z-30">
 
         <!-- Graph -->
         <Transition name="quickzoom" appear>
-          <object class="p-1 mx-auto max-w-xl md:max-w-3xl lg:max-w-4xl" type="image/svg+xml" :data="graph_url"></object>
+          <object class="p-1 mx-auto w-fit" type="image/svg+xml" :data="graph_url"></object>
         </Transition>
 
         <!-- Close button -->

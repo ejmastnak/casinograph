@@ -11,7 +11,7 @@ import PlainButton from '@/Components/PlainButton.vue'
 import DangerButton from '@/Components/DangerButton.vue'
 import FamilyPillbox from '@/Components/FamilyPillbox.vue'
 import VideoDialog from '@/Components/VideoDialog.vue'
-import { PencilSquareIcon, TrashIcon, PlusCircleIcon, ArrowsPointingOutIcon, XMarkIcon, PlayIcon } from '@heroicons/vue/24/outline'
+import { PencilSquareIcon, ArrowsRightLeftIcon, TrashIcon, PlusCircleIcon, ArrowsPointingOutIcon, XMarkIcon, PlayIcon } from '@heroicons/vue/24/outline'
 import { Dialog, DialogPanel, DialogTitle, DialogDescription } from '@headlessui/vue'
 
 const props = defineProps({
@@ -83,17 +83,22 @@ export default {
     <div class="mt-6 relative">
 
       <!-- Enter full screen -->
-      <PlainButton class="absolute left-2 top-2 z-10" @click="setGraphIsFullScreen(true)">
-        <ArrowsPointingOutIcon class="-ml-1 w-6 h-6 text-gray-500 shrink-0" />
+      <PlainButton class="absolute right-2 top-2 !p-2 xs:!px-3 z-10" @click="setGraphIsFullScreen(true)">
+        <ArrowsPointingOutIcon class="xs:-ml-1 w-6 h-6 text-gray-500 shrink-0" />
         <p class="ml-1">Full screen</p>
       </PlainButton>
+
+      <!-- Scroll to explore -->
+      <div class="absolute xs:hidden right-2 bottom-2 px-2 py-1 bg-white/95 flex items-center rounded z-10">
+        <ArrowsRightLeftIcon class="-ml-1 w-6 h-6 text-gray-500 shrink-0" />
+        <p class="ml-1 -mt-0.5 text-sm text-gray-600">Scroll to explore</p>
+      </div>
 
       <div class="mt-1 relative border overflow-auto border-gray-200 shadow rounded-lg h-[12rem] grid place-items-center">
 
         <!-- SVG -->
-        <!-- Hardcoded w-80 works fine for figures diagrams, which have predictable dimensions -->
         <Transition name="quickzoom" appear>
-          <object class="p-1 mx-auto w-80 sm:w-96" type="image/svg+xml" :data="graph_url"></object>
+          <object class="p-1 mx-auto w-80 sm:w-fit" type="image/svg+xml" :data="graph_url"></object>
         </Transition>
       </div>
     </div>
@@ -136,7 +141,7 @@ export default {
 
         <!-- Graph -->
         <Transition name="quickzoom" appear>
-          <object class="p-1 mx-auto w-80 sm:w-96" type="image/svg+xml" :data="graph_url"></object>
+          <object class="p-1 mx-auto w-80 sm:w-fit" type="image/svg+xml" :data="graph_url"></object>
         </Transition>
 
         <!-- Close button -->

@@ -48,6 +48,7 @@ return [
                     'rankdir' => 'LR',
                 ],
                 'node' => [
+                    'fontsize' => 12,
                     'fontname' => "Figtree ExtraBold",
                     'fontcolor' => "#172554",
                     'color' => "#172554",
@@ -56,6 +57,7 @@ return [
                     'target' => "_top",
                 ],
                 'edge' => [
+                    'fontsize' => 12,
                     'fontname' => "Figtree",
                     'fontcolor' => "#172554",
                     'color' => "#172554",
@@ -69,6 +71,22 @@ return [
             'config' => [
                 'graph' => [
                     'rankdir' => 'LR',
+                ],
+                'node' => [
+                    'fontsize' => 12,
+                    'fontname' => "Figtree ExtraBold",
+                    'fontcolor' => "#172554",
+                    'color' => "#172554",
+                    'style' => "filled",
+                    'fillcolor' => "#eff6ff",
+                    'target' => "_top",
+                ],
+                'edge' => [
+                    'fontsize' => 12,
+                    'fontname' => "Figtree",
+                    'fontcolor' => "#172554",
+                    'color' => "#172554",
+                    'target' => "_top",
                 ],
             ],
         ],

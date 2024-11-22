@@ -76,8 +76,8 @@ class RegenerateCompoundFigureGraph implements ShouldQueue
 
         $digraphOpen = 'digraph FigureGraph {';
         $graphConfig = "graph [{$this->prepareStringFromConfigArray(config('misc.graphs.compound_figure_graph.config.graph'))}];";
-        $nodeConfig = "node [{$this->prepareStringFromConfigArray(config('misc.graphs.config.node'))}];";
-        $edgeConfig = "edge [{$this->prepareStringFromConfigArray(config('misc.graphs.config.edge'))}];";
+        $nodeConfig = "node [{$this->prepareStringFromConfigArray(config('misc.graphs.compound_figure_graph.config.node'))}];";
+        $edgeConfig = "edge [{$this->prepareStringFromConfigArray(config('misc.graphs.compound_figure_graph.config.edge'))}];";
         $digraphClose = '}';
 
         if ($file) {
