@@ -18,7 +18,8 @@ return [
             'user_basedir' => 'img/casinograph/users',
             'config' => [
                 'graph' => [
-                    'ratio' => 1.0,
+                    // 'nodesep' => 0.2,
+                    'ranksep' => 0.0,
                 ],
             ],
         ],
@@ -27,7 +28,7 @@ return [
             'user_basedir' => 'img/positiongraph/users',
             'config' => [
                 'graph' => [
-                    'ratio' => 1.0,
+                    'ranksep' => 0,
                 ],
                 'root_node' => [
                     'fontname' => "Figtree Medium",
@@ -45,6 +46,20 @@ return [
             'config' => [
                 'graph' => [
                     'rankdir' => 'LR',
+                ],
+                'node' => [
+                    'fontname' => "Figtree ExtraBold",
+                    'fontcolor' => "#172554",
+                    'color' => "#172554",
+                    'style' => "filled",
+                    'fillcolor' => "#eff6ff",
+                    'target' => "_top",
+                ],
+                'edge' => [
+                    'fontname' => "Figtree",
+                    'fontcolor' => "#172554",
+                    'color' => "#172554",
+                    'target' => "_top",
                 ],
             ],
         ],

@@ -91,8 +91,9 @@ export default {
       <div class="mt-1 relative border overflow-auto border-gray-200 shadow rounded-lg h-[12rem] grid place-items-center">
 
         <!-- SVG -->
+        <!-- Hardcoded w-80 works fine for figures diagrams, which have predictable dimensions -->
         <Transition name="quickzoom" appear>
-          <object class="p-1 mx-auto max-w-xl md:max-w-3xl lg:max-w-4xl" type="image/svg+xml" :data="graph_url"></object>
+          <object class="p-1 mx-auto w-80 sm:w-96" type="image/svg+xml" :data="graph_url"></object>
         </Transition>
       </div>
     </div>
@@ -131,11 +132,11 @@ export default {
 
     <!-- Full screen graph dialog -->
     <Dialog :open="graphIsFullscreen" @close="setGraphIsFullScreen">
-      <DialogPanel class="fixed inset-0 bg-white overflow-auto z-30">
+      <DialogPanel class="fixed inset-0 grid place-items-center bg-white overflow-auto z-30">
 
         <!-- Graph -->
         <Transition name="quickzoom" appear>
-          <object class="p-1 mx-auto max-w-xl md:max-w-3xl lg:max-w-4xl" type="image/svg+xml" :data="graph_url"></object>
+          <object class="p-1 mx-auto w-80 sm:w-96" type="image/svg+xml" :data="graph_url"></object>
         </Transition>
 
         <!-- Close button -->
