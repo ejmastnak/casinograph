@@ -52,10 +52,10 @@ class FigureSequenceService
         $singleSelfLoop = false;
         if (count($sccAdjList) === 1) {
             // ...with no outgoing figures that return to the SCC
-            if (count($sccAdjList[0]['adj'] === 0)) return null;
+            if (count($sccAdjList[array_key_first($sccAdjList)]['adj']) === 0) return null;
             // ...with only a single, self-looping figure. This is to protect
             // against infinite loops when applying max repeated figure limit.
-            else if (count($sccAdjList[0]['adj'] === 1)) $singleSelfLoop = true;
+            else if (count($sccAdjList[array_key_first($sccAdjList)]['adj']) === 1) $singleSelfLoop = true;
         }
 
 
