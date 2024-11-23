@@ -1,52 +1,37 @@
 <?php
+namespace App\Services;
 
-namespace App\Jobs;
-
-use Illuminate\Bus\Queueable;
-use Illuminate\Contracts\Queue\ShouldBeUnique;
-use Illuminate\Contracts\Queue\ShouldQueue;
-use Illuminate\Foundation\Bus\Dispatchable;
-use Illuminate\Queue\InteractsWithQueue;
-use Illuminate\Queue\SerializesModels;
-use Illuminate\Queue\Middleware\RateLimited;
+use App\Models\CompoundFigure;
+use App\Models\Position;
 use Illuminate\Support\Facades\Process;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\DB;
-use App\Models\CompoundFigure;
-use App\Models\Position;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\RateLimiter;
 
-class RegenerateCompoundFigureGraph implements ShouldQueue
+class CompoundFigureGraphService
 {
-    use Dispatchable, InteractsWithQueue, Queueable, SerializesModels;
-
-    // The number of times the job may be attempted.
-    public $tries = 1;
-
-    // The number of seconds the job can run before timing out.
-    public $timeout = 5;
-    public $failOnTimeout = true;
-
-    protected $compoundFigureId = null;
 
     /**
-     * Create a new job instance.
+     *  Generates an SVG graph diagram for the given compound figure.
      */
-    public function __construct(int $compoundFigureId)
-    {
-        $this->compoundFigureId = $compoundFigureId;
+    public function generateCompoundFigureGraph(CompoundFigure $compoundFigure) {
+        $user = Auth::id() ?? 'public';
+        $executed = RateLimiter::attempt(
+            'generate-compound-figure-graph-'.$user,
+            $perMinute = config('constants.rate_limits.compound_figure_graph_per_minute'),
+            function() use ($compoundFigure) {
+                $this->generateCompoundFigureGraphHandler($compoundFigure);
+            }
+        );
     }
 
-    /**
-     * Execute the job.
-     */
-    public function handle(): void
-    {
-        $compoundFigure = CompoundFigure::find($this->compoundFigureId);
+    private function generateCompoundFigureGraphHandler(CompoundFigure $compoundFigure) {
         $userId = $compoundFigure->user_id;
         $numPositions = Position::where('user_id', ($userId ?? config('constants.user_ids.casino')))->count();
 
         $timestamp = str_replace(".", "-", microtime(true));
-        $tmpDotFile = "/tmp/compoundfiguregraph-{$this->compoundFigureId}-{$timestamp}.dot";
+        $tmpDotFile = "/tmp/compoundfiguregraph-{$compoundFigure->id}-{$timestamp}.dot";
         $this->writeDotFile($tmpDotFile, $compoundFigure, $numPositions);
 
         $dotCommandWithParams = [
@@ -54,7 +39,7 @@ class RegenerateCompoundFigureGraph implements ShouldQueue
             '-Tsvg',
             $tmpDotFile,
             '-o',
-            compoundFigureGraphStoragePathForUser($this->compoundFigureId, $userId),
+            compoundFigureGraphStoragePathForUser($compoundFigure->id, $userId),
         ];
         $cleanupCommandWithParams = [ 'rm', '-f', $tmpDotFile ];
 
@@ -75,9 +60,9 @@ class RegenerateCompoundFigureGraph implements ShouldQueue
         $INDENT = "  ";
 
         $digraphOpen = 'digraph FigureGraph {';
-        $graphConfig = "graph [{$this->prepareStringFromConfigArray(config('misc.graphs.compound_figure_graph.config.graph'))}];";
-        $nodeConfig = "node [{$this->prepareStringFromConfigArray(config('misc.graphs.compound_figure_graph.config.node'))}];";
-        $edgeConfig = "edge [{$this->prepareStringFromConfigArray(config('misc.graphs.compound_figure_graph.config.edge'))}];";
+        $graphConfig = "graph [".prepareStringFromConfigArray(config('misc.graphs.compound_figure_graph.config.graph'))."];";
+        $nodeConfig = "node [".prepareStringFromConfigArray(config('misc.graphs.compound_figure_graph.config.node'))."];";
+        $edgeConfig = "edge [".prepareStringFromConfigArray(config('misc.graphs.compound_figure_graph.config.edge'))."];";
         $digraphClose = '}';
 
         if ($file) {
@@ -123,43 +108,4 @@ class RegenerateCompoundFigureGraph implements ShouldQueue
             Log::error("Error opening file {$tmpDotFile}.");
         }
     }
-
-    /**
-     *  Example input:
-     *  > [
-     *  >     'fontname' => "Figtree",
-     *  >     'fontcolor' => "#172554",
-     *  >     'color' => "#172554",
-     *  >     'target' => "_top",
-     *  > ]
-     *
-     * Corresponding output:
-     * > 'fontname="Figtree", fontcolor="#172554", color="#172554", target="_top"'
-     *
-     * Strings values are enclosed in double quotes; numeric values are left
-     * unquoted.
-     */
-    private function prepareStringFromConfigArray(array $config) {
-        $parts = [];
-        foreach ($config as $key => $value) {
-            if (is_string($value)) {
-                $valueFormatted = "\"{$value}\"";  # enclose strings in quotes
-            } else {
-                $valueFormatted = strval($value);  # leave numeric values unquoted
-            }
-            $parts[] = "{$key}={$valueFormatted}";
-        }
-        return implode(", ", $parts);
-    }
-
-    /**
-     * Get the middleware the job should pass through.
-     *
-     * @return array<int, object>
-     */
-    public function middleware(): array
-    {
-        return [(new RateLimited('compoundfiguregraph'))->dontRelease()];
-    }
-
 }

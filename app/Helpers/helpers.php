@@ -205,3 +205,34 @@ if (!function_exists('positionImagePublicPathForUser')) {
             : config('misc.position_images.public_basedir');
     }
 }
+
+
+/**
+ *  Example input:
+ *  > [
+ *  >     'fontname' => "Figtree",
+ *  >     'fontcolor' => "#172554",
+ *  >     'color' => "#172554",
+ *  >     'target' => "_top",
+ *  > ]
+ *
+ * Corresponding output:
+ * > 'fontname="Figtree", fontcolor="#172554", color="#172554", target="_top"'
+ *
+ * Strings values are enclosed in double quotes; numeric values are left
+ * unquoted.
+ */
+if (!function_exists('prepareStringFromConfigArray')) {
+    function prepareStringFromConfigArray(array $config) {
+        $parts = [];
+        foreach ($config as $key => $value) {
+            if (is_string($value)) {
+                $valueFormatted = "\"{$value}\"";  # enclose strings in quotes
+            } else {
+                $valueFormatted = strval($value);  # leave numeric values unquoted
+            }
+            $parts[] = "{$key}={$valueFormatted}";
+        }
+        return implode(", ", $parts);
+    }
+}

@@ -13,7 +13,7 @@ use App\Services\CompoundFigureService;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Redirect;
 use Illuminate\Support\Facades\DB;
-use App\Jobs\RegenerateCompoundFigureGraph;
+use App\Services\CompoundFigureGraphService;
 use Inertia\Inertia;
 
 class CompoundFigureController extends Controller
@@ -43,9 +43,9 @@ class CompoundFigureController extends Controller
     /**
      * Display the specified resource.
      */
-    public function show(CompoundFigure $compoundFigure)
+    public function show(CompoundFigure $compoundFigure, CompoundFigureGraphService $compoundFigureGraphService)
     {
-        RegenerateCompoundFigureGraph::dispatch($compoundFigure->id);
+        $compoundFigureGraphService->generateCompoundFigureGraph($compoundFigure);
         return Inertia::render('Figures/Compound/Show', [
             'compound_figure' => $compoundFigure->withFamilyAndFiguresAndVideos(),
             'can_create' => Auth::user() && Auth::user()->can('create', CompoundFigure::class),

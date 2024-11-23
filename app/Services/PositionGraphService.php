@@ -23,7 +23,7 @@ class PositionGraphService
             'y' => 0,
         ];
         $executed = RateLimiter::attempt(
-            'generate-position-graph'.$user,
+            'generate-position-graph-'.$user,
             $perMinute = config('constants.rate_limits.position_graph_per_minute'),
             function() use ($position, &$rootNodeCoordinates) {
                 $rootNodeCoordinates = $this->generatePositionGraphHandler($position);
@@ -101,9 +101,9 @@ class PositionGraphService
         $INDENT = "  ";
 
         $digraphOpen = 'digraph PositionGraph {';
-        $graphConfig = "graph [{$this->prepareStringFromConfigArray(config('misc.graphs.position_graph.config.graph'))}];";
-        $nodeConfig = "node [{$this->prepareStringFromConfigArray(config('misc.graphs.position_graph.config.node'))}];";
-        $edgeConfig = "edge [{$this->prepareStringFromConfigArray(config('misc.graphs.position_graph.config.edge'))}];";
+        $graphConfig = "graph [".prepareStringFromConfigArray(config('misc.graphs.position_graph.config.graph'))."];";
+        $nodeConfig = "node [".prepareStringFromConfigArray(config('misc.graphs.position_graph.config.node'))."];";
+        $edgeConfig = "edge [".prepareStringFromConfigArray(config('misc.graphs.position_graph.config.edge'))."];";
         $digraphClose = '}';
 
         if ($file) {
@@ -120,7 +120,7 @@ class PositionGraphService
             $rootNodeId = 0;
             $rootPosition = Position::find($rootPositionId);
             fwrite($file, PHP_EOL);
-            $line = "{$INDENT}{$rootNodeId} [label=\"{$rootPosition->name}\", URL=\"/positions/{$rootPosition->id}\", " . $this->prepareStringFromConfigArray(config('misc.graphs.position_graph.config.root_node')) . "];";
+            $line = "{$INDENT}{$rootNodeId} [label=\"{$rootPosition->name}\", URL=\"/positions/{$rootPosition->id}\", " . prepareStringFromConfigArray(config('misc.graphs.position_graph.config.root_node')) . "];";
             fwrite($file, $line . PHP_EOL);
 
             # Nodes for from positions of incoming figures. Intentionally given
@@ -210,34 +210,6 @@ class PositionGraphService
             'user_id' => ($userId ?? config('constants.user_ids.casino')),
         ]);
         return $outgoingFigures;
-    }
-
-    /**
-     *  Example input:
-     *  > [
-     *  >     'fontname' => "Figtree",
-     *  >     'fontcolor' => "#172554",
-     *  >     'color' => "#172554",
-     *  >     'target' => "_top",
-     *  > ]
-     *
-     * Corresponding output:
-     * > 'fontname="Figtree", fontcolor="#172554", color="#172554", target="_top"'
-     *
-     * Strings values are enclosed in double quotes; numeric values are left
-     * unquoted.
-     */
-    private function prepareStringFromConfigArray(array $config) {
-        $parts = [];
-        foreach ($config as $key => $value) {
-            if (is_string($value)) {
-                $valueFormatted = "\"{$value}\"";  # enclose strings in quotes
-            } else {
-                $valueFormatted = strval($value);  # leave numeric values unquoted
-            }
-            $parts[] = "{$key}={$valueFormatted}";
-        }
-        return implode(", ", $parts);
     }
 
 }

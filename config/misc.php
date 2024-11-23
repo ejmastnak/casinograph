@@ -28,7 +28,7 @@ return [
                     'ranksep' => 0.25,
                 ],
                 'node' => [
-                    'fontsize' => "14pt",
+                    'fontsize' => 12,
                     'fontname' => "Figtree ExtraBold",
                     'fontcolor' => "#172554",
                     'color' => "#172554",
@@ -37,7 +37,7 @@ return [
                     'target' => "_top",
                 ],
                 'edge' => [
-                    'fontsize' => "14pt",
+                    'fontsize' => 12,
                     'fontname' => "Figtree",
                     'fontcolor' => "#172554",
                     'color' => "#172554",

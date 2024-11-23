@@ -18,7 +18,7 @@ class CasinoGraphService
         ];
 
         $executed = RateLimiter::attempt(
-            'generate-casino-graph'.$user,
+            'generate-casino-graph-'.$user,
             $perMinute = config('constants.rate_limits.casino_graph_per_minute'),
             function() use (&$focusedNodeCoordinates) {
                 $focusedNodeCoordinates = $this->generateCasinoGraphHandler();
@@ -102,7 +102,7 @@ class CasinoGraphService
         }
 
         if ($dotResult->failed()) {
-            Log::error("RegenerateCasinoGraph failed.\n");
+            Log::error("CasinoGraphService->generateCasinoGraphHandler failed.\n");
             Log::error($dotResult->errorOutput());
             if (\App::environment('local')) {
                 dd($dotResult->errorOutput());
@@ -169,9 +169,9 @@ class CasinoGraphService
         $INDENT = "  ";
 
         $digraphOpen = 'digraph CasinoGraph {';
-        $graphConfig = "graph [{$this->prepareStringFromConfigArray(config('misc.graphs.casinograph.config.graph'))}];";
-        $nodeConfig = "node [{$this->prepareStringFromConfigArray(config('misc.graphs.casinograph.config.node'))}];";
-        $edgeConfig = "edge [{$this->prepareStringFromConfigArray(config('misc.graphs.casinograph.config.edge'))}];";
+        $graphConfig = "graph [".prepareStringFromConfigArray(config('misc.graphs.casinograph.config.graph'))."];";
+        $nodeConfig = "node [".prepareStringFromConfigArray(config('misc.graphs.casinograph.config.node'))."];";
+        $edgeConfig = "edge [".prepareStringFromConfigArray(config('misc.graphs.casinograph.config.edge'))."];";
         $digraphClose = '}';
 
         if ($file) {
@@ -204,34 +204,5 @@ class CasinoGraphService
             Log::error("Error opening file {$tmpDotFile}.");
         }
     }
-
-
-    /**
-     *  Example input:
-     *  > [
-     *  >     'fontname' => "Figtree",
-     *  >     'fontcolor' => "#172554",
-     *  >     'color' => "#172554",
-     *  >     'target' => "_top",
-     *  > ]
-     *
-     * Corresponding output:
-     * > 'fontname="Figtree", fontcolor="#172554", color="#172554", target="_top"'
-     *
-     * Strings values are enclosed in double quotes; numeric values are left
-     * unquoted.
-     */
-    private function prepareStringFromConfigArray(array $config) {
-        $parts = [];
-        foreach ($config as $key => $value) {
-            if (is_string($value)) {
-                $valueFormatted = "\"{$value}\"";  # enclose strings in quotes
-            } else {
-                $valueFormatted = strval($value);  # leave numeric values unquoted
-            }
-            $parts[] = "{$key}={$valueFormatted}";
-        }
-        return implode(", ", $parts);
-    }
-
+    
 }

@@ -36,5 +36,8 @@ return [
     'rate_limits' => [
         'casino_graph_per_minute' => 30,
         'position_graph_per_minute' => 30,
+        'figure_graph_per_minute' => 30,
+        'compound_figure_graph_per_minute' => 30,
+        'figure_sequence_per_minute' => 20,
     ],
 ];

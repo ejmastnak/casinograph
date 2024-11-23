@@ -1,52 +1,37 @@
 <?php
+namespace App\Services;
 
-namespace App\Jobs;
-
-use Illuminate\Bus\Queueable;
-use Illuminate\Contracts\Queue\ShouldBeUnique;
-use Illuminate\Contracts\Queue\ShouldQueue;
-use Illuminate\Foundation\Bus\Dispatchable;
-use Illuminate\Queue\InteractsWithQueue;
-use Illuminate\Queue\SerializesModels;
-use Illuminate\Queue\Middleware\RateLimited;
+use App\Models\Figure;
 use Illuminate\Support\Facades\Process;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\DB;
-use App\Models\Figure;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\RateLimiter;
 
-class RegenerateFigureGraph implements ShouldQueue
+class FigureGraphService
 {
-    use Dispatchable, InteractsWithQueue, Queueable, SerializesModels;
-
-    // The number of times the job may be attempted.
-    public $tries = 1;
-
-    // The number of seconds the job can run before timing out.
-    public $timeout = 5;
-    public $failOnTimeout = true;
-
-    protected $figureId = null;
 
     /**
-     * Create a new job instance.
+     *  Generates an SVG graph diagram for the given figure.
      */
-    public function __construct(int $figureId)
-    {
-        $this->figureId = $figureId;
+    public function generateFigureGraph(Figure $figure) {
+        $user = Auth::id() ?? 'public';
+        $executed = RateLimiter::attempt(
+            'generate-figure-graph-'.$user,
+            $perMinute = config('constants.rate_limits.figure_graph_per_minute'),
+            function() use ($figure) {
+                $this->generateFigureGraphHandler($figure);
+            }
+        );
     }
 
-    /**
-     * Execute the job.
-     */
-    public function handle(): void
-    {
-        $figure = Figure::find($this->figureId);
+    private function generateFigureGraphHandler(Figure $figure) {
         $userId = $figure->user_id;
         $fromPosition = $figure->from_position;
         $toPosition = $figure->to_position;
 
         $timestamp = str_replace(".", "-", microtime(true));
-        $tmpDotFile = "/tmp/figuregraph-{$this->figureId}-{$timestamp}.dot";
+        $tmpDotFile = "/tmp/figuregraph-{$figure->id}-{$timestamp}.dot";
         $this->writeDotFile($tmpDotFile, $figure, $fromPosition, $toPosition);
 
         $dotCommandWithParams = [
@@ -54,7 +39,7 @@ class RegenerateFigureGraph implements ShouldQueue
             '-Tsvg',
             $tmpDotFile,
             '-o',
-            figureGraphStoragePathForUser($this->figureId, $userId),
+            figureGraphStoragePathForUser($figure->id, $userId),
         ];
         $cleanupCommandWithParams = [ 'rm', '-f', $tmpDotFile ];
 
@@ -75,9 +60,9 @@ class RegenerateFigureGraph implements ShouldQueue
         $INDENT = "  ";
 
         $digraphOpen = 'digraph FigureGraph {';
-        $graphConfig = "graph [{$this->prepareStringFromConfigArray(config('misc.graphs.figure_graph.config.graph'))}];";
-        $nodeConfig = "node [{$this->prepareStringFromConfigArray(config('misc.graphs.figure_graph.config.node'))}];";
-        $edgeConfig = "edge [{$this->prepareStringFromConfigArray(config('misc.graphs.figure_graph.config.edge'))}];";
+        $graphConfig = "graph [".prepareStringFromConfigArray(config('misc.graphs.figure_graph.config.graph'))."];";
+        $nodeConfig = "node [".prepareStringFromConfigArray(config('misc.graphs.figure_graph.config.node'))."];";
+        $edgeConfig = "edge [".prepareStringFromConfigArray(config('misc.graphs.figure_graph.config.edge'))."];";
         $digraphClose = '}';
 
         if ($file) {
@@ -112,44 +97,6 @@ class RegenerateFigureGraph implements ShouldQueue
         } else {
             Log::error("Error opening file {$tmpDotFile}.");
         }
-    }
-
-    /**
-     *  Example input:
-     *  > [
-     *  >     'fontname' => "Figtree",
-     *  >     'fontcolor' => "#172554",
-     *  >     'color' => "#172554",
-     *  >     'target' => "_top",
-     *  > ]
-     *
-     * Corresponding output:
-     * > 'fontname="Figtree", fontcolor="#172554", color="#172554", target="_top"'
-     *
-     * Strings values are enclosed in double quotes; numeric values are left
-     * unquoted.
-     */
-    private function prepareStringFromConfigArray(array $config) {
-        $parts = [];
-        foreach ($config as $key => $value) {
-            if (is_string($value)) {
-                $valueFormatted = "\"{$value}\"";  # enclose strings in quotes
-            } else {
-                $valueFormatted = strval($value);  # leave numeric values unquoted
-            }
-            $parts[] = "{$key}={$valueFormatted}";
-        }
-        return implode(", ", $parts);
-    }
-
-    /**
-     * Get the middleware the job should pass through.
-     *
-     * @return array<int, object>
-     */
-    public function middleware(): array
-    {
-        return [(new RateLimited('figuregraph'))->dontRelease()];
     }
 
 }

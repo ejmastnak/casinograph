@@ -11,7 +11,6 @@ use App\Http\Controllers\PositionFamilyController;
 use App\Http\Controllers\FigureFamilyController;
 use App\Http\Controllers\FigureSequenceController;
 use App\Services\CasinoGraphService;
-use App\Jobs\RegenerateCasinoGraph;
 use Illuminate\Foundation\Application;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;

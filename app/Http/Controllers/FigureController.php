@@ -12,8 +12,8 @@ use Illuminate\Support\Facades\Redirect;
 use Illuminate\Support\Facades\Auth;
 use App\Http\Requests\StoreFigureRequest;
 use App\Http\Requests\UpdateFigureRequest;
-use App\Jobs\RegenerateFigureGraph;
 use App\Services\FigureService;
+use App\Services\FigureGraphService;
 use Inertia\Inertia;
 
 class FigureController extends Controller
@@ -83,9 +83,9 @@ class FigureController extends Controller
     /**
      * Display the specified resource.
      */
-    public function show(Figure $figure)
+    public function show(Figure $figure, FigureGraphService $figureGraphService)
     {
-        RegenerateFigureGraph::dispatch($figure->id);
+        $figureGraphService->generateFigureGraph($figure);
         return Inertia::render('Figures/Foundational/Show', [
             'figure' => $figure->withFamilyAndPositionsAndVideos(),
             'can_create' => Auth::user() && Auth::user()->can('create', Figure::class),
