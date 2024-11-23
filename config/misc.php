@@ -52,7 +52,7 @@ return [
             // its XY coordinates). Logic: since I write the root node first,
             // just find the first ellipse, using `grep -m 1` to only print the
             // first match.
-            'grep_pattern_for_root_node' => 'ellipse',
+            'grep' => 'ellipse',
             'config' => [
                 'graph' => [
                     'ranksep' => 0.3,

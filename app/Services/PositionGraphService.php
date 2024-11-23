@@ -18,19 +18,19 @@ class PositionGraphService
      */
     public function generatePositionGraph(Position $position) {
         $user = Auth::id() ?? 'public';
-        $rootNodeCoordinates = [  // safe default values
+        $focusedNodeCoordinates = [  // safe default values
             'x' => 0,
             'y' => 0,
         ];
         $executed = RateLimiter::attempt(
             'generate-position-graph-'.$user,
             $perMinute = config('constants.rate_limits.position_graph_per_minute'),
-            function() use ($position, &$rootNodeCoordinates) {
-                $rootNodeCoordinates = $this->generatePositionGraphHandler($position);
+            function() use ($position, &$focusedNodeCoordinates) {
+                $focusedNodeCoordinates = $this->generatePositionGraphHandler($position);
             }
         );
 
-        return $rootNodeCoordinates;
+        return $focusedNodeCoordinates;
     }
 
     private function generatePositionGraphHandler(Position $position) {
@@ -55,7 +55,7 @@ class PositionGraphService
             'grep',
             '-m',
             '1',
-            config('misc.graphs.position_graph.grep_pattern_for_root_node'),
+            config('misc.graphs.position_graph.grep'),
             positionGraphStoragePathForUser($position->id, $userId),
         ];
         $cleanupCommandWithParams = [ 'rm', '-f', $tmpDotFile ];
@@ -70,15 +70,15 @@ class PositionGraphService
             $pattern = '/\bcx="([\d.-]+)" cy="([\d.-]+)"/';
             $matches = [];
             if (preg_match($pattern, $grepResult->output(), $matches)) {
-                $rootX = $matches[1];
-                $rootY = $matches[2];
+                $x = $matches[1];
+                $y = $matches[2];
             } else {
-                $rootX = "0";
-                $rootY = "0";
+                $x = "0";
+                $y = "0";
             }
         } else {
-            $rootX = "0";
-            $rootY = "0";
+            $x = "0";
+            $y = "0";
         }
 
         if ($dotResult->failed()) {
@@ -90,8 +90,8 @@ class PositionGraphService
         }
 
         return [
-            'x' => $rootX,
-            'y' => $rootY,
+            'x' => $x,
+            'y' => $y,
         ];
     }
 

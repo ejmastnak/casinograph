@@ -24,7 +24,7 @@ const props = defineProps({
   can_delete: Boolean,
   graph_url: String,
   graph_is_nonempty: Boolean,
-  graph_center_coordinates: Object,
+  focused_coordinates: Object,
 })
 
 let idToDelete = ref(null)
@@ -54,8 +54,8 @@ function centerSVG() {
   if (container && svgDoc && svgElement) {
 
     // Desired focus coordinate in the SVG's internal coordinate system
-    const focusX = props.graph_center_coordinates.x;
-    const focusY = props.graph_center_coordinates.y;
+    const focusX = props.focused_coordinates.x;
+    const focusY = props.focused_coordinates.y;
 
     // Get the bounding box of the entire SVG
     const svgBBox = svgElement.getBBox();

@@ -55,7 +55,7 @@ class PositionController extends Controller
      */
     public function show(Position $position, PositionGraphService $positionGraphService)
     {
-        $rootNodeCoordinates = $positionGraphService->generatePositionGraph($position);
+        $focusedNodeCoordinates = $positionGraphService->generatePositionGraph($position);
 
         return Inertia::render('Positions/Show', [
             'position' => $position->withFamilyImagesAndFigures(),
@@ -64,7 +64,7 @@ class PositionController extends Controller
             'can_delete' => Auth::user() && Auth::user()->can('delete', $position),
             'graph_url' => positionGraphUrlForUser($position->id, Auth::id()),
             'graph_is_nonempty' => $position->hasFigures(),
-            'graph_center_coordinates' => $rootNodeCoordinates,
+            'focused_coordinates' => $focusedNodeCoordinates,
         ]);
     }
 

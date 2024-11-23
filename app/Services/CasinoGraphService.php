@@ -94,15 +94,15 @@ class CasinoGraphService
             $pattern = '/\bcx="([\d.-]+)" cy="([\d.-]+)"/';
             $matches = [];
             if (preg_match($pattern, $grepResult->output(), $matches)) {
-                $rootX = $matches[1];
-                $rootY = $matches[2];
+                $x = $matches[1];
+                $y = $matches[2];
             } else {
-                $rootX = "0";
-                $rootY = "0";
+                $x = "0";
+                $y = "0";
             }
         } else {
-            $rootX = "0";
-            $rootY = "0";
+            $x = "0";
+            $y = "0";
         }
 
         if ($dotResult->failed()) {
@@ -114,8 +114,8 @@ class CasinoGraphService
         }
 
         return [
-            'x' => $rootX,
-            'y' => $rootY,
+            'x' => $x,
+            'y' => $y,
         ];
 
     }

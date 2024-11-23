@@ -17,7 +17,7 @@ import {
 const props = defineProps({
   graph_url: String,
   graph_is_nonempty: Boolean,
-  graph_center_coordinates: Object,
+  focus_coordinates: Object,
 })
 
 const graphIsFullscreen = ref(false)
@@ -36,8 +36,8 @@ function centerSVG() {
   if (container && svgDoc && svgElement) {
 
     // Desired focus coordinate in the SVG's internal coordinate system
-    const focusX = props.graph_center_coordinates.x;
-    const focusY = props.graph_center_coordinates.y;
+    const focusX = props.focus_coordinates.x;
+    const focusY = props.focus_coordinates.y;
 
     // Get the bounding box of the entire SVG
     const svgBBox = svgElement.getBBox();
