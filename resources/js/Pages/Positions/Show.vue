@@ -77,8 +77,9 @@ function centerSVG() {
 }
 
 onMounted(() => {
-  positionGraphObjectRef.value.addEventListener('load', centerSVG);
-  // centerSVG();
+  if (positionGraphObjectRef.value) {
+    positionGraphObjectRef.value.addEventListener('load', centerSVG);
+  }
 });
 
 

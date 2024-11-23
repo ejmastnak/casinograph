@@ -59,7 +59,9 @@ function centerSVG() {
 }
 
 onMounted(() => {
-  casinoGraphObjectRef.value.addEventListener('load', centerSVG);
+  if (casinoGraphObjectRef.value) {
+    casinoGraphObjectRef.value.addEventListener('load', centerSVG);
+  }
 });
 
 </script>
@@ -225,7 +227,7 @@ export default {
     <!-- Notify user instead of showing an empty graph -->
     <Warning v-if="$page.props.auth.user && !graph_is_nonempty" class="mt-8 max-w-lg">
       You have not created any positions or figures yet.
-      First <MyLink :colored="true" :href="route('positions.create')">create some positions</MyLink>, then connect the positions to <MyLink :colored="true" :href="route('figures.create')">create figures</MyLink>.
+      Get started by <MyLink :colored="true" :href="route('positions.create')">creating some positions</MyLink>, then connect the positions to <MyLink :colored="true" :href="route('figures.create')">create figures</MyLink>.
     </Warning>
 
     <!-- Questions and answers -->
@@ -285,8 +287,8 @@ export default {
       </ul>
     </div>
 
-    <!-- For nerds -->
-    <div class="mt-8">
+    <!-- For nerds (only show to non-logged-in visitors to not spam actual users) -->
+    <div v-if="!$page.props.auth.user && graph_is_nonempty" class="mt-8">
       <h2 class="text-xl text-gray-800" id="nerds">For nerds</h2>
       <p class="mt-0.5 text-gray-600 text-sm">
         (Read: I want to geek out about the tech stack to anyone who will listen.)

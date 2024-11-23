@@ -1,6 +1,7 @@
 <?php
 namespace App\Services;
 
+use App\Models\Figure;
 use Illuminate\Support\Facades\Process;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\RateLimiter;
@@ -11,19 +12,22 @@ class CasinoGraphService
 {
 
     public function generateCasinoGraph() {
-        $user = Auth::id() ?? 'public';
+        $userId = Auth::id() ?? config('constants.user_ids.casino');
         $focusedNodeCoordinates = [  // safe default values
             'x' => 0,
             'y' => 0,
         ];
 
-        $executed = RateLimiter::attempt(
-            'generate-casino-graph-'.$user,
-            $perMinute = config('constants.rate_limits.casino_graph_per_minute'),
-            function() use (&$focusedNodeCoordinates) {
-                $focusedNodeCoordinates = $this->generateCasinoGraphHandler();
-            }
-        );
+        $userHasFigures = Figure::where('user_id', $userId)->count() > 0;
+        if ($userHasFigures) {
+            $executed = RateLimiter::attempt(
+                'generate-casino-graph-'.$userId,
+                $perMinute = config('constants.rate_limits.casino_graph_per_minute'),
+                function() use (&$focusedNodeCoordinates) {
+                    $focusedNodeCoordinates = $this->generateCasinoGraphHandler();
+                }
+            );
+        }
 
         return $focusedNodeCoordinates;
     }
@@ -204,5 +208,5 @@ class CasinoGraphService
             Log::error("Error opening file {$tmpDotFile}.");
         }
     }
-    
+
 }
