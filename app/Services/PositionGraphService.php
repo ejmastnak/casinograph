@@ -7,6 +7,7 @@ use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\RateLimiter;
+use Illuminate\Support\Facades\Cache;
 
 class PositionGraphService
 {
@@ -17,18 +18,20 @@ class PositionGraphService
      *  center SVG around root node).
      */
     public function generatePositionGraph(Position $position) {
-        $user = Auth::id() ?? 'public';
-        $focusedNodeCoordinates = [  // safe default values
-            'x' => 0,
-            'y' => 0,
-        ];
+        $userId = Auth::id() ?? config('constants.user_ids.casino');
+        $key = 'generate-position-graph-'.$userId.'-'.$position->id;
+        $focusedNodeCoordinates = config('misc.graphs.fallback_focus_coordinates');
+
         $executed = RateLimiter::attempt(
-            'generate-position-graph-'.$user,
+            $key,
             $perMinute = config('constants.rate_limits.position_graph_per_minute'),
             function() use ($position, &$focusedNodeCoordinates) {
                 $focusedNodeCoordinates = $this->generatePositionGraphHandler($position);
             }
         );
+
+        if ($executed) Cache::put($key, $focusedNodeCoordinates);
+        else $focusedNodeCoordinates = Cache::get($key, config('misc.graphs.fallback_focus_coordinates'));
 
         return $focusedNodeCoordinates;
     }

@@ -35,7 +35,9 @@ return [
     ],
     'rate_limits' => [
         'casino_graph_per_minute' => 30,
-        'position_graph_per_minute' => 30,
+        // Low because rate limit is per position, not for all positions
+        // globally, because cached focus coordinates must be per-position.
+        'position_graph_per_minute' => 3,
         'figure_graph_per_minute' => 30,
         'compound_figure_graph_per_minute' => 30,
         'figure_sequence_per_minute' => 20,

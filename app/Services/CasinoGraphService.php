@@ -7,26 +7,27 @@ use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\RateLimiter;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Cache;
 
 class CasinoGraphService
 {
 
     public function generateCasinoGraph() {
         $userId = Auth::id() ?? config('constants.user_ids.casino');
-        $focusedNodeCoordinates = [  // safe default values
-            'x' => 0,
-            'y' => 0,
-        ];
+        $key = 'generate-casino-graph-'.$userId;
+        $focusedNodeCoordinates = config('misc.graphs.fallback_focus_coordinates');
 
         $userHasFigures = Figure::where('user_id', $userId)->count() > 0;
         if ($userHasFigures) {
             $executed = RateLimiter::attempt(
-                'generate-casino-graph-'.$userId,
+                $key,
                 $perMinute = config('constants.rate_limits.casino_graph_per_minute'),
                 function() use (&$focusedNodeCoordinates) {
                     $focusedNodeCoordinates = $this->generateCasinoGraphHandler();
                 }
             );
+            if ($executed) Cache::put($key, $focusedNodeCoordinates);
+            else $focusedNodeCoordinates = Cache::get($key, config('misc.graphs.fallback_focus_coordinates'));
         }
 
         return $focusedNodeCoordinates;

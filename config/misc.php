@@ -13,6 +13,10 @@ return [
         'infinite_loop_guard' => 10,
     ],
     'graphs' => [
+        'fallback_focus_coordinates' => [
+            'x' => "0",
+            'y' => "0",
+        ],
         'casinograph' => [
             'public_file' => 'img/casinograph/public.svg',
             'user_basedir' => 'img/casinograph/users',
